@@ -1,3 +1,4 @@
+import 'package:familist_2/widgets/reminders/event.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,18 +9,30 @@ class EventsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Upcoming Events",
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: sColor,
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Upcoming Events",
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: sColor,
+            ),
+            textAlign: TextAlign.left,
           ),
-        )
-      ],
+          const Event(
+              text: "Konser Kufaku", date: "15 Jan 2023", time: "2:45 p.m."),
+          const Event(
+              text: "Konser Kufaku", date: "15 Jan 2023", time: "2:45 p.m."),
+          const Event(
+              text: "Konser Kufaku", date: "15 Jan 2023", time: "2:45 p.m."),
+        ],
+      ),
     );
   }
 }

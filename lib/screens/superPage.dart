@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/home/homePage.dart';
-import 'package:familist_2/screens/profilePage.dart';
+import 'package:familist_2/screens/profile/profilePage.dart';
 import 'package:familist_2/screens/reminders/remindersPage.dart';
 import 'package:familist_2/screens/schedule/schedulePage.dart';
 import 'package:familist_2/screens/shopping/shoppingPage.dart';

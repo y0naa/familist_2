@@ -36,8 +36,8 @@ class Schedule extends StatelessWidget {
             ],
           ),
         ),
-        const Row(
-          children: [
+        Row(
+          children: const [
             Icon(
               Icons.edit,
               color: sColor,
