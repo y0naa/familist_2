@@ -5,6 +5,8 @@ import 'package:familist_2/screens/profile/profilePage.dart';
 import 'package:familist_2/screens/reminders/remindersPage.dart';
 import 'package:familist_2/screens/schedule/schedulePage.dart';
 import 'package:familist_2/screens/shopping/shoppingPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class SuperPage extends StatefulWidget {
@@ -26,6 +28,7 @@ class _SuperPageState extends State<SuperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: _pages[_activePages],
       // change this
       // nav bar

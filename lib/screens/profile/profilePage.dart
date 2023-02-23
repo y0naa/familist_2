@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../utils/auth.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -16,6 +18,11 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   int _index = 0;
+
+  Future<void> signOut() async {
+    await Auth().signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -88,17 +95,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                     padding: const EdgeInsets.only(
                                         right: 24, left: 24),
                                     child: TextButton(
+                                      onPressed: signOut,
                                       style: const ButtonStyle(
                                         backgroundColor:
                                             MaterialStatePropertyAll<Color>(
                                                 Color(0xFFD26F6F)),
                                       ),
-                                      onPressed: () {},
                                       child: Padding(
                                         padding: const EdgeInsets.only(
                                             top: 16, bottom: 16),
                                         child: Text(
-                                          "Logout",
+                                          "Sign Out",
                                           style: GoogleFonts.inter(
                                               fontSize: 18,
                                               color: Colors.white,

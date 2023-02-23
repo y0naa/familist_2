@@ -227,185 +227,192 @@ class _RemindersPageState extends State<RemindersPage> {
       context: context,
       builder: (context) =>
           StatefulBuilder(builder: (BuildContext context, setState) {
-        return SingleChildScrollView(
-          controller: ModalScrollController.of(context),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    "Create an item",
-                    style: GoogleFonts.inter(
-                      fontSize: 24,
-                      color: sColor,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TagButton(
-                      tapped: _index == 0 ? true : false,
-                      text: "Reminders",
-                      onTap: () {
-                        setState(() {
-                          _index = 0;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    TagButton(
-                      tapped: _index == 1 ? true : false,
-                      text: "Bills",
-                      onTap: () {
-                        setState(() {
-                          _index = 1;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15, left: 32),
-                  child: Text(
-                    "Item name",
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: sColor,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 32, right: 32, top: 14, bottom: 32),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Input item name here",
-                      filled: true,
-                      fillColor: Colors.grey.shade100.withOpacity(0.5),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Colors.grey.shade100, width: 0.0),
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SingleChildScrollView(
+            controller: ModalScrollController.of(context),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text(
+                      "Create an item",
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        color: sColor,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 32),
-                  child: Text(
-                    "Date due",
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: sColor,
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TagButton(
+                        tapped: _index == 0 ? true : false,
+                        text: "Reminders",
+                        onTap: () {
+                          setState(() {
+                            _index = 0;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      TagButton(
+                        tapped: _index == 1 ? true : false,
+                        text: "Bills",
+                        onTap: () {
+                          setState(() {
+                            _index = 1;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15, left: 32),
+                    child: Text(
+                      "Item name",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: sColor,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 32, right: 32, top: 14, bottom: 32),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Icon(
-                          Icons.calendar_month,
-                          color: sColor,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 32, right: 32, top: 14, bottom: 32),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Input item name here",
+                        filled: true,
+                        fillColor: Colors.grey.shade100.withOpacity(0.5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                              color: Colors.grey.shade100, width: 0.0),
                         ),
                       ),
-                      hintText: "dd/mm/yyyy",
-                      filled: true,
-                      fillColor: Colors.grey.shade100.withOpacity(0.5),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Colors.grey.shade100, width: 0.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32),
+                    child: Text(
+                      "Date due",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: sColor,
                       ),
                     ),
                   ),
-                ),
-                _index == 1
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 32),
-                            child: Text(
-                              "Repeated in",
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: sColor,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 32, right: 32, top: 14, bottom: 32),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(15),
+                          child: Icon(
+                            Icons.calendar_month,
+                            color: sColor,
+                          ),
+                        ),
+                        hintText: "dd/mm/yyyy",
+                        filled: true,
+                        fillColor: Colors.grey.shade100.withOpacity(0.5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                              color: Colors.grey.shade100, width: 0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _index == 1
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 32),
+                              child: Text(
+                                "Repeated in",
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: sColor,
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 32, right: 32, top: 14, bottom: 32),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                suffixIcon: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    "Days",
-                                    style: GoogleFonts.inter(
-                                        fontSize: 18,
-                                        color: sColor,
-                                        fontWeight: FontWeight.w900),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 32, right: 32, top: 14, bottom: 32),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Text(
+                                      "Days",
+                                      style: GoogleFonts.inter(
+                                          fontSize: 18,
+                                          color: sColor,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                  ),
+                                  hintText: "Enter number of days",
+                                  filled: true,
+                                  fillColor:
+                                      Colors.grey.shade100.withOpacity(0.5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey.shade100,
+                                        width: 0.0),
                                   ),
                                 ),
-                                hintText: "Enter number of days",
-                                filled: true,
-                                fillColor:
-                                    Colors.grey.shade100.withOpacity(0.5),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: BorderSide(
-                                      color: Colors.grey.shade100, width: 0.0),
-                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      : Container(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 32, right: 32, top: 32, bottom: 32),
+                          child: TextButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll<Color>(
+                                const Color(0xFF0A369D).withOpacity(0.8),
                               ),
                             ),
-                          )
-                        ],
-                      )
-                    : Container(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 32, right: 32, top: 32, bottom: 32),
-                        child: TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(
-                              const Color(0xFF0A369D).withOpacity(0.8),
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 16, bottom: 16),
-                            child: Text(
-                              "Done",
-                              style: GoogleFonts.inter(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
+                            onPressed: () {},
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 16, bottom: 16),
+                              child: Text(
+                                "Done",
+                                style: GoogleFonts.inter(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
