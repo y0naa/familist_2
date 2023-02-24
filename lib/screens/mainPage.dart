@@ -1,4 +1,5 @@
 import 'package:familist_2/screens/auth/signIn.dart';
+import 'package:familist_2/screens/auth/verifyEmail.dart';
 import 'package:familist_2/screens/superPage.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,7 @@ class MainPage extends StatelessWidget {
         stream: Auth().authStateChanges,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return const SuperPage();
+            return const VerifyEmail();
           } else {
             return const SignIn();
           }

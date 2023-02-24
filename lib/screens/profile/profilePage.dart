@@ -1,9 +1,11 @@
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/reminders/bills.dart';
 import 'package:familist_2/screens/reminders/reminders.dart';
+import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/profile/profileItem.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -20,7 +22,14 @@ class _ProfilePageState extends State<ProfilePage> {
   int _index = 0;
 
   Future<void> signOut() async {
-    await Auth().signOut();
+    try {
+      await Auth().signOut();
+      if (context.mounted) {
+        GoRouter.of(context).pushReplacement("/");
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
   }
 
   @override
