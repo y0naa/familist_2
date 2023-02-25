@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../utils/auth.dart';
+import '../../utils/profile.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -30,6 +31,12 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       dialog(context, e.toString());
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override

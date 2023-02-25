@@ -1,10 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:familist_2/widgets/profile/famlilyBuilder.dart';
 import 'package:familist_2/widgets/profile/memberCard.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../constants.dart';
+import '../../screens/auth/signIn.dart';
+import '../../utils/auth.dart';
+import '../../utils/profile.dart';
 
-class ProfileItem extends StatelessWidget {
+class ProfileItem extends StatefulWidget {
   final String title;
   final String description;
   final IconData icon;
@@ -21,11 +27,56 @@ class ProfileItem extends StatelessWidget {
   });
 
   @override
+  State<ProfileItem> createState() => _ProfileItemState();
+}
+
+class _ProfileItemState extends State<ProfileItem> {
+  //List<String> familiesIDs = [];
+  final box = GetStorage();
+  List<dynamic> userIDs = [];
+  String _familyName = "";
+
+  Future getData() async {
+    // familiesIDs = await Profile().getFamiliesId();
+    userIDs = await Profile().getUsersId();
+  }
+
+  Future getFamilyName() async {
+    String fuid = "";
+    // print("current user: ${Auth().currentUser!.email}");
+    await FirebaseFirestore.instance
+        .collection("users")
+        .where(
+          "email",
+          isEqualTo: Auth().currentUser!.email!.trim(),
+        )
+        .get()
+        .then(
+          (snapshot) => snapshot.docs.forEach(
+            (document) {
+              fuid = document.get("fuid");
+              print("fuid: $fuid");
+            },
+          ),
+        );
+    await Profile().getFamilyName(fuid).then((value) => _familyName = value);
+    print("family name: $_familyName");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+    getFamilyName();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24, bottom: 15),
       child: InkWell(
-        onTap: () => isFamily
+        onTap: () => widget.isFamily
             ? showBarModalBottomSheet(
                 context: context,
                 builder: (context) => StatefulBuilder(
@@ -42,7 +93,7 @@ class ProfileItem extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Family Wibowo",
+                                  _familyName,
                                   style: GoogleFonts.inter(
                                     fontSize: 24,
                                     color: sColor,
@@ -129,13 +180,24 @@ class ProfileItem extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                  left: 24, right: 24, top: 14, bottom: 32),
+                                  left: 20, right: 24, top: 14, bottom: 32),
                               child: Column(
-                                children: const [
-                                  Member(name: "Jowna Alynsah"),
-                                  Member(name: "Vicky Wibowo"),
-                                  Member(name: "Musi Asratih"),
-                                  Member(name: "Triunggo Beryesta")
+                                children: [
+                                  FutureBuilder(
+                                    future: getData(),
+                                    builder: (context, snapshot) {
+                                      return ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: userIDs.length,
+                                        itemBuilder: (context, uindex) {
+                                          return FamilyBuilder(
+                                            usersId: userIDs[uindex],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -158,7 +220,7 @@ class ProfileItem extends StatelessWidget {
                   //crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Icon(
-                      icon,
+                      widget.icon,
                       color: sColor,
                     ),
                     const SizedBox(
@@ -169,7 +231,7 @@ class ProfileItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          widget.title,
                           style: GoogleFonts.inter(
                               fontSize: 14,
                               color: sColor,
@@ -179,7 +241,7 @@ class ProfileItem extends StatelessWidget {
                           height: 8,
                         ),
                         Text(
-                          description,
+                          widget.description,
                           style: GoogleFonts.inter(
                             fontSize: 14,
                             color: sColor,
@@ -192,7 +254,7 @@ class ProfileItem extends StatelessWidget {
                 Positioned(
                   top: 10,
                   right: 0,
-                  child: isFamily
+                  child: widget.isFamily
                       ? const Icon(
                           Icons.keyboard_arrow_right_rounded,
                           size: 16,

@@ -2,6 +2,8 @@ import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -30,6 +32,8 @@ class _SignInState extends State<SignIn> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      GetStorage box = GetStorage();
+      box.write("email", _emailController.text.trim());
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
       dialog(context, e.message.toString());
