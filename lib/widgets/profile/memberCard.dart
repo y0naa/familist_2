@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
+import '../../utils/profile.dart';
 
-class Member extends StatelessWidget {
+class Member extends StatefulWidget {
   final String name;
-  const Member({super.key, required this.name});
+  final bool isUser;
+  final String docID;
+  final VoidCallback refresh;
+  const Member(
+      {super.key,
+      required this.name,
+      required this.isUser,
+      required this.docID,
+      required this.refresh});
+
+  @override
+  State<Member> createState() => _MemberState();
+}
+
+class _MemberState extends State<Member> {
+  Future deleteMember() async {
+    print("deleteMember");
+    await Profile().updateData(widget.docID, {
+      "fuid": "",
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +49,7 @@ class Member extends StatelessWidget {
                   width: 15,
                 ),
                 Text(
-                  name,
+                  widget.name,
                   style: GoogleFonts.inter(
                       fontSize: 14, color: sColor, fontWeight: FontWeight.w600),
                 ),
@@ -36,27 +58,23 @@ class Member extends StatelessWidget {
                 ),
               ],
             ),
-            Positioned(
-              top: 5,
-              right: 0,
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.edit_outlined,
-                    size: 16,
-                    color: sColor,
+            widget.isUser
+                ? Container()
+                : Positioned(
+                    top: -13,
+                    right: 0,
+                    child: IconButton(
+                      onPressed: () async {
+                        await deleteMember();
+                        widget.refresh();
+                      },
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                        size: 16,
+                        color: Colors.red,
+                      ),
+                    ),
                   ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Icon(
-                    Icons.delete_outline_rounded,
-                    size: 16,
-                    color: Colors.red,
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),

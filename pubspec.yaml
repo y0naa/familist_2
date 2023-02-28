@@ -52,6 +52,11 @@ dependencies:
   firebase_auth: ^4.2.9
   get: ^4.6.5
   get_storage: ^2.0.3
+  animated_text_kit: ^4.2.2
+  image_picker: ^0.8.6+3
+  firebase_storage: ^11.0.14
+  qr_flutter: ^4.0.0
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:

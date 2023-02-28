@@ -28,7 +28,6 @@ class _SuperPageState extends State<SuperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       body: _pages[_activePages],
       // change this
       // nav bar

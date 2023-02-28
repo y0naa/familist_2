@@ -58,6 +58,9 @@ class _RegisterState extends State<Register> {
       "full name": name,
       "telephone": telephone,
       "email": email,
+      "bio": "",
+      "fuid": "",
+      "imageUrl": "",
     });
   }
 

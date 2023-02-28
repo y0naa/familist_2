@@ -3,7 +3,11 @@ import 'package:familist_2/screens/Home/homeShopping.dart';
 import 'package:familist_2/screens/home/homeReminders.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../utils/auth.dart';
+import '../../widgets/dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +18,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _index = 0;
+
+  Future<void> signOut() async {
+    try {
+      await Auth().signOut();
+      if (context.mounted) {
+        GoRouter.of(context).pushReplacement("/");
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +173,8 @@ class _HomePageState extends State<HomePage> {
                       _index == 0 ? const HomeShopping() : const HomeReminders()
                     ],
                   ),
-                )
+                ),
+                // TextButton(onPressed: signOut, child: Text("sign out")),
               ],
             ),
           ),
