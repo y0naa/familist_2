@@ -1,3 +1,4 @@
+import 'package:familist_2/utils/scheduleHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
@@ -6,11 +7,15 @@ class Event extends StatelessWidget {
   final String text;
   final String date;
   final String time;
+  final String docID;
+  final VoidCallback refresh;
   const Event({
     super.key,
     required this.text,
     required this.date,
     required this.time,
+    required this.docID,
+    required this.refresh,
   });
 
   @override
@@ -93,10 +98,16 @@ class Event extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const [
-                    Icon(
-                      Icons.delete_outline_rounded,
-                      color: Colors.red,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        ScheduleHelper().deleteEvent(context, docID);
+                        refresh();
+                      },
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: Colors.red,
+                      ),
                     ),
                   ],
                 ),

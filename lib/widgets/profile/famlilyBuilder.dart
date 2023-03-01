@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:familist_2/utils/profile.dart';
-import 'package:familist_2/widgets/loadingText.dart';
 import 'package:familist_2/widgets/profile/memberCard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class FamilyBuilder extends StatefulWidget {
   const FamilyBuilder({
@@ -23,7 +20,6 @@ class _FamilyBuilderState extends State<FamilyBuilder> {
     CollectionReference users = FirebaseFirestore.instance.collection("users");
     Future familyBuilder() async {
       String fuid = await Profile().getFamilyID();
-      //print(users.where("fuid", isEqualTo: fuid).get());
       return users.where("fuid", isEqualTo: fuid).get();
     }
 
@@ -43,10 +39,7 @@ class _FamilyBuilderState extends State<FamilyBuilder> {
                 final doc = snapshot.data!.docs[index];
                 final name = doc.get("full name");
 
-                print(
-                    "snapshot name: ${doc.get("email")}, user email: ${Auth().currentUser!.email}");
                 if (Auth().currentUser!.email == doc.get("email")) {
-                  print("is samee");
                   return Member(
                     name: name,
                     isUser: true,
@@ -56,7 +49,6 @@ class _FamilyBuilderState extends State<FamilyBuilder> {
                     },
                   );
                 } else {
-                  print("isnt samee");
                   return Member(
                     name: name,
                     isUser: false,

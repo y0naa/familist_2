@@ -1,6 +1,8 @@
+import 'package:familist_2/utils/profile.dart';
+import 'package:familist_2/utils/scheduleHelper.dart';
+import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../constants.dart';
 import '../../widgets/schedule/date.dart';
 import '../../widgets/schedule/schedule.dart';
@@ -13,26 +15,44 @@ class Scheduler extends StatefulWidget {
 }
 
 class _SchedulerState extends State<Scheduler> {
-  var days_name = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-  var days_short = [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun",
-  ];
-
   int _days = 0;
+  List schedules = [];
+
+  List<Map<String, dynamic>> filterMap(List<Map<String, dynamic>> schedules) {
+    List<Map<String, dynamic>> filtered = [];
+    if (_days == 0) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Monday").toList();
+    } else if (_days == 1) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Tuesday").toList();
+    } else if (_days == 2) {
+      filtered = schedules
+          .where((schedule) => schedule["day"] == "Wednesday")
+          .toList();
+    } else if (_days == 3) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Thursday").toList();
+    } else if (_days == 4) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Friday").toList();
+    } else if (_days == 5) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Saturday").toList();
+    } else if (_days == 6) {
+      filtered =
+          schedules.where((schedule) => schedule["day"] == "Sunday").toList();
+    }
+    return filtered;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -51,7 +71,6 @@ class _SchedulerState extends State<Scheduler> {
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
-                  //set border radius more than 50% of height and width to make circle
                 ),
                 elevation: 12,
                 child: Padding(
@@ -174,7 +193,7 @@ class _SchedulerState extends State<Scheduler> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        days_name[_days],
+                        daysName[_days],
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           color: sColor,
@@ -182,7 +201,7 @@ class _SchedulerState extends State<Scheduler> {
                         ),
                       ),
                       Text(
-                        days_short[_days],
+                        daysShort[_days],
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           color: sColor,
@@ -198,8 +217,49 @@ class _SchedulerState extends State<Scheduler> {
                       color: sColor,
                     ),
                   ),
-                  const Schedule(time: "09:00 - 12:00", title: "Kuliah"),
-                  const Schedule(time: "12:00 - 13:00", title: "Makan"),
+                  FutureBuilder(
+                    future: ScheduleHelper().getSchedules(context),
+                    builder: ((context, snapshot) {
+                      try {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.data != null) {
+                              final schedules = snapshot.data!;
+                              final filtered = filterMap(schedules);
+                              return SingleChildScrollView(
+                                child: filtered.length > 0
+                                    ? ListView.builder(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        itemCount: filtered.length,
+                                        itemBuilder: (context, index) {
+                                          final schedule = filtered[index];
+                                          return Schedule(
+                                            docID: schedule["docID"],
+                                            time:
+                                                "${schedule["start time"]} - ${schedule["end time"]}",
+                                            title: schedule["item name"],
+                                            refresh: () {
+                                              setState(() {});
+                                            },
+                                          );
+                                        })
+                                    : const Center(
+                                        child: Text("No Data Found")),
+                              );
+                            } else {
+                              return const Center(child: Text("No Data Found"));
+                            }
+                          }
+                        }
+                      } catch (e) {
+                        dialog(context, e.toString());
+                      }
+                      return const Center(child: Text("Loading..."));
+                    }),
+                  )
                 ],
               ),
             ),

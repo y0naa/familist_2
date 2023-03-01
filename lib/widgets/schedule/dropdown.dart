@@ -6,8 +6,9 @@ import '../../constants.dart';
 
 class Dropdown extends StatefulWidget {
   final List<String> items;
+  final ValueChanged<String> onChanged;
 
-  const Dropdown({super.key, required this.items});
+  const Dropdown({super.key, required this.items, required this.onChanged});
 
   @override
   State<Dropdown> createState() => _DropdownState();
@@ -96,6 +97,7 @@ class _DropdownState extends State<Dropdown> {
             setState(() {
               _selected = value as String;
             });
+            widget.onChanged(value!);
           },
         ),
       ),

@@ -132,24 +132,6 @@ class Profile {
             },
           ),
         );
-    // await Future.wait(
-    //   familyIDs.map(
-    //     (doc) async {
-    //       print("doc in getuserID = $doc");
-    //       final querySnapshot = await FirebaseFirestore.instance
-    //           .collection("families")
-    //           .doc(doc)
-    //           .collection("users")
-    //           .get();
-    //       final userDocs = querySnapshot.docs;
-    //       for (final document in userDocs) {
-    //         userIDs.add(document.reference.id);
-    //         print("user id: $userIDs");
-    //       }
-    //     },
-    //   ),
-    // );
-    // print("user id: $userIDs");
     return userIDs;
   }
 }
