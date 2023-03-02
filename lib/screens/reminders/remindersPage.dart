@@ -1,10 +1,17 @@
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/reminders/bills.dart';
 import 'package:familist_2/screens/reminders/reminders.dart';
+import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:familist_2/widgets/tagButton.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../../utils/profile.dart';
+import '../../widgets/dialog.dart';
 
 class RemindersPage extends StatefulWidget {
   const RemindersPage({super.key});
@@ -14,7 +21,67 @@ class RemindersPage extends StatefulWidget {
 }
 
 class _RemindersPageState extends State<RemindersPage> {
+  // Variables
+  bool _loading = false;
   int _index = 0;
+  String uid = "";
+
+  // text controllers
+  DateTime date = DateTime.now();
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _dateDueController = TextEditingController();
+  final TextEditingController _repeatedInController = TextEditingController();
+
+  // Futures
+  Future addReminder() async {
+    try {
+      RemindersHelpers().addReminder({
+        "item name": _itemNameController.text.trim(),
+        "date due": _dateDueController.text.trim(),
+      }, uid);
+      if (context.mounted) {
+        dialog(
+          context,
+          "Saved Successfully",
+        );
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
+
+  Future addBill() async {
+    try {
+      RemindersHelpers().addBill({
+        "item name": _itemNameController.text.trim(),
+        "date due": _dateDueController.text.trim(),
+        "repeated in ": _repeatedInController.text.trim(),
+      }, uid);
+      if (context.mounted) {
+        dialog(
+          context,
+          "Saved Successfully",
+        );
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
+
+  // Other Methods
+  void getUid() async {
+    uid = await Profile().getUserID();
+  }
+
+  // built in methods
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUid();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -292,6 +359,7 @@ class _RemindersPageState extends State<RemindersPage> {
                     padding: const EdgeInsets.only(
                         left: 32, right: 32, top: 14, bottom: 32),
                     child: TextField(
+                      controller: _itemNameController,
                       decoration: InputDecoration(
                         hintText: "Input item name here",
                         filled: true,
@@ -318,6 +386,21 @@ class _RemindersPageState extends State<RemindersPage> {
                     padding: const EdgeInsets.only(
                         left: 32, right: 32, top: 14, bottom: 32),
                     child: TextField(
+                      controller: _dateDueController,
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(99999999),
+                        );
+                        if (pickedDate != null) {
+                          _dateDueController.text =
+                              DateFormat("dd/MM/yyyy").format(pickedDate);
+                          date = pickedDate;
+                        }
+                      },
                       decoration: InputDecoration(
                         prefixIcon: const Padding(
                           padding: EdgeInsets.all(15),
@@ -355,6 +438,8 @@ class _RemindersPageState extends State<RemindersPage> {
                               padding: const EdgeInsets.only(
                                   left: 32, right: 32, top: 14, bottom: 32),
                               child: TextField(
+                                controller: _repeatedInController,
+                                keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   suffixIcon: Padding(
                                     padding: const EdgeInsets.all(15),
@@ -394,12 +479,32 @@ class _RemindersPageState extends State<RemindersPage> {
                                 const Color(0xFF0A369D).withOpacity(0.8),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: _index == 0
+                                ? () async {
+                                    await addReminder();
+                                    if (context.mounted) {
+                                      dialog(
+                                        context,
+                                        "Saved Successfully",
+                                        route: "/super",
+                                      );
+                                    }
+                                  }
+                                : () async {
+                                    await addBill();
+                                    if (context.mounted) {
+                                      dialog(
+                                        context,
+                                        "Saved Successfully",
+                                        route: "/super",
+                                      );
+                                    }
+                                  },
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(top: 16, bottom: 16),
                               child: Text(
-                                "Done",
+                                "Save",
                                 style: GoogleFonts.inter(
                                     fontSize: 18,
                                     color: Colors.white,

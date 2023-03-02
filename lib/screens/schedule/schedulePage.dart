@@ -7,15 +7,12 @@ import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/schedule/dropdown.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../utils/profile.dart';
 import '../../utils/scheduleHelper.dart';
-import '../../widgets/schedule/dropdownTime.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -56,7 +53,7 @@ class _SchedulePageState extends State<SchedulePage> {
       memberNames.add(name);
     }
 
-    print("members: ");
+    print("members: $uid");
     print(members);
     return memberNames;
   }
@@ -108,13 +105,14 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   void getUid() async {
+    await getMembers();
     uid = await Profile().getUserID();
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    getMembers();
+
     getUid();
   }
 
@@ -174,8 +172,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                   .toList();
                               return Dropdown(
                                 onChanged: (value) {
-                                  _selected = value;
-                                  uid = members[value];
+                                  setState(() {
+                                    _selected = value;
+                                    uid = members[value];
+                                    print("uid: $uid");
+                                  });
                                 },
                                 items: itemValues,
                               );
@@ -222,7 +223,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     ),
 
                     _index == 0
-                        ? const Expanded(child: Scheduler())
+                        ? Expanded(child: Container())
                         : const EventsPage(),
                   ],
                 ),

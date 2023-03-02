@@ -8,7 +8,8 @@ import '../../widgets/schedule/date.dart';
 import '../../widgets/schedule/schedule.dart';
 
 class Scheduler extends StatefulWidget {
-  const Scheduler({super.key});
+  final String userID;
+  const Scheduler({super.key, required this.userID});
 
   @override
   State<Scheduler> createState() => _SchedulerState();
@@ -48,8 +49,6 @@ class _SchedulerState extends State<Scheduler> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
   }
 
@@ -218,7 +217,8 @@ class _SchedulerState extends State<Scheduler> {
                     ),
                   ),
                   FutureBuilder(
-                    future: ScheduleHelper().getSchedules(context),
+                    future:
+                        ScheduleHelper().getSchedules(context, widget.userID),
                     builder: ((context, snapshot) {
                       try {
                         if (snapshot.connectionState == ConnectionState.done) {

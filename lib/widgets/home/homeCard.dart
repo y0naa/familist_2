@@ -6,11 +6,15 @@ class HomeCard extends StatefulWidget {
   final String title;
   final String extra;
   final bool shoppingList;
+  final String? deadline;
+  final String? user;
   const HomeCard(
       {super.key,
       required this.title,
       required this.shoppingList,
-      required this.extra});
+      required this.extra,
+      this.deadline,
+      this.user});
 
   @override
   State<HomeCard> createState() => _HomeCardState();
@@ -77,7 +81,7 @@ class _HomeCardState extends State<HomeCard> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Jowna", // change to user
+                              widget.user ?? "", // change to user
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 color: sColor,
@@ -99,7 +103,7 @@ class _HomeCardState extends State<HomeCard> {
                                         size: 14,
                                       ),
                                       Text(
-                                        " 13 Jan 2023",
+                                        widget.deadline ?? "",
                                         style: GoogleFonts.inter(
                                           fontSize: 14,
                                           color: Colors.red,
