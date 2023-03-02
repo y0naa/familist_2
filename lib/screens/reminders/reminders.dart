@@ -24,6 +24,9 @@ class Reminders extends StatelessWidget {
                       title: reminder['item name'],
                       deadline: reminder['date due'],
                       user: reminder['fullName'],
+                      uid: reminder['userID'],
+                      initCompleted: reminder['completed'],
+                      reminderId: reminder['reminderID'],
                       extra: "",
                     ),
                   );

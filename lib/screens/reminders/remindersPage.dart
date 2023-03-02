@@ -30,6 +30,7 @@ class _RemindersPageState extends State<RemindersPage> {
   DateTime date = DateTime.now();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _dateDueController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
   final TextEditingController _repeatedInController = TextEditingController();
 
   // Futures
@@ -54,8 +55,8 @@ class _RemindersPageState extends State<RemindersPage> {
     try {
       RemindersHelpers().addBill({
         "item name": _itemNameController.text.trim(),
-        "date due": _dateDueController.text.trim(),
-        "repeated in ": _repeatedInController.text.trim(),
+        "price": _priceController.text.trim(),
+        "repeated in": _repeatedInController.text.trim(),
       }, uid);
       if (context.mounted) {
         dialog(
@@ -375,7 +376,7 @@ class _RemindersPageState extends State<RemindersPage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 32),
                     child: Text(
-                      "Date due",
+                      _index == 0 ? "Date due" : "Item price",
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         color: sColor,
@@ -385,40 +386,65 @@ class _RemindersPageState extends State<RemindersPage> {
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 32, right: 32, top: 14, bottom: 32),
-                    child: TextField(
-                      controller: _dateDueController,
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(99999999),
-                        );
-                        if (pickedDate != null) {
-                          _dateDueController.text =
-                              DateFormat("dd/MM/yyyy").format(pickedDate);
-                          date = pickedDate;
-                        }
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.all(15),
-                          child: Icon(
-                            Icons.calendar_month,
-                            color: sColor,
+                    child: _index == 0
+                        ? TextField(
+                            controller: _dateDueController,
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(99999999),
+                              );
+                              if (pickedDate != null) {
+                                _dateDueController.text =
+                                    DateFormat("dd/MM/yyyy").format(pickedDate);
+                                date = pickedDate;
+                              }
+                            },
+                            decoration: InputDecoration(
+                              prefixIcon: const Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Icon(
+                                  Icons.calendar_month,
+                                  color: sColor,
+                                ),
+                              ),
+                              hintText: "dd/mm/yyyy",
+                              filled: true,
+                              fillColor: Colors.grey.shade100.withOpacity(0.5),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                    color: Colors.grey.shade100, width: 0.0),
+                              ),
+                            ),
+                          )
+                        : TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _priceController,
+                            decoration: InputDecoration(
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Text(
+                                  'Rp.',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 18,
+                                      color: sColor,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                              hintText: "Enter item price",
+                              filled: true,
+                              fillColor: Colors.grey.shade100.withOpacity(0.5),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                    color: Colors.grey.shade100, width: 0.0),
+                              ),
+                            ),
                           ),
-                        ),
-                        hintText: "dd/mm/yyyy",
-                        filled: true,
-                        fillColor: Colors.grey.shade100.withOpacity(0.5),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(
-                              color: Colors.grey.shade100, width: 0.0),
-                        ),
-                      ),
-                    ),
                   ),
                   _index == 1
                       ? Column(

@@ -54,9 +54,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future updateProfile() async {
     try {
-      setState(() {
-        isLoading = true;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+
       String id = "";
       if (photo != null) {
         await uploadProfile(photo!);
@@ -70,22 +73,28 @@ class _ProfilePageState extends State<ProfilePage> {
           "imageUrl": _imageURL,
         },
       );
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } on Exception catch (e) {
       dialog(context, e.toString());
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
   Future getUserDetails() async {
     Map<String, String> _data = <String, String>{};
-    setState(() {
-      isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await Profile().getUserDetails().then((value) => _data = value);
     _name = _data["full name"]!;
     _bio = _data["bio"]!;
@@ -99,9 +108,11 @@ class _ProfilePageState extends State<ProfilePage> {
           .getFamilyName(_data["fuid"]!)
           .then((value) => _familyName = value);
     }
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> signOut() async {
@@ -119,8 +130,14 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (mounted) {
+      getUserDetails();
+    }
+  }
 
-    getUserDetails();
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -189,7 +206,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           isFamily: false,
                                           isEditable: false,
                                           refresh: () {
-                                            setState(() {});
+                                            if (mounted) {
+                                              setState(() {});
+                                            }
                                           },
                                         ),
                                         ProfileItem(
@@ -199,9 +218,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           isFamily: false,
                                           isEditable: true,
                                           refresh: () {
-                                            setState(() {
-                                              getUserDetails();
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                getUserDetails();
+                                              });
+                                            }
                                           },
                                         ),
                                         ProfileItem(
@@ -211,9 +232,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           isFamily: true,
                                           isEditable: true,
                                           refresh: () {
-                                            setState(() {
-                                              getUserDetails();
-                                            });
+                                            if (mounted) {
+                                              setState(() {
+                                                getUserDetails();
+                                              });
+                                            }
                                           },
                                         ),
                                         Padding(
@@ -424,11 +447,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                         temp == null
                             ? null
-                            : setState(
-                                () {
-                                  photo = File(temp.path);
-                                },
-                              );
+                            : mounted
+                                ? setState(
+                                    () {
+                                      photo = File(temp.path);
+                                    },
+                                  )
+                                : null;
                       },
                       child: const Text("Choose Image"),
                     ),
