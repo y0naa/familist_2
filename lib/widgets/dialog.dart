@@ -6,7 +6,7 @@ void dialog(BuildContext context, String m, {String? route}) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text("Saved Successfully"),
+        title: Text(m),
         actions: <Widget>[
           TextButton(
             child: const Text("OK"),

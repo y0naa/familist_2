@@ -39,6 +39,7 @@ class _RemindersPageState extends State<RemindersPage> {
       RemindersHelpers().addReminder({
         "item name": _itemNameController.text.trim(),
         "date due": _dateDueController.text.trim(),
+        "completed": false,
       }, uid);
       if (context.mounted) {
         dialog(
@@ -57,6 +58,7 @@ class _RemindersPageState extends State<RemindersPage> {
         "item name": _itemNameController.text.trim(),
         "price": _priceController.text.trim(),
         "repeated in": _repeatedInController.text.trim(),
+        "completed": false,
       }, uid);
       if (context.mounted) {
         dialog(
@@ -173,8 +175,16 @@ class _RemindersPageState extends State<RemindersPage> {
                               child:
                                   // separate widget
                                   _index == 0
-                                      ? const Reminders()
-                                      : const Bills(),
+                                      ? Reminders(
+                                          refresh: () {
+                                            setState(() {});
+                                          },
+                                        )
+                                      : Bills(
+                                          refresh: () {
+                                            setState(() {});
+                                          },
+                                        ),
                             ),
                           ],
                         ),

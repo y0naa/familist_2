@@ -1,5 +1,6 @@
 import 'package:familist_2/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/remindersHelper.dart';
@@ -12,6 +13,8 @@ class Bill extends StatefulWidget {
   final String uid;
   final String billId;
   final bool initCompleted;
+  final bool canDelete;
+  final VoidCallback refresh;
   const Bill(
       {super.key,
       required this.text,
@@ -20,7 +23,9 @@ class Bill extends StatefulWidget {
       required this.user,
       required this.uid,
       required this.billId,
-      required this.initCompleted});
+      required this.initCompleted,
+      required this.canDelete,
+      required this.refresh});
 
   @override
   State<Bill> createState() => _BillState();
@@ -28,6 +33,7 @@ class Bill extends StatefulWidget {
 
 class _BillState extends State<Bill> {
   bool _flag = false;
+  bool loading = false;
 
   Future updateCompleted() async {
     await RemindersHelpers().updateBills(widget.uid, widget.billId, _flag);
@@ -35,7 +41,6 @@ class _BillState extends State<Bill> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _flag = widget.initCompleted;
   }
@@ -121,10 +126,28 @@ class _BillState extends State<Bill> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Icon(
-                          Icons.delete_outline_rounded,
-                          color: Colors.red,
-                        ),
+                        widget.canDelete
+                            ? SizedBox(
+                                height: 30,
+                                child: IconButton(
+                                  onPressed: () async {
+                                    await RemindersHelpers().deleteBill(
+                                      context,
+                                      widget.billId,
+                                    );
+
+                                    if (mounted) {
+                                      GoRouter.of(context)
+                                          .pushReplacement('/super');
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                         const SizedBox(
                           height: 20,
                         ),

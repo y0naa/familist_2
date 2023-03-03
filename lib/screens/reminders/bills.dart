@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../../utils/remindersHelper.dart';
 
 class Bills extends StatelessWidget {
-  const Bills({super.key});
+  final VoidCallback refresh;
+  const Bills({super.key, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +15,13 @@ class Bills extends StatelessWidget {
           future: RemindersHelpers().getBills(context),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
-              // Build a list of HomeCard widgets using the data from the snapshot
               List<Bill> homeCards = [];
               snapshot.data.forEach((userId, bills) {
                 bills.forEach((bill) {
                   homeCards.add(
                     Bill(
+                      canDelete:
+                          bill['userID'] == bill['currentID'] ? true : false,
                       user: bill["fullName"],
                       repeated: bill["repeated in"],
                       text: bill["item name"],
@@ -27,6 +29,7 @@ class Bills extends StatelessWidget {
                       uid: bill["userID"],
                       billId: bill["billID"],
                       initCompleted: bill["completed"],
+                      refresh: refresh,
                     ),
                   );
                 });
@@ -48,8 +51,6 @@ class Bills extends StatelessWidget {
           },
         ),
       ],
-      // Bill(text: "Electricity", price: "1,500.000"),
-      // Bill(text: "Electricity", price: "1,500.000")
     );
   }
 }

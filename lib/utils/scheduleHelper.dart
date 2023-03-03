@@ -6,6 +6,20 @@ import 'package:flutter/material.dart';
 class ScheduleHelper {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
 
+  Future<int> checkUser(List<String> items) async {
+    int index = 0;
+    String uid = await Profile().getUserID();
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+    if (documentSnapshot.exists) {
+      String fullName = documentSnapshot.get("full name");
+      print("Full name: $fullName");
+      index = items.indexOf(fullName);
+      print("Index: $index");
+      return index;
+    }
+    return index;
+  }
+
   Future deleteSchedule(BuildContext context, String docID) async {
     try {
       String userID = await Profile().getUserID();

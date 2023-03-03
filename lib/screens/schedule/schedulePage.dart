@@ -22,12 +22,12 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
-  String _selected = "";
   bool loading = false;
   int _index = 0;
   List<String> items = ["Loading..."];
   Map<String, dynamic> members = {};
   String uid = "";
+  String userid = "Z7ainCd7YVWtXqUUmeLU";
   CollectionReference users = FirebaseFirestore.instance.collection("users");
 
   // text controllers - schedule
@@ -52,9 +52,6 @@ class _SchedulePageState extends State<SchedulePage> {
       members[name] = doc.id;
       memberNames.add(name);
     }
-
-    print("members: $uid");
-    print(members);
     return memberNames;
   }
 
@@ -171,12 +168,13 @@ class _SchedulePageState extends State<SchedulePage> {
                                   .map((item) => item!)
                                   .toList();
                               return Dropdown(
+                                isFuture: true,
                                 onChanged: (value) {
-                                  setState(() {
-                                    _selected = value;
-                                    uid = members[value];
-                                    print("uid: $uid");
-                                  });
+                                  if (mounted) {
+                                    setState(() {
+                                      userid = members[value];
+                                    });
+                                  }
                                 },
                                 items: itemValues,
                               );
@@ -196,9 +194,11 @@ class _SchedulePageState extends State<SchedulePage> {
                             tapped: _index == 0 ? true : false,
                             text: "Schedule",
                             onTap: () {
-                              setState(() {
-                                _index = 0;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _index = 0;
+                                });
+                              }
                             },
                           ),
                           const SizedBox(
@@ -208,9 +208,11 @@ class _SchedulePageState extends State<SchedulePage> {
                             tapped: _index == 1 ? true : false,
                             text: "Events",
                             onTap: () {
-                              setState(() {
-                                _index = 1;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _index = 1;
+                                });
+                              }
                             },
                           ),
                         ],
@@ -223,7 +225,11 @@ class _SchedulePageState extends State<SchedulePage> {
                     ),
 
                     _index == 0
-                        ? Expanded(child: Container())
+                        ? Expanded(
+                            child: Scheduler(
+                              userID: userid,
+                            ),
+                          )
                         : const EventsPage(),
                   ],
                 ),
@@ -276,9 +282,11 @@ class _SchedulePageState extends State<SchedulePage> {
                               tapped: _index == 0 ? true : false,
                               text: "Schedule",
                               onTap: () {
-                                setState(() {
-                                  _index = 0;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    _index = 0;
+                                  });
+                                }
                               },
                             ),
                             const SizedBox(
@@ -288,9 +296,11 @@ class _SchedulePageState extends State<SchedulePage> {
                               tapped: _index == 1 ? true : false,
                               text: "Events",
                               onTap: () {
-                                setState(() {
-                                  _index = 1;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    _index = 1;
+                                  });
+                                }
                               },
                             ),
                           ],
@@ -346,6 +356,7 @@ class _SchedulePageState extends State<SchedulePage> {
                         _index == 0
                             ? Center(
                                 child: Dropdown(
+                                  isFuture: false,
                                   onChanged: (value) {
                                     print("day picked: $value");
                                     daySchedule = value;
@@ -589,13 +600,18 @@ class _SchedulePageState extends State<SchedulePage> {
                                   onPressed: _index == 0
                                       ? () async {
                                           await addSchedule();
-                                          GoRouter.of(context)
-                                              .pushReplacement("/super");
+
+                                          if (context.mounted) {
+                                            GoRouter.of(context)
+                                                .pushReplacement("/super");
+                                          }
                                         }
                                       : () async {
                                           await addEvent();
-                                          GoRouter.of(context)
-                                              .pushReplacement("/super");
+                                          if (context.mounted) {
+                                            GoRouter.of(context)
+                                                .pushReplacement("/super");
+                                          }
                                         },
                                   child: Padding(
                                     padding: const EdgeInsets.only(

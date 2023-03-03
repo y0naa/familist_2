@@ -7,6 +7,7 @@ class HomeCard extends StatefulWidget {
   final String title;
   final String extra;
   final bool shoppingList;
+  final bool home;
   final bool? initCompleted;
   final String? deadline;
   final String? user;
@@ -21,7 +22,8 @@ class HomeCard extends StatefulWidget {
       this.user,
       this.uid,
       this.reminderId,
-      this.initCompleted});
+      this.initCompleted,
+      required this.home});
 
   @override
   State<HomeCard> createState() => _HomeCardState();

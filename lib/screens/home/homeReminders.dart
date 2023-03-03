@@ -7,9 +7,10 @@ class HomeReminders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
+    return const Column(
+      children: [
         HomeCard(
+          home: true,
           shoppingList: false,
           title: "Buang Sampah",
           extra: "13 Jan 2023",

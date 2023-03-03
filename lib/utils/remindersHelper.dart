@@ -7,6 +7,47 @@ import '../widgets/dialog.dart';
 class RemindersHelpers {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
 
+  Future deleteReminder(BuildContext context, String docID) async {
+    try {
+      String userID = await Profile().getUserID();
+      DocumentSnapshot snapshot =
+          await users.doc(userID).collection("reminders").doc(docID).get();
+      await users.doc(userID).collection("reminders").doc(docID).delete();
+      if (snapshot.exists) {
+        if (context.mounted) {
+          dialog(
+            context,
+            "Delete Successful",
+          );
+        }
+      } else {
+        if (context.mounted) {
+          dialog(
+            context,
+            "You can only delete your own items",
+          );
+        }
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
+
+  Future deleteBill(BuildContext context, String docID) async {
+    try {
+      String userID = await Profile().getUserID();
+      await users.doc(userID).collection("bills").doc(docID).delete();
+      if (context.mounted) {
+        dialog(
+          context,
+          "Delete Successful",
+        );
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
+
   Future addReminder(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("reminders").add(input);
   }
@@ -35,6 +76,7 @@ class RemindersHelpers {
 
   Future getBills(BuildContext context) async {
     try {
+      String currID = await Profile().getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
       QuerySnapshot usersQuerySnapshot = await usersRef.get();
@@ -51,6 +93,7 @@ class RemindersHelpers {
           billData['fullName'] = fullName;
           billData['userID'] = userId;
           billData['billID'] = billDoc.id;
+          billData['currentID'] = currID;
           billsList.add(billData);
         }
         billsMap[userId] = billsList;
@@ -67,6 +110,7 @@ class RemindersHelpers {
 
   Future getReminders(BuildContext context) async {
     try {
+      String currID = await Profile().getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
       QuerySnapshot usersQuerySnapshot = await usersRef.get();
@@ -84,6 +128,7 @@ class RemindersHelpers {
           reminderData['fullName'] = fullName;
           reminderData['userID'] = userId;
           reminderData['reminderID'] = reminderDoc.id;
+          reminderData['currentID'] = currID;
           remindersList.add(reminderData);
         }
         remindersMap[userId] = remindersList;

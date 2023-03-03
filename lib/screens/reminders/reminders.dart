@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../../widgets/home/homeCard.dart';
 
 class Reminders extends StatelessWidget {
-  const Reminders({super.key});
+  final VoidCallback refresh;
+  const Reminders({super.key, required this.refresh});
 
   @override
   Widget build(BuildContext context) {
@@ -15,19 +16,53 @@ class Reminders extends StatelessWidget {
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               // Build a list of HomeCard widgets using the data from the snapshot
-              List<HomeCard> homeCards = [];
+              List<Widget> homeCards = [];
               snapshot.data.forEach((userId, reminders) {
                 reminders.forEach((reminder) {
                   homeCards.add(
-                    HomeCard(
-                      shoppingList: false,
-                      title: reminder['item name'],
-                      deadline: reminder['date due'],
-                      user: reminder['fullName'],
-                      uid: reminder['userID'],
-                      initCompleted: reminder['completed'],
-                      reminderId: reminder['reminderID'],
-                      extra: "",
+                    Dismissible(
+                      key: Key(reminder['item name']),
+                      direction: reminder['userID'] == reminder['currentID']
+                          ? DismissDirection.endToStart
+                          : DismissDirection.none,
+                      onDismissed: (direction) {
+                        RemindersHelpers().deleteReminder(
+                          context,
+                          reminder['reminderID'],
+                        );
+                        refresh();
+                      },
+                      background: Container(
+                        color: Colors.red,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.delete, color: Colors.white),
+                            SizedBox(width: 16),
+                          ],
+                        ),
+                      ),
+                      secondaryBackground: Container(
+                        color: Colors.red,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.delete, color: Colors.white),
+                            SizedBox(width: 16),
+                          ],
+                        ),
+                      ),
+                      child: HomeCard(
+                        home: false,
+                        shoppingList: false,
+                        title: reminder['item name'],
+                        deadline: reminder['date due'],
+                        user: reminder['fullName'],
+                        uid: reminder['userID'],
+                        initCompleted: reminder['completed'],
+                        reminderId: reminder['reminderID'],
+                        extra: "",
+                      ),
                     ),
                   );
                 });
