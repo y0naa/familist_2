@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/home/homePage.dart';
@@ -5,12 +7,11 @@ import 'package:familist_2/screens/profile/profilePage.dart';
 import 'package:familist_2/screens/reminders/remindersPage.dart';
 import 'package:familist_2/screens/schedule/schedulePage.dart';
 import 'package:familist_2/screens/shopping/shoppingPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class SuperPage extends StatefulWidget {
-  const SuperPage({super.key});
+  final int? page;
+  const SuperPage({super.key, this.page});
 
   @override
   State<SuperPage> createState() => _SuperPageState();
@@ -25,6 +26,13 @@ class _SuperPageState extends State<SuperPage> {
     const SchedulePage(),
     const ProfilePage()
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.page == null ? null : _activePages = widget.page!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +40,7 @@ class _SuperPageState extends State<SuperPage> {
       // change this
       // nav bar
       bottomNavigationBar: CurvedNavigationBar(
+        index: widget.page ?? 0,
         animationDuration: const Duration(milliseconds: 300),
         backgroundColor: bgColor,
         color: pColor,

@@ -12,9 +12,7 @@ class ScheduleHelper {
     DocumentSnapshot documentSnapshot = await users.doc(uid).get();
     if (documentSnapshot.exists) {
       String fullName = documentSnapshot.get("full name");
-      print("Full name: $fullName");
       index = items.indexOf(fullName);
-      print("Index: $index");
       return index;
     }
     return index;
@@ -68,7 +66,7 @@ class ScheduleHelper {
       List<Future<DocumentSnapshot>> futures = [];
       for (QueryDocumentSnapshot document in snapshot.docs) {
         final documentPath = document.reference.path;
-        if (documentPath != null && documentPath.isNotEmpty) {
+        if (documentPath.isNotEmpty) {
           futures.add(document.reference.get());
         }
       }
@@ -105,7 +103,7 @@ class ScheduleHelper {
       List<Future<DocumentSnapshot>> futures = [];
       for (QueryDocumentSnapshot document in snapshot.docs) {
         final documentPath = document.reference.path;
-        if (documentPath != null && documentPath.isNotEmpty) {
+        if (documentPath.isNotEmpty) {
           futures.add(document.reference.get());
         }
       }

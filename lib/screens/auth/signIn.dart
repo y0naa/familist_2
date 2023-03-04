@@ -248,13 +248,18 @@ class _SignInState extends State<SignIn> {
 
                             TextButton(
                               onPressed: () async {
-                                setState(() {
-                                  isLoading = true;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                }
+
                                 await signIn();
-                                setState(() {
-                                  isLoading = false;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                }
                               },
                               style: ButtonStyle(
                                 backgroundColor:

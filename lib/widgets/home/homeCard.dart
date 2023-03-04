@@ -1,6 +1,7 @@
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeCard extends StatefulWidget {
@@ -13,6 +14,7 @@ class HomeCard extends StatefulWidget {
   final String? user;
   final String? uid;
   final String? reminderId;
+  final Function()? refresh;
   const HomeCard(
       {super.key,
       required this.title,
@@ -23,7 +25,8 @@ class HomeCard extends StatefulWidget {
       this.uid,
       this.reminderId,
       this.initCompleted,
-      required this.home});
+      required this.home,
+      this.refresh});
 
   @override
   State<HomeCard> createState() => _HomeCardState();
@@ -41,7 +44,6 @@ class _HomeCardState extends State<HomeCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _flag = widget.initCompleted ?? false;
   }
@@ -60,6 +62,9 @@ class _HomeCardState extends State<HomeCard> {
                   _flag = !_flag;
                 });
                 await updateCompleted();
+                if (context.mounted) {
+                  GoRouter.of(context).pushReplacement("/reminders");
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

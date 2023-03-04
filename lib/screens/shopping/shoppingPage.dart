@@ -1,11 +1,17 @@
+// ignore_for_file: file_names
 import 'package:familist_2/constants.dart';
+import 'package:familist_2/screens/shopping/shoppingHelper.dart';
 import 'package:familist_2/widgets/shopping/category.dart';
 import 'package:familist_2/widgets/shopping/shoppingItem.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../utils/profile.dart';
+import '../../widgets/dialog.dart';
 
 class ShoppingPage extends StatefulWidget {
   const ShoppingPage({super.key});
@@ -15,8 +21,58 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
+  // variables
+  String uid = "";
   int _index = 0; // for complete and incomplete state
-  int _category = 0; //index for category
+  int _category = -1;
+  double total = 0;
+
+  // text controllers
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  String _categoryChosen = "N/A";
+
+  // Methods
+  void getUid() async {
+    uid = await Profile().getUserID();
+  }
+
+  Future addShopping() async {
+    try {
+      ShoppingHelper().addShoppingItem({
+        "item name": _itemNameController.text.trim(),
+        "price": double.tryParse(_priceController.text.trim()),
+        "category": _categoryChosen,
+        "completed": false,
+      }, uid);
+      if (context.mounted) {
+        dialog(
+          context,
+          "Saved Successfully",
+        );
+      }
+    } catch (e) {
+      dialog(context, e.toString());
+    }
+  }
+
+  int getCategoryNumber(String category) {
+    if (category == "Food") {
+      return 0;
+    } else if (category == "Beauty") {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+
+  // built-in method
+  @override
+  void initState() {
+    super.initState();
+    getUid();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,7 +209,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                           // Price total
                           Text(
-                            "[Rp. 5.000.000.000]",
+                            "Rp. $total",
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               color: sColor,
@@ -170,33 +226,92 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 24, right: 24),
-                      child:
-                          // separate widget
-                          Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          ShoppingItem(
-                            text: "Fiesta Chicken Nuggets",
-                            price: "50.000",
-                            category: 0,
-                          ),
-                          ShoppingItem(
-                            text: "Contoh",
-                            price: "50.000",
-                            category: 0,
-                          ),
-                          ShoppingItem(
-                            text: "Fiesta Chicken Nuggets",
-                            price: "50.000",
-                            category: 0,
-                          ),
-                          ShoppingItem(
-                            text: "Fiesta Chicken Nuggets",
-                            price: "50.000",
-                            category: 0,
-                          )
-                        ],
+                      child: FutureBuilder(
+                        future: ShoppingHelper().getShoppingItems(context),
+                        builder: (BuildContext context, snapshot) {
+                          if (snapshot.hasData) {
+                            total = 0;
+                            List<Widget> shoppingCards = [];
+                            List<Map<String, dynamic>> allShopping = [];
+                            List<Map<String, dynamic>> filtered = [];
+                            List<Map<String, dynamic>> completedShopping = [];
+                            List<Map<String, dynamic>> incompleteShopping = [];
+
+                            snapshot.data.forEach((userId, reminders) {
+                              allShopping.addAll(reminders);
+                            });
+
+                            // ! category filters
+                            if (_category == 0) {
+                              filtered = allShopping
+                                  .where((item) => item['category'] == 'Food')
+                                  .toList();
+                            } else if (_category == 1) {
+                              filtered = allShopping
+                                  .where((item) => item['category'] == 'Beauty')
+                                  .toList();
+                            } else if (_category == 2) {
+                              filtered = allShopping
+                                  .where((item) => item['category'] == 'Others')
+                                  .toList();
+                            } else {
+                              filtered = allShopping;
+                            }
+
+                            // ! complete and incomplete filters
+                            for (var item in filtered) {
+                              if (item["completed"]) {
+                                completedShopping.add(item);
+                              } else {
+                                incompleteShopping.add(item);
+                              }
+                            }
+
+                            if (_index == 0) {
+                              for (var item in incompleteShopping) {
+                                total = total + item["price"];
+                                shoppingCards.add(
+                                  ShoppingItem(
+                                    item: item,
+                                    refresh: () {
+                                      setState(() {});
+                                    },
+                                  ),
+                                );
+                              }
+                            } else {
+                              for (var item in completedShopping) {
+                                total = total + item["price"];
+                                shoppingCards.add(
+                                  ShoppingItem(
+                                    item: item,
+                                    refresh: () {
+                                      setState(() {});
+                                    },
+                                  ),
+                                );
+                              }
+                            }
+
+                            // * refreshing total
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              setState(() {});
+                            });
+
+                            return ListView(
+                              shrinkWrap: true,
+                              children: shoppingCards,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
                       ),
                     )
                   ],
@@ -253,6 +368,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     padding: const EdgeInsets.only(
                         left: 32, right: 32, top: 14, bottom: 32),
                     child: TextField(
+                      controller: _itemNameController,
                       decoration: InputDecoration(
                         hintText: "Input item name here",
                         filled: true,
@@ -279,6 +395,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     padding: const EdgeInsets.only(
                         left: 32, right: 32, top: 14, bottom: 32),
                     child: TextField(
+                      controller: _priceController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(15),
@@ -322,7 +440,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           tapped: _category == 0 ? true : false,
                           onTap: () {
                             setState(() {
-                              _category == 0 ? _category = -1 : _category = 0;
+                              if (_category == 0) {
+                                _categoryChosen = "Food";
+                                _category = -1;
+                              } else {
+                                _category = 0;
+                              }
                             });
                           },
                         ),
@@ -331,7 +454,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           tapped: _category == 1 ? true : false,
                           onTap: () {
                             setState(() {
-                              _category == 1 ? _category = -1 : _category = 1;
+                              if (_category == 1) {
+                                _categoryChosen = "Beauty";
+                                _category = -1;
+                              } else {
+                                _category = 1;
+                              }
                             });
                           },
                         ),
@@ -340,7 +468,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           tapped: _category == 2 ? true : false,
                           onTap: () {
                             setState(() {
-                              _category == 2 ? _category = -1 : _category = 2;
+                              if (_category == 2) {
+                                _categoryChosen = "Others";
+                                _category = -1;
+                              } else {
+                                _category = 2;
+                              }
                             });
                           },
                         ),
@@ -359,12 +492,18 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 const Color(0xFF0A369D).withOpacity(0.8),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              await addShopping();
+                              if (mounted) {
+                                GoRouter.of(context)
+                                    .pushReplacement("/shopping");
+                              }
+                            },
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(top: 16, bottom: 16),
                               child: Text(
-                                "Done",
+                                "Save",
                                 style: GoogleFonts.inter(
                                     fontSize: 18,
                                     color: Colors.white,

@@ -1,12 +1,19 @@
 import 'package:familist_2/widgets/reminders/bill.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../../utils/remindersHelper.dart';
 
-class Bills extends StatelessWidget {
+class Bills extends StatefulWidget {
   final VoidCallback refresh;
   const Bills({super.key, required this.refresh});
 
+  @override
+  State<Bills> createState() => _BillsState();
+}
+
+class _BillsState extends State<Bills> {
+  @override
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,29 +22,30 @@ class Bills extends StatelessWidget {
           future: RemindersHelpers().getBills(context),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
-              List<Bill> homeCards = [];
+              List<Bill> billCards = [];
+              List<Map<String, dynamic>> allBills = [];
               snapshot.data.forEach((userId, bills) {
-                bills.forEach((bill) {
-                  homeCards.add(
-                    Bill(
-                      canDelete:
-                          bill['userID'] == bill['currentID'] ? true : false,
-                      user: bill["fullName"],
-                      repeated: bill["repeated in"],
-                      text: bill["item name"],
-                      price: bill["price"],
-                      uid: bill["userID"],
-                      billId: bill["billID"],
-                      initCompleted: bill["completed"],
-                      refresh: refresh,
-                    ),
-                  );
-                });
+                allBills.addAll(bills);
               });
+              allBills
+                  .sort((a, b) => a['repeated in'].compareTo(b['repeated in']));
+
+              for (var bill in allBills) {
+                billCards.add(
+                  Bill(
+                    canDelete:
+                        bill['userID'] == bill['currentID'] ? true : false,
+                    map: bill,
+                    refresh: () {
+                      setState(() {});
+                    },
+                  ),
+                );
+              }
 
               return ListView(
                 shrinkWrap: true,
-                children: homeCards,
+                children: billCards,
               );
             } else if (snapshot.hasError) {
               return Center(

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,8 @@ class RemindersHelpers {
       String userID = await Profile().getUserID();
       DocumentSnapshot snapshot =
           await users.doc(userID).collection("reminders").doc(docID).get();
-      await users.doc(userID).collection("reminders").doc(docID).delete();
       if (snapshot.exists) {
+        await users.doc(userID).collection("reminders").doc(docID).delete();
         if (context.mounted) {
           dialog(
             context,
@@ -57,7 +59,6 @@ class RemindersHelpers {
   }
 
   Future updateReminder(String uid, String reminderId, bool toggle) async {
-    print("thiis workspace");
     await users
         .doc(uid)
         .collection("reminders")
@@ -66,7 +67,6 @@ class RemindersHelpers {
   }
 
   Future updateBills(String uid, String billId, bool toggle) async {
-    print("bill update");
     await users
         .doc(uid)
         .collection("bills")
@@ -98,7 +98,6 @@ class RemindersHelpers {
         }
         billsMap[userId] = billsList;
       }
-      print(billsMap);
       return billsMap;
     } catch (e) {
       dialog(
@@ -133,7 +132,6 @@ class RemindersHelpers {
         }
         remindersMap[userId] = remindersList;
       }
-      print(remindersMap);
       return remindersMap;
     } catch (e) {
       dialog(

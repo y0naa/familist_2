@@ -1,11 +1,11 @@
+// ignore_for_file: file_names
+
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/reminders/bills.dart';
 import 'package:familist_2/screens/reminders/reminders.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:familist_2/widgets/tagButton.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -22,9 +22,20 @@ class RemindersPage extends StatefulWidget {
 
 class _RemindersPageState extends State<RemindersPage> {
   // Variables
-  bool _loading = false;
+  bool isCardSet = false;
   int _index = 0;
   String uid = "";
+  Map<String, dynamic> topCard = {};
+
+  void getTopCardDetails(Map<String, dynamic> card) {
+    // to break infintie loop of setState
+    if (topCard.isEmpty) {
+      isCardSet = false;
+    } else {
+      isCardSet = true;
+    }
+    topCard = card;
+  }
 
   // text controllers
   DateTime date = DateTime.now();
@@ -58,7 +69,6 @@ class _RemindersPageState extends State<RemindersPage> {
         "item name": _itemNameController.text.trim(),
         "price": _priceController.text.trim(),
         "repeated in": _repeatedInController.text.trim(),
-        "completed": false,
       }, uid);
       if (context.mounted) {
         dialog(
@@ -71,16 +81,24 @@ class _RemindersPageState extends State<RemindersPage> {
     }
   }
 
-  // Other Methods
+  // * Other Methods
   void getUid() async {
     uid = await Profile().getUserID();
   }
 
-  // built in methods
+  int dayDifference(String startDate) {
+    String day = startDate.substring(0, 2);
+    String month = startDate.substring(3, 5);
+    String year = startDate.substring(6, startDate.length);
+    DateTime dt = DateTime.parse("$year-$month-$day");
+    DateTime now = DateTime.now();
+    return dt.difference(now).inDays;
+  }
+
+  // * built in methods
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getUid();
   }
@@ -176,8 +194,11 @@ class _RemindersPageState extends State<RemindersPage> {
                                   // separate widget
                                   _index == 0
                                       ? Reminders(
-                                          refresh: () {
-                                            setState(() {});
+                                          callback: getTopCardDetails,
+                                          refreshParent: () {
+                                            if (!isCardSet) {
+                                              setState(() {});
+                                            }
                                           },
                                         )
                                       : Bills(
@@ -228,7 +249,7 @@ class _RemindersPageState extends State<RemindersPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Buang Sampah",
+                                      topCard["item name"] ?? "",
                                       style: GoogleFonts.inter(
                                         fontSize: 16,
                                         color: pColor,
@@ -243,7 +264,7 @@ class _RemindersPageState extends State<RemindersPage> {
                                           size: 14,
                                         ),
                                         Text(
-                                          " 13 Jan 2023",
+                                          topCard["date due"] ?? "",
                                           style: GoogleFonts.inter(
                                             fontSize: 14,
                                             color: Colors.red,
@@ -253,7 +274,7 @@ class _RemindersPageState extends State<RemindersPage> {
                                       ],
                                     ),
                                     Text(
-                                      "Jowna",
+                                      topCard["fullName"] ?? "",
                                       style: GoogleFonts.inter(
                                         fontSize: 14,
                                         color: pColor,
@@ -268,7 +289,10 @@ class _RemindersPageState extends State<RemindersPage> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "235",
+                                      topCard["date due"] != null
+                                          ? dayDifference(topCard["date due"])
+                                              .toString()
+                                          : "",
                                       style: GoogleFonts.inter(
                                         fontSize: 42,
                                         color: tColor,

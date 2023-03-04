@@ -59,6 +59,7 @@ dependencies:
   qr_code_scanner: ^1.0.1
   intl: ^0.17.0
   day_night_time_picker: ^1.2.0
+  jiffy: ^5.0.0
 
 dev_dependencies:
   flutter_test:
