@@ -60,7 +60,7 @@ class ShoppingItem extends StatelessWidget {
                   item['category'] == "Food"
                       ? "🍕 "
                       : item['category'] == "Beauty"
-                          ? "💄"
+                          ? "💄 "
                           : item['category'] == "Others"
                               ? "🎲 "
                               : "🔀 ",

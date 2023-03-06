@@ -10,23 +10,15 @@ class HomeCard extends StatefulWidget {
   final bool shoppingList;
   final bool home;
   final bool? initCompleted;
-  final String? deadline;
-  final String? user;
-  final String? uid;
-  final String? reminderId;
-  final Function()? refresh;
+  final Map? map;
   const HomeCard(
       {super.key,
       required this.title,
       required this.shoppingList,
       required this.extra,
-      this.deadline,
-      this.user,
-      this.uid,
-      this.reminderId,
       this.initCompleted,
       required this.home,
-      this.refresh});
+      this.map});
 
   @override
   State<HomeCard> createState() => _HomeCardState();
@@ -36,9 +28,11 @@ class _HomeCardState extends State<HomeCard> {
   bool _flag = false;
   bool loading = false;
   Future updateCompleted() async {
-    if (widget.uid != null && widget.reminderId != null) {
-      await RemindersHelpers()
-          .updateReminder(widget.uid!, widget.reminderId!, _flag);
+    if (widget.map != null) {
+      if (widget.map!["userID"] != null && widget.map!["reminderID"] != null) {
+        await RemindersHelpers().updateReminder(
+            widget.map!["userID"], widget.map!["reminderID"], _flag);
+      }
     }
   }
 
@@ -117,7 +111,9 @@ class _HomeCardState extends State<HomeCard> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    widget.user ?? "", // change to user
+                                    widget.map != null
+                                        ? widget.map!["fullName"] ?? ""
+                                        : "", // change to user
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: sColor,
@@ -139,7 +135,10 @@ class _HomeCardState extends State<HomeCard> {
                                               size: 14,
                                             ),
                                             Text(
-                                              widget.deadline ?? "",
+                                              widget.map != null
+                                                  ? widget.map!["date due"] ??
+                                                      ""
+                                                  : "",
                                               style: GoogleFonts.inter(
                                                 fontSize: 14,
                                                 color: Colors.red,

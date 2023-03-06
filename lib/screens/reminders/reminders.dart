@@ -80,18 +80,11 @@ class _RemindersState extends State<Reminders> {
                       ),
                     ),
                     child: HomeCard(
-                      refresh: () {
-                        setState(() {});
-                        widget.refreshParent();
-                      },
                       home: false,
                       shoppingList: false,
+                      map: reminder,
                       title: reminder['item name'],
-                      deadline: reminder['date due'],
-                      user: reminder['fullName'],
-                      uid: reminder['userID'],
                       initCompleted: reminder['completed'],
-                      reminderId: reminder['reminderID'],
                       extra: "",
                     ),
                   ),
@@ -103,9 +96,12 @@ class _RemindersState extends State<Reminders> {
                 (_) => widget.refreshParent(),
               );
 
-              return ListView(
-                shrinkWrap: true,
-                children: homeCards,
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: homeCards,
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(

@@ -5,8 +5,10 @@ import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jiffy/jiffy.dart';
 
 import '../../utils/auth.dart';
+import '../../utils/profile.dart';
 import '../../widgets/dialog.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +20,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _index = 0;
+  String _name = "";
+  String _imageUrl = "";
 
   Future<void> signOut() async {
     try {
@@ -28,6 +32,21 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       dialog(context, e.toString());
     }
+  }
+
+  void getName() async {
+    Map temp = await Profile().getUserDetails();
+    setState(() {
+      _name = temp["full name"];
+      _imageUrl = temp["imageUrl"] ?? "";
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getName();
   }
 
   @override
@@ -49,16 +68,20 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   const Text(
                     "Welcome,",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 5),
-                    child: Text(
-                      "Jowna", // changed
-                      style: GoogleFonts.inter(
-                        fontSize: 36,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
+                    child: SizedBox(
+                      width: size.width * 0.5,
+                      child: Text(
+                        _name,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
@@ -70,18 +93,18 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "[13 February 2023] ",
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          "[Monday]",
+                          Jiffy(DateTime.now()).format("EEEE[,] "),
                           style: GoogleFonts.inter(
                             fontSize: 16,
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          Jiffy(DateTime.now()).format("do MMMM yyyy"),
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -91,10 +114,23 @@ class _HomePageState extends State<HomePage> {
               ),
 
               // Avatar
-              const CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 45,
-              )
+              _imageUrl.isEmpty
+                  ? const CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 45,
+                    )
+                  : CircleAvatar(
+                      radius: 45,
+                      backgroundColor: tColor,
+                      child: ClipOval(
+                        child: Image.network(
+                          _imageUrl,
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),

@@ -24,7 +24,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isLoading = false;
-  int _index = 0;
 
   // text controllers
   final TextEditingController _nameController = TextEditingController();

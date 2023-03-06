@@ -27,8 +27,9 @@ class _BillsState extends State<Bills> {
               snapshot.data.forEach((userId, bills) {
                 allBills.addAll(bills);
               });
-              allBills
-                  .sort((a, b) => a['repeated in'].compareTo(b['repeated in']));
+              allBills.sort((a, b) => a['repeated in']
+                  .toString()
+                  .compareTo(b['repeated in'].toString()));
 
               for (var bill in allBills) {
                 billCards.add(
@@ -43,9 +44,12 @@ class _BillsState extends State<Bills> {
                 );
               }
 
-              return ListView(
-                shrinkWrap: true,
-                children: billCards,
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: billCards,
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(

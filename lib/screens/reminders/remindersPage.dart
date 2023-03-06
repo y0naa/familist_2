@@ -14,7 +14,8 @@ import '../../utils/profile.dart';
 import '../../widgets/dialog.dart';
 
 class RemindersPage extends StatefulWidget {
-  const RemindersPage({super.key});
+  final int? pageIndex;
+  const RemindersPage({super.key, this.pageIndex});
 
   @override
   State<RemindersPage> createState() => _RemindersPageState();
@@ -100,6 +101,7 @@ class _RemindersPageState extends State<RemindersPage> {
   @override
   void initState() {
     super.initState();
+    widget.pageIndex == null ? null : _index = widget.pageIndex!;
     getUid();
   }
 
@@ -556,7 +558,7 @@ class _RemindersPageState extends State<RemindersPage> {
                                       dialog(
                                         context,
                                         "Saved Successfully",
-                                        route: "/super",
+                                        route: "/bills",
                                       );
                                     }
                                   },

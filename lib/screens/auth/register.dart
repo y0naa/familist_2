@@ -75,7 +75,7 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    bool _keyboardVisible =
+    bool keyboardVisible =
         MediaQuery.of(context).viewInsets.bottom == 0 ? true : false;
     final size = MediaQuery.of(context).size;
 
@@ -352,7 +352,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
             ),
-            _keyboardVisible
+            keyboardVisible
                 ? Align(
                     alignment: const Alignment(0, -0.75),
                     child: ClipRRect(

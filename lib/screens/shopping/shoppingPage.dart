@@ -39,6 +39,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   Future addShopping() async {
     try {
+      print("cat = $_categoryChosen");
       ShoppingHelper().addShoppingItem({
         "item name": _itemNameController.text.trim(),
         "price": double.tryParse(_priceController.text.trim()),
@@ -298,9 +299,12 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               setState(() {});
                             });
 
-                            return ListView(
-                              shrinkWrap: true,
-                              children: shoppingCards,
+                            return SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.5,
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: shoppingCards,
+                              ),
                             );
                           } else if (snapshot.hasError) {
                             return Center(
@@ -439,14 +443,14 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           text: "Food",
                           tapped: _category == 0 ? true : false,
                           onTap: () {
-                            setState(() {
-                              if (_category == 0) {
-                                _categoryChosen = "Food";
-                                _category = -1;
-                              } else {
-                                _category = 0;
-                              }
-                            });
+                            debugPrint("test category ");
+                            if (_category == 0) {
+                              _category = -1;
+                            } else {
+                              _category = 0;
+                              _categoryChosen = "Food";
+                            }
+                            setState(() {});
                           },
                         ),
                         Category(
@@ -455,10 +459,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           onTap: () {
                             setState(() {
                               if (_category == 1) {
-                                _categoryChosen = "Beauty";
                                 _category = -1;
                               } else {
                                 _category = 1;
+                                _categoryChosen = "Beauty";
                               }
                             });
                           },
@@ -469,10 +473,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
                           onTap: () {
                             setState(() {
                               if (_category == 2) {
-                                _categoryChosen = "Others";
                                 _category = -1;
                               } else {
                                 _category = 2;
+                                _categoryChosen = "Others";
                               }
                             });
                           },

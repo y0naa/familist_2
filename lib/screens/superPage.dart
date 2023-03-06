@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 
 class SuperPage extends StatefulWidget {
   final int? page;
-  const SuperPage({super.key, this.page});
+  final int? subPage;
+  const SuperPage({super.key, this.page, this.subPage});
 
   @override
   State<SuperPage> createState() => _SuperPageState();
@@ -31,6 +32,13 @@ class _SuperPageState extends State<SuperPage> {
   void initState() {
     super.initState();
     widget.page == null ? null : _activePages = widget.page!;
+    widget.subPage == null
+        ? null
+        : _pages[2] = RemindersPage(
+            pageIndex: widget.subPage,
+          );
+
+    print("routing ${widget.subPage}");
   }
 
   @override

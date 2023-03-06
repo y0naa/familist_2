@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../widgets/dialog.dart';
 
@@ -39,11 +40,11 @@ class RemindersHelpers {
     try {
       String userID = await Profile().getUserID();
       await users.doc(userID).collection("bills").doc(docID).delete();
+
       if (context.mounted) {
-        dialog(
-          context,
-          "Delete Successful",
-        );
+        GoRouter.of(context).pushReplacement("/bills");
+        dialog(context, "Delete Successful", route: "/bills");
+        // print("test result  ");
       }
     } catch (e) {
       dialog(context, e.toString());
