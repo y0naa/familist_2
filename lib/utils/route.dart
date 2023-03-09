@@ -55,6 +55,12 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/profile',
+      builder: (context, state) => const SuperPage(
+        page: 4,
+      ),
+    ),
+    GoRoute(
         path: '/addMember/:fuid',
         name: "addMember",
         builder: (context, state) {

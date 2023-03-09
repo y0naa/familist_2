@@ -86,7 +86,7 @@ class Event extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    "Jowna",
+                    "Jowna Alynsah",
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       color: sColor,

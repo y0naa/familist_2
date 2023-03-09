@@ -52,8 +52,8 @@ class _ProfileItemState extends State<ProfileItem> {
 
   Future getData() async {
     // familiesIDs = await Profile().getFamiliesId();
+    userID = await Profile().getUserID();
     userIDs = await Profile().getUsersId();
-
     fuid = await Profile().getFamilyID();
   }
 
@@ -64,6 +64,17 @@ class _ProfileItemState extends State<ProfileItem> {
       );
     } on FirebaseException catch (e) {
       dialog(context, e.message.toString());
+    }
+  }
+
+  Future leaveFamily() async {
+    try {
+      await Profile().updateData(userID, {
+        'fuid': "",
+      });
+      widget.refresh();
+    } catch (e) {
+      dialog(context, e.toString());
     }
   }
 
@@ -106,9 +117,7 @@ class _ProfileItemState extends State<ProfileItem> {
 
   @override
   void initState() {
-    // TODO: implement initState
     getData();
-
     _focus.addListener(_onFocusChanged);
     _focus2.addListener(_onFocusChanged2);
     super.initState();
@@ -199,7 +208,8 @@ class _ProfileItemState extends State<ProfileItem> {
                                 padding: const EdgeInsets.only(top: 24),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Row(
                                       children: [
@@ -367,16 +377,41 @@ class _ProfileItemState extends State<ProfileItem> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
+                                    const Padding(
+                                      padding: EdgeInsets.only(
                                           left: 20,
                                           right: 24,
                                           top: 14,
-                                          bottom: 32),
+                                          bottom: 14),
                                       child: Column(
-                                        children: const [FamilyBuilder()],
+                                        children: [FamilyBuilder()],
                                       ),
                                     ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await leaveFamily();
+                                        if (context.mounted) {
+                                          GoRouter.of(context)
+                                              .pushReplacement("/profile");
+                                        }
+                                      },
+                                      style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll<Color>(
+                                                Color(0xFFD26F6F)),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Text(
+                                          "Leave Family",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),

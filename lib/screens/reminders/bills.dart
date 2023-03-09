@@ -1,6 +1,5 @@
 import 'package:familist_2/widgets/reminders/bill.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../../utils/remindersHelper.dart';
 

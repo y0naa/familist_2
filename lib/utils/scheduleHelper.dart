@@ -78,7 +78,8 @@ class ScheduleHelper {
         if (document.exists) {
           Map<String, dynamic> eventData =
               document.data() as Map<String, dynamic>;
-          eventData['docID'] = snapshot.docs[i].id; // Add the document ID
+          eventData['docID'] = snapshot.docs[i].id;
+          //eventData['userID'] = snapshot.docs[i].id;// Add the document ID
           events.add(eventData);
         }
       }

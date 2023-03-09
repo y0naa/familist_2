@@ -211,13 +211,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                TextButton(
-                    onPressed: () => NotificationApi.showNotification(
-                          title: "tes",
-                          body: "this is body",
-                          payload: "this is payload",
-                        ),
-                    child: const Text("notif")),
               ],
             ),
           ),

@@ -37,7 +37,6 @@ class _SuperPageState extends State<SuperPage> {
         : _pages[2] = RemindersPage(
             pageIndex: widget.subPage,
           );
-
     print("routing ${widget.subPage}");
   }
 

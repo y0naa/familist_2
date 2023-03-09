@@ -6,6 +6,7 @@ import 'package:familist_2/screens/reminders/reminders.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -44,6 +45,7 @@ class _RemindersPageState extends State<RemindersPage> {
   final TextEditingController _dateDueController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _repeatedInController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
 
   // Futures
   Future addReminder() async {
@@ -69,7 +71,8 @@ class _RemindersPageState extends State<RemindersPage> {
       RemindersHelpers().addBill({
         "item name": _itemNameController.text.trim(),
         "price": _priceController.text.trim(),
-        "repeated in": _repeatedInController.text.trim(),
+        "start date": _startDateController.text.trim(),
+        "repeated in": int.tryParse(_repeatedInController.text.trim()) ?? -1,
       }, uid);
       if (context.mounted) {
         dialog(
@@ -482,6 +485,64 @@ class _RemindersPageState extends State<RemindersPage> {
                             ),
                           ),
                   ),
+                  _index == 1
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 32),
+                              child: Text(
+                                "Start date",
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: sColor,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 32, right: 32, top: 14, bottom: 32),
+                              child: TextField(
+                                controller: _startDateController,
+                                readOnly: true,
+                                onTap: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(99999999),
+                                  );
+                                  if (pickedDate != null) {
+                                    _startDateController.text =
+                                        DateFormat("dd/MM/yyyy")
+                                            .format(pickedDate);
+                                    date = pickedDate;
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  prefixIcon: const Padding(
+                                    padding: EdgeInsets.all(15),
+                                    child: Icon(
+                                      Icons.calendar_month,
+                                      color: sColor,
+                                    ),
+                                  ),
+                                  hintText: "dd/mm/yyyy",
+                                  filled: true,
+                                  fillColor:
+                                      Colors.grey.shade100.withOpacity(0.5),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey.shade100,
+                                        width: 0.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
                   _index == 1
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

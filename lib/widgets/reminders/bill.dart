@@ -1,7 +1,8 @@
 import 'package:familist_2/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import '../../utils/currency.dart';
 import '../../utils/remindersHelper.dart';
 
@@ -27,6 +28,28 @@ class Bill extends StatefulWidget {
 class _BillState extends State<Bill> {
   bool loading = false;
 
+  DateTime dateDue() {
+    if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
+      int repeated = widget.map["repeated in"];
+      DateTime startDate = DateTime.parse(
+          Jiffy(widget.map['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+      DateTime endDate = startDate.add(Duration(days: repeated));
+      return endDate;
+    } else {
+      return DateTime.parse(
+          Jiffy(widget.map['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+    }
+  }
+
+  int calculateDaysLeft() {
+    if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
+      DateTime dd = dateDue();
+
+      return dd.difference(DateTime.now()).inDays;
+    }
+    return -1;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +64,41 @@ class _BillState extends State<Bill> {
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Row(children: [
-              Text(
-                "❗",
-                style: GoogleFonts.inter(fontSize: 48),
+              Column(
+                children: [
+                  Text(
+                    calculateDaysLeft().toString(),
+                    style: GoogleFonts.inter(
+                      fontSize: 42,
+                      color: tColor,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Text(
+                    "Day(s) left",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: tColor,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.alarm,
+                        color: Colors.red,
+                        size: 14,
+                      ),
+                      Text(
+                        DateFormat('dd/MM/yyyy').format(dateDue()).toString(),
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const SizedBox(
                 width: 10,
@@ -59,43 +114,48 @@ class _BillState extends State<Bill> {
                         color: sColor,
                         fontWeight: FontWeight.w600),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Repeated every ",
-                          style: GoogleFonts.inter(
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "From: ",
+                        style: GoogleFonts.inter(
                             fontSize: 14,
                             color: sColor,
-                          ),
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        widget.map['start date'],
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: sColor,
                         ),
-                        Text(
-                          widget.map['repeated in'].toString(),
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: sColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          " days",
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: sColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 5),
                     child: Text(
-                      widget.map['fullName'],
+                      "Every: ${widget.map['repeated in']} day(s)",
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: sColor,
+                        color: tColor,
                       ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      widget.map['fullName'],
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: tColor,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -107,7 +167,8 @@ class _BillState extends State<Bill> {
                   children: [
                     widget.canDelete
                         ? SizedBox(
-                            height: 30,
+                            height: 20,
+                            width: 25,
                             child: IconButton(
                               onPressed: () async {
                                 await RemindersHelpers().deleteBill(
@@ -123,7 +184,7 @@ class _BillState extends State<Bill> {
                           )
                         : Container(),
                     const SizedBox(
-                      height: 20,
+                      height: 30,
                     ),
                     Text(
                       Currency.convertToIdr(
