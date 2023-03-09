@@ -1,6 +1,7 @@
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/Home/homeShopping.dart';
 import 'package:familist_2/screens/home/homeReminders.dart';
+import 'package:familist_2/utils/notif.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -210,7 +211,13 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                // TextButton(onPressed: signOut, child: Text("sign out")),
+                TextButton(
+                    onPressed: () => NotificationApi.showNotification(
+                          title: "tes",
+                          body: "this is body",
+                          payload: "this is payload",
+                        ),
+                    child: const Text("notif")),
               ],
             ),
           ),

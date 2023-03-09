@@ -1,8 +1,11 @@
 import 'package:familist_2/screens/reminders/remindersPage.dart';
+import 'package:familist_2/utils/notif.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../widgets/home/homeCard.dart';
 
@@ -47,6 +50,21 @@ class _RemindersState extends State<Reminders> {
               });
 
               for (var reminder in allReminders) {
+                DateTime remindersDate = DateTime.parse(
+                    Jiffy(reminder['date due'], "dd/MM/yyyy")
+                        .format("yyyy-MM-dd"));
+                if (remindersDate.isAfter(tz.TZDateTime.now(tz.local))) {
+                  print('hello');
+                  print(tz.TZDateTime.from(remindersDate, tz.local));
+                  print(tz.TZDateTime.now(tz.local));
+                  NotificationApi.showScheduledNotification(
+                      id: reminder['reminderID'],
+                      date: tz.TZDateTime.from(remindersDate, tz.local),
+                      channelID: "tes",
+                      title: "Reminder",
+                      body: reminder['item name']);
+                }
+
                 homeCards.add(
                   Dismissible(
                     key: Key(reminder['item name']),

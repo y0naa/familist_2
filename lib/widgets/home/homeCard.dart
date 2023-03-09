@@ -1,4 +1,5 @@
 import 'package:familist_2/constants.dart';
+import 'package:familist_2/utils/currency.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -121,7 +122,7 @@ class _HomeCardState extends State<HomeCard> {
                                   ),
                                   widget.shoppingList
                                       ? Text(
-                                          "Rp. ${widget.extra}",
+                                          Currency.convertToIdr(widget.extra),
                                           style: GoogleFonts.inter(
                                             fontSize: 14,
                                             color: sColor,

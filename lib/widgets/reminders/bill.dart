@@ -2,6 +2,7 @@ import 'package:familist_2/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/currency.dart';
 import '../../utils/remindersHelper.dart';
 
 // ignore: todo
@@ -125,7 +126,8 @@ class _BillState extends State<Bill> {
                       height: 20,
                     ),
                     Text(
-                      "Rp. ${widget.map['price']}",
+                      Currency.convertToIdr(
+                          double.tryParse(widget.map['price'].toString()) ?? 0),
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         color: sColor,
