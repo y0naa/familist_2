@@ -6,7 +6,6 @@ import 'package:familist_2/screens/reminders/reminders.dart';
 import 'package:familist_2/utils/remindersHelper.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

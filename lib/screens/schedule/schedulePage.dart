@@ -27,7 +27,7 @@ class _SchedulePageState extends State<SchedulePage> {
   List<String> items = ["Loading..."];
   Map<String, dynamic> members = {};
   String uid = "";
-  String userid = "Z7ainCd7YVWtXqUUmeLU";
+  String userid = "xxxxxxxxxx"; // dummy data first
   CollectionReference users = FirebaseFirestore.instance.collection("users");
 
   // text controllers - schedule
@@ -43,6 +43,8 @@ class _SchedulePageState extends State<SchedulePage> {
   // Methods
 
   Future getMembers() async {
+    print("get members");
+
     String fuid = await Profile().getFamilyID();
     QuerySnapshot snapshot = await users.where("fuid", isEqualTo: fuid).get();
     List<String> memberNames = [];
@@ -102,7 +104,7 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   void getUid() async {
-    await getMembers();
+    userid = await Profile().getUserID();
     uid = await Profile().getUserID();
   }
 
@@ -158,31 +160,33 @@ class _SchedulePageState extends State<SchedulePage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 24),
                       child: FutureBuilder(
-                          future: getMembers(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              final items = snapshot.data as List<String?>;
-                              final itemValues = items
-                                  .where((item) => item != null)
-                                  .map((item) => item!)
-                                  .toList();
-                              return Dropdown(
-                                isFuture: true,
-                                onChanged: (value) {
-                                  if (mounted) {
-                                    setState(() {
-                                      userid = members[value];
-                                    });
-                                  }
-                                },
-                                items: itemValues,
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text("Error: ${snapshot.error}");
-                            } else {
-                              return Text("Loading...");
-                            }
-                          }),
+                        future: getMembers(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final items = snapshot.data as List<String?>;
+                            final itemValues = items
+                                .where((item) => item != null)
+                                .map((item) => item!)
+                                .toList();
+                            return Dropdown(
+                              isFuture: true,
+                              onChanged: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    userid = members[value];
+                                    print("user id dd: $userid");
+                                  });
+                                }
+                              },
+                              items: itemValues,
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else {
+                            return const Text("Loading...");
+                          }
+                        },
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 24),
@@ -193,6 +197,7 @@ class _SchedulePageState extends State<SchedulePage> {
                             tapped: _index == 0 ? true : false,
                             text: "Schedule",
                             onTap: () {
+                              print("user id schedule: $userid");
                               if (mounted) {
                                 setState(() {
                                   _index = 0;
@@ -207,6 +212,7 @@ class _SchedulePageState extends State<SchedulePage> {
                             tapped: _index == 1 ? true : false,
                             text: "Events",
                             onTap: () {
+                              print("user id events: $userid");
                               if (mounted) {
                                 setState(() {
                                   _index = 1;
@@ -229,7 +235,7 @@ class _SchedulePageState extends State<SchedulePage> {
                               userID: userid,
                             ),
                           )
-                        : const EventsPage(),
+                        : EventsPage(userId: userid),
                   ],
                 ),
               ),
@@ -358,6 +364,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                   isFuture: false,
                                   onChanged: (value) {
                                     print("day picked: $value");
+
                                     daySchedule = value;
                                   },
                                   items: const [

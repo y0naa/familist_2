@@ -41,6 +41,24 @@ class Profile {
     return familyName;
   }
 
+  Future getCurrentName() async {
+    String name = "";
+    await FirebaseFirestore.instance
+        .collection("users")
+        .where(
+          "email",
+          isEqualTo: Auth().currentUser!.email!.trim(),
+        )
+        .get()
+        .then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        name = snapshot.docs.first.get("full name");
+      }
+    });
+
+    return name;
+  }
+
   Future getUserID() async {
     String id = "";
     await FirebaseFirestore.instance

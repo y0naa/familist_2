@@ -229,7 +229,7 @@ class _SchedulerState extends State<Scheduler> {
                               final schedules = snapshot.data!;
                               final filtered = filterMap(schedules);
                               return SingleChildScrollView(
-                                child: filtered.length > 0
+                                child: filtered.isNotEmpty
                                     ? ListView.builder(
                                         shrinkWrap: true,
                                         padding: EdgeInsets.zero,

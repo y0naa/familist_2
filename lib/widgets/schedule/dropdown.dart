@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
+import '../../utils/profile.dart';
 
 class Dropdown extends StatefulWidget {
   final List<String> items;
@@ -23,11 +24,19 @@ class Dropdown extends StatefulWidget {
 
 class _DropdownState extends State<Dropdown> {
   String _selected = "";
+  String name = "";
+
+  void getName() async {
+    name = await Profile().getCurrentName();
+  }
 
   @override
   void initState() {
     if (!widget.isFuture) {
       _selected = widget.items[0];
+    } else {
+      getName();
+      _selected = name;
     }
     super.initState();
   }

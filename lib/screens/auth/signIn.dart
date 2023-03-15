@@ -98,7 +98,7 @@ class _SignInState extends State<SignIn> {
             ),
           ),
           Align(
-            alignment: const Alignment(0, -0.25),
+            alignment: const Alignment(0, 0.05),
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -107,7 +107,7 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               width: size.width * 0.9,
-              height: size.height * 0.6,
+              height: size.height * 0.7,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
@@ -123,6 +123,33 @@ class _SignInState extends State<SignIn> {
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            Center(
+                              child: Text(
+                                "Reminders & Schedule For",
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  color: sColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                "Families",
+                                style: GoogleFonts.inter(
+                                  fontSize: 24,
+                                  color: sColor,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(
+                                color: sColor,
+                              ),
+                            ),
                             Center(
                               child: Text(
                                 "Sign In",

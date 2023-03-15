@@ -56,35 +56,33 @@ class ScheduleHelper {
     await users.doc(id).collection("events").add(input);
   }
 
-  Future getEvents(BuildContext context) async {
+  Future getEvents(BuildContext context, String userId) async {
     try {
-      String userID = await Profile().getUserID();
-      List<Map<String, dynamic>> events = [];
-      QuerySnapshot snapshot =
-          await users.doc(userID).collection("events").get();
-
-      List<Future<DocumentSnapshot>> futures = [];
-      for (QueryDocumentSnapshot document in snapshot.docs) {
-        final documentPath = document.reference.path;
-        if (documentPath.isNotEmpty) {
-          futures.add(document.reference.get());
+      String currID = await Profile().getUserID();
+      CollectionReference eventsRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('events');
+      QuerySnapshot eventsQuerySnapshot = await eventsRef.get();
+      String fullName = '';
+      List<Map<String, dynamic>> eventsList = [];
+      for (QueryDocumentSnapshot eventDoc in eventsQuerySnapshot.docs) {
+        if (fullName.isEmpty) {
+          DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
+          fullName = userDocSnapshot.get('full name');
         }
+        Map<String, dynamic> eventData =
+            eventDoc.data() as Map<String, dynamic>;
+        eventData['fullName'] = fullName;
+        eventData['userID'] = userId;
+        eventData['eventID'] = eventDoc.id;
+        eventData['currentID'] = currID;
+        eventsList.add(eventData);
       }
-
-      List<DocumentSnapshot> documents = await Future.wait(futures);
-
-      for (int i = 0; i < documents.length; i++) {
-        DocumentSnapshot document = documents[i];
-        if (document.exists) {
-          Map<String, dynamic> eventData =
-              document.data() as Map<String, dynamic>;
-          eventData['docID'] = snapshot.docs[i].id;
-          //eventData['userID'] = snapshot.docs[i].id;// Add the document ID
-          events.add(eventData);
-        }
-      }
-
-      return events;
+      return eventsList;
     } catch (e) {
       dialog(
         context,
