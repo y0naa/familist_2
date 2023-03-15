@@ -43,7 +43,7 @@ class _ScanQRState extends State<ScanQR> {
       String id = await Profile().getUserID();
       await Profile().updateData(id, {"fuid": res});
       if (context.mounted) {
-        GoRouter.of(context).pushReplacement("/super");
+        GoRouter.of(context).pushReplacement("/profile");
       }
     } else {
       setState(() {

@@ -44,7 +44,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Future getMembers() async {
     print("get members");
-
     String fuid = await Profile().getFamilyID();
     QuerySnapshot snapshot = await users.where("fuid", isEqualTo: fuid).get();
     List<String> memberNames = [];
@@ -106,6 +105,7 @@ class _SchedulePageState extends State<SchedulePage> {
   void getUid() async {
     userid = await Profile().getUserID();
     uid = await Profile().getUserID();
+    setState(() {}); // refresh to insert value
   }
 
   @override
@@ -609,14 +609,14 @@ class _SchedulePageState extends State<SchedulePage> {
 
                                           if (context.mounted) {
                                             GoRouter.of(context)
-                                                .pushReplacement("/super");
+                                                .pushReplacement("/schedule");
                                           }
                                         }
                                       : () async {
                                           await addEvent();
                                           if (context.mounted) {
                                             GoRouter.of(context)
-                                                .pushReplacement("/super");
+                                                .pushReplacement("/schedule");
                                           }
                                         },
                                   child: Padding(

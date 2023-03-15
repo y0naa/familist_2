@@ -608,7 +608,7 @@ class _RemindersPageState extends State<RemindersPage> {
                                       dialog(
                                         context,
                                         "Saved Successfully",
-                                        route: "/super",
+                                        route: "/reminders",
                                       );
                                     }
                                   }

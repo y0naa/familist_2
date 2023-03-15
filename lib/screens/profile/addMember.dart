@@ -24,7 +24,7 @@ class _AddMemberState extends State<AddMember> {
       String id = await Profile().getUserID();
       await Profile().updateData(id, {"fuid": res});
       if (context.mounted) {
-        GoRouter.of(context).pushReplacement("/super");
+        GoRouter.of(context).pushReplacement("/profile");
       }
     } else {
       if (context.mounted) {
@@ -136,7 +136,7 @@ class _AddMemberState extends State<AddMember> {
                         ),
                       ),
                       onPressed: () =>
-                          GoRouter.of(context).pushReplacement('/super'),
+                          GoRouter.of(context).pushReplacement('/profile'),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16, bottom: 16),
                         child: Text(

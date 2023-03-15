@@ -55,6 +55,12 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/schedule',
+      builder: (context, state) => const SuperPage(
+        page: 3,
+      ),
+    ),
+    GoRoute(
       path: '/profile',
       builder: (context, state) => const SuperPage(
         page: 4,
