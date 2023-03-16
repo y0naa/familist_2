@@ -99,6 +99,7 @@ class _SchedulePageState extends State<SchedulePage> {
       dialog(context, "Data saved successfully");
     } catch (e) {
       dialog(context, e.toString());
+      print("tes")
     }
   }
 
