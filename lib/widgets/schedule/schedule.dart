@@ -10,12 +10,16 @@ class Schedule extends StatelessWidget {
   final String title;
   final String docID;
   final VoidCallback refresh;
+  final Function loading;
+  final Function notLoading;
   const Schedule(
       {super.key,
       required this.time,
       required this.title,
       required this.docID,
-      required this.refresh});
+      required this.refresh,
+      required this.loading,
+      required this.notLoading});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,9 @@ class Schedule extends StatelessWidget {
               width: 20,
               child: IconButton(
                 onPressed: () async {
+                  loading();
                   await ScheduleHelper().deleteSchedule(context, docID);
+                  notLoading();
                   refresh();
                 },
                 icon: const Icon(

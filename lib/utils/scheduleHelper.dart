@@ -52,6 +52,16 @@ class ScheduleHelper {
     await users.doc(id).collection("schedule").add(input);
   }
 
+  Future getOverlappingSchedule(
+      String id, String startTime, String endTime) async {
+    final userScheduleCollection = users.doc(id).collection("schedule");
+    final overlappingSchedules = await userScheduleCollection
+        .where('start time', isLessThan: endTime)
+        // .where('endtime', isGreaterThan: startTime)
+        .get();
+    return overlappingSchedules;
+  }
+
   Future addEvent(Map<String, dynamic> input, String id) async {
     await users.doc(id).collection("events").add(input);
   }

@@ -1,5 +1,6 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/screens/schedule/eventsPage.dart';
 import 'package:familist_2/screens/schedule/scheduleSection.dart';
@@ -29,11 +30,8 @@ class _SchedulePageState extends State<SchedulePage> {
   String uid = "";
   String userid = "xxxxxxxxxx"; // dummy data first
   CollectionReference users = FirebaseFirestore.instance.collection("users");
-
-  // text controllers - schedule
   String daySchedule = "";
   DateTime date = DateTime.now();
-  //DateTime time = DateTime.now();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
@@ -41,7 +39,6 @@ class _SchedulePageState extends State<SchedulePage> {
   final TextEditingController _timeController = TextEditingController();
 
   // Methods
-
   Future getMembers() async {
     print("get members");
     String fuid = await Profile().getFamilyID();
@@ -63,20 +60,50 @@ class _SchedulePageState extends State<SchedulePage> {
       DateTime end =
           DateTime.parse("2000-01-01 ${_endTimeController.text.trim()}:00");
       if (start.compareTo(end) < 0) {
-        ScheduleHelper().addSchedule({
-          "item name": _itemNameController.text.trim(),
-          "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
-          "start time": _startTimeController.text.trim(),
-          "end time": _endTimeController.text.trim(),
-        }, uid);
-
-        dialog(context, "Data saved successfully");
-        Navigator.of(context).pop();
+        QuerySnapshot snapshot = await ScheduleHelper().getOverlappingSchedule(
+          uid,
+          _startTimeController.text.trim(),
+          _endTimeController.text.trim(),
+        );
+        if (snapshot.docs.isNotEmpty) {
+          String day = daySchedule.trim() == "" ? "Monday" : daySchedule.trim();
+          List<Map> overlaps = [];
+          for (QueryDocumentSnapshot doc in snapshot.docs) {
+            overlaps.add(doc.data() as Map<String, dynamic>);
+          }
+          overlaps = overlaps.where((e) => e['day'] == day).toList();
+          overlaps = overlaps.where((e) {
+            DateTime st1 = DateTime.parse("2021-12-23 ${e['start time']}");
+            DateTime et1 = DateTime.parse("2021-12-23 ${e['end time']}");
+            DateTime st2 = DateTime.parse(
+                "2021-12-23 ${_startTimeController.text.trim()}");
+            DateTime et2 =
+                DateTime.parse("2021-12-23 ${_endTimeController.text.trim()}");
+            if (st1.compareTo(et2) < 0 && et1.compareTo(st2) > 0) {
+              return true;
+            }
+            return false;
+          }).toList();
+          print(overlaps);
+          if (overlaps.isEmpty) {
+            ScheduleHelper().addSchedule({
+              "item name": _itemNameController.text.trim(),
+              "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
+              "start time": _startTimeController.text.trim(),
+              "end time": _endTimeController.text.trim(),
+            }, uid);
+          } else {
+            throw Exception("Schedule overlaps");
+          }
+        }
+        if (mounted) {
+          dialog(context, "Data saved successfully", route: "/schedule");
+        }
       } else {
-        throw Exception("Start time must be before  end time");
+        throw Exception("Start time must be before end time");
       }
     } catch (e) {
-      dialog(context, e.toString());
+      dialog(context, e.toString(), route: "/schedule");
     }
   }
 
@@ -606,11 +633,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                   onPressed: _index == 0
                                       ? () async {
                                           await addSchedule();
-
-                                          if (context.mounted) {
-                                            GoRouter.of(context)
-                                                .pushReplacement("/schedule");
-                                          }
                                         }
                                       : () async {
                                           await addEvent();
