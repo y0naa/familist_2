@@ -91,7 +91,8 @@ class _ScanQRState extends State<ScanQR> {
                     : Container()),
           ),
           TextButton(
-            onPressed: () => GoRouter.of(context).pushReplacement("/addMember"),
+            onPressed: () =>
+                GoRouter.of(context).pushReplacement("/joinFamily"),
             style: const ButtonStyle(
               backgroundColor:
                   MaterialStatePropertyAll<Color>(Color(0xFFD26F6F)),

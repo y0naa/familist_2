@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class ScheduleHelper {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
-
   Future<int> checkUser(List<String> items) async {
     int index = 0;
     String uid = await Profile().getUserID();

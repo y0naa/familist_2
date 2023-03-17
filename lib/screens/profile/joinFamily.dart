@@ -6,17 +6,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
 import '../../utils/profile.dart';
 
-class AddMember extends StatefulWidget {
-  final String fuid;
-  const AddMember({super.key, required this.fuid});
+class JoinFamily extends StatefulWidget {
+  const JoinFamily({
+    super.key,
+  });
 
   @override
-  State<AddMember> createState() => _AddMemberState();
+  State<JoinFamily> createState() => _JoinFamilyState();
 }
 
-class _AddMemberState extends State<AddMember> {
+class _JoinFamilyState extends State<JoinFamily> {
   // text controllers
-  TextEditingController _inputIDController = TextEditingController();
+  final TextEditingController _inputIDController = TextEditingController();
 
   Future updateData(String res) async {
     bool checked = await Profile().doesFamilyExist(res);

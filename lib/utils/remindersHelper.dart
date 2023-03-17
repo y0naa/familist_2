@@ -179,7 +179,10 @@ class RemindersHelpers {
   }
 
   FutureBuilder<dynamic> remindersFuture(
-      BuildContext context, Function callback, Function refreshParent) {
+    BuildContext context,
+    Function callback,
+    Function refreshParent,
+  ) {
     return FutureBuilder(
       future: getReminders(context),
       builder: (BuildContext context, snapshot) {
@@ -248,9 +251,12 @@ class RemindersHelpers {
           }
           callback(allReminders[0]);
 
-          SchedulerBinding.instance.addPostFrameCallback(
-            (_) => refreshParent(),
-          );
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              refreshParent();
+              print("hello world!");
+            }
+          });
 
           return SizedBox(
             height: MediaQuery.of(context).size.height * 0.5,

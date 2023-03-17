@@ -23,6 +23,8 @@ class RemindersPage extends StatefulWidget {
 
 class _RemindersPageState extends State<RemindersPage> {
   // Variables
+  bool loading = false;
+  Widget remindersList = Container();
   bool isCardSet = false;
   int _index = 0;
   String uid = "";
@@ -85,6 +87,16 @@ class _RemindersPageState extends State<RemindersPage> {
   }
 
   // * Other Methods
+  void getRemindersList() {
+    loading = true;
+    remindersList =
+        RemindersHelpers().remindersFuture(context, getTopCardDetails, () {
+      setState(() {
+        loading = false;
+      });
+    });
+  }
+
   void getUid() async {
     uid = await Profile().getUserID();
   }
@@ -103,6 +115,8 @@ class _RemindersPageState extends State<RemindersPage> {
   @override
   void initState() {
     super.initState();
+
+    getRemindersList();
     widget.pageIndex == null ? null : _index = widget.pageIndex!;
     getUid();
   }
@@ -118,213 +132,226 @@ class _RemindersPageState extends State<RemindersPage> {
           showRemindersModal(context);
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 64),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              "Reminders",
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Expanded(
-              child: Stack(
+      body: loading
+          ? Container(
+              height: double.infinity,
+              color: bgColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Opacity(opacity: 0.0, child: remindersList),
+                  const CircularProgressIndicator(),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(top: 64),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "Reminders",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 28,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 50),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: bgColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(70),
-                            topRight: Radius.circular(70),
-                          ),
-                        ),
-                        child:
-                            // main column for white area
-                            Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // continue from card
-                            Padding(
-                              padding: EdgeInsets.only(top: size.height * 0.1),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 50),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: bgColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(70),
+                                  topRight: Radius.circular(70),
+                                ),
+                              ),
+                              child:
+                                  // main column for white area
+                                  Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TagButton(
-                                    tapped: _index == 0 ? true : false,
-                                    text: "Reminders",
-                                    onTap: () {
-                                      setState(() {
-                                        _index = 0;
-                                      });
-                                    },
+                                  // continue from card
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(top: size.height * 0.1),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TagButton(
+                                          tapped: _index == 0 ? true : false,
+                                          text: "Reminders",
+                                          onTap: () {
+                                            setState(() {
+                                              _index = 0;
+                                            });
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        TagButton(
+                                          tapped: _index == 1 ? true : false,
+                                          text: "Bills",
+                                          onTap: () {
+                                            setState(() {
+                                              _index = 1;
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
+
+                                  // show list
                                   const SizedBox(
-                                    width: 15,
+                                    height: 10,
                                   ),
-                                  TagButton(
-                                    tapped: _index == 1 ? true : false,
-                                    text: "Bills",
-                                    onTap: () {
-                                      setState(() {
-                                        _index = 1;
-                                      });
-                                    },
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 24, right: 24),
+                                    child:
+                                        // separate widget
+                                        _index == 0
+                                            ? Reminders(
+                                                list: remindersList,
+                                              )
+                                            : Bills(
+                                                refresh: () {
+                                                  setState(() {});
+                                                },
+                                              ),
                                   ),
                                 ],
                               ),
                             ),
-
-                            // show list
-                            const SizedBox(
-                              height: 10,
-                            ),
-
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 24, right: 24),
-                              child:
-                                  // separate widget
-                                  _index == 0
-                                      ? Reminders(
-                                          callback: getTopCardDetails,
-                                          refreshParent: () {
-                                            if (!isCardSet) {
-                                              setState(() {});
-                                            }
-                                          },
-                                        )
-                                      : Bills(
-                                          refresh: () {
-                                            setState(() {});
-                                          },
-                                        ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // elevated
-                  Align(
-                    alignment: const Alignment(0, -1.1),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(70),
-                          topRight: Radius.circular(70),
-                        ),
-                      ),
-                      width: size.width * 0.8,
-                      height: size.height * 0.17,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          //set border radius more than 50% of height and width to make circle
-                        ),
-                        elevation: 12,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 24),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const CircleAvatar(
-                                backgroundColor: pColor,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 32, bottom: 32),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      topCard["item name"] ?? "",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        color: pColor,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.alarm,
-                                          color: Colors.red,
-                                          size: 14,
-                                        ),
-                                        Text(
-                                          topCard["date due"] ?? "",
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      topCard["fullName"] ?? "",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        color: pColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 32, bottom: 32),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      topCard["date due"] != null
-                                          ? dayDifference(topCard["date due"])
-                                              .toString()
-                                          : "",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 42,
-                                        color: tColor,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Day(s) left",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        color: tColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
                           ),
                         ),
-                      ),
+
+                        // elevated
+                        Align(
+                          alignment: const Alignment(0, -1.1),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(70),
+                                topRight: Radius.circular(70),
+                              ),
+                            ),
+                            width: size.width * 0.8,
+                            height: size.height * 0.17,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                //set border radius more than 50% of height and width to make circle
+                              ),
+                              elevation: 12,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 24, right: 24),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const CircleAvatar(
+                                      backgroundColor: pColor,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 32, bottom: 32),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            topCard["item name"] ?? "",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              color: pColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.alarm,
+                                                color: Colors.red,
+                                                size: 14,
+                                              ),
+                                              Text(
+                                                topCard["date due"] ?? "",
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 14,
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            topCard["fullName"] ?? "",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              color: pColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 32, bottom: 32),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            topCard["date due"] != null
+                                                ? dayDifference(
+                                                        topCard["date due"])
+                                                    .toString()
+                                                : "",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 42,
+                                              color: tColor,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Day(s) left",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              color: tColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

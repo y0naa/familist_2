@@ -338,9 +338,8 @@ class _ProfileItemState extends State<ProfileItem> {
                                         TextButton(
                                           onPressed: () {
                                             print("go fuid $fuid");
-                                            GoRouter.of(context).goNamed(
-                                              "addMember",
-                                              params: {"fuid": fuid},
+                                            GoRouter.of(context).push(
+                                              "/joinFamily",
                                             );
                                           },
                                           style: ButtonStyle(
