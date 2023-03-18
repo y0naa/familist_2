@@ -17,7 +17,6 @@ import '../../utils/scheduleHelper.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
-
   @override
   State<SchedulePage> createState() => _SchedulePageState();
 }

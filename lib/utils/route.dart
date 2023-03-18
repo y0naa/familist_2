@@ -3,8 +3,6 @@ import 'package:familist_2/screens/auth/signIn.dart';
 import 'package:familist_2/screens/auth/verifyEmail.dart';
 import 'package:familist_2/screens/mainPage.dart';
 
-import 'package:familist_2/screens/reminders/remindersPage.dart';
-import 'package:familist_2/screens/shopping/shoppingPage.dart';
 import 'package:familist_2/screens/superPage.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/profile/joinFamily.dart';

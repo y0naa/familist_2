@@ -16,25 +16,28 @@ class RemindersHelpers {
 
   Future deleteReminder(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
-      DocumentSnapshot snapshot =
-          await users.doc(userID).collection("reminders").doc(docID).get();
-      if (snapshot.exists) {
-        await users.doc(userID).collection("reminders").doc(docID).delete();
-        if (context.mounted) {
-          dialog(
-            context,
-            "Delete Successful",
-          );
+      bool delete = await deleteDialog(context);
+      if (delete) {
+        String userID = await Profile().getUserID();
+        DocumentSnapshot snapshot =
+            await users.doc(userID).collection("reminders").doc(docID).get();
+        if (snapshot.exists) {
+          await users.doc(userID).collection("reminders").doc(docID).delete();
+          if (context.mounted) {
+            dialog(
+              context,
+              "Delete Successful",
+            );
+          }
+        } else {
+          if (context.mounted) {
+            dialog(
+              context,
+              "You can only delete your own items",
+            );
+          }
         }
-      } else {
-        if (context.mounted) {
-          dialog(
-            context,
-            "You can only delete your own items",
-          );
-        }
-      }
+      } else {}
     } catch (e) {
       dialog(context, e.toString());
     }
@@ -217,6 +220,9 @@ class RemindersHelpers {
                     context,
                     reminder['reminderID'],
                   );
+                  if (context.mounted) {
+                    GoRouter.of(context).pushReplacement("/reminders");
+                  }
                 },
                 background: Container(
                   color: Colors.red,
