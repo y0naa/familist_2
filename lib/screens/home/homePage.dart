@@ -37,10 +37,12 @@ class _HomePageState extends State<HomePage> {
 
   void getName() async {
     Map temp = await Profile().getUserDetails();
-    setState(() {
-      _name = temp["full name"];
-      _imageUrl = temp["imageUrl"] ?? "";
-    });
+    if (mounted) {
+      setState(() {
+        _name = temp["full name"];
+        _imageUrl = temp["imageUrl"] ?? "";
+      });
+    }
   }
 
   @override
@@ -163,9 +165,11 @@ class _HomePageState extends State<HomePage> {
                         tapped: _index == 0 ? true : false,
                         text: "Shopping List",
                         onTap: () {
-                          setState(() {
-                            _index = 0;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              _index = 0;
+                            });
+                          }
                         },
                       ),
                       const SizedBox(
@@ -175,9 +179,11 @@ class _HomePageState extends State<HomePage> {
                         tapped: _index == 1 ? true : false,
                         text: "Reminders",
                         onTap: () {
-                          setState(() {
-                            _index = 1;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              _index = 1;
+                            });
+                          }
                         },
                       ),
                     ],

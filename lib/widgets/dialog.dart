@@ -25,6 +25,32 @@ void dialog(BuildContext context, String m, {String? route}) {
   );
 }
 
+Future<bool?> confirmDismissDialog(
+    BuildContext context, Function onDismissed) async {
+  return await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Confirm"),
+        content: const Text("Are you sure you wish to delete this item?"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                onDismissed();
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Delete")),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 Future<bool> deleteDialog(BuildContext context) async {
   Completer<bool> completer = Completer<bool>();
 
@@ -32,17 +58,18 @@ Future<bool> deleteDialog(BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text("Are you sure you want to delete item?"),
+        title: const Text("Confirm"),
+        content: const Text("Are you sure you wish to delete this item?"),
         actions: <Widget>[
           TextButton(
-            child: const Text("OK"),
+            child: const Text("DELETE"),
             onPressed: () {
               Navigator.of(context).pop();
               completer.complete(true);
             },
           ),
           TextButton(
-            child: const Text("Cancel"),
+            child: const Text("CANCEl"),
             onPressed: () {
               Navigator.of(context).pop();
               completer.complete(false);

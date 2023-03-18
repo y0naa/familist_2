@@ -6,11 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
+import '../dialog.dart';
 
 class ShoppingItem extends StatelessWidget {
   final Map item;
   final Function() refresh;
-  const ShoppingItem({super.key, required this.item, required this.refresh});
+  final String route;
+  const ShoppingItem(
+      {super.key,
+      required this.item,
+      required this.refresh,
+      required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +27,15 @@ class ShoppingItem extends StatelessWidget {
 
     Future updateItem() async {
       await ShoppingHelper().toggleCompletedItem(
-          item['currentID'], item['itemID'], !item['completed']);
+          item['userID'], item['itemID'], !item['completed']);
     }
 
     return Dismissible(
-      key: Key(item['item name']),
+      key: Key(item['itemID']),
       direction: DismissDirection.horizontal,
       onDismissed: (direction) async {
         await updateItem();
-        refresh;
+        refresh();
       },
       background: Container(
         color: Colors.green,
@@ -91,38 +97,40 @@ class ShoppingItem extends StatelessWidget {
                   ],
                 ),
                 Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            await deleteItem();
-
-                            // ignore: use_build_context_synchronously
-                            GoRouter.of(context).pushReplacement("/shopping");
-                          },
-                          icon: const Icon(
-                            Icons.delete_outline_rounded,
-                            color: Colors.red,
+                  child: InkWell(
+                    onTap: () async {
+                      print("delete?");
+                      bool delete = await deleteDialog(context);
+                      if (delete) {
+                        await deleteItem();
+                        if (context.mounted) {
+                          GoRouter.of(context).pushReplacement(route);
+                        }
+                      }
+                      refresh();
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        item['currentID'] == item['userID']
+                            ? const Icon(
+                                Icons.delete_outline_rounded,
+                                color: Colors.red,
+                              )
+                            : Container(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          Currency.convertToIdr(item['price']),
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: sColor,
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        Currency.convertToIdr(item['price']),
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: sColor,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               ]),

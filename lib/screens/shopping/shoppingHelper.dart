@@ -14,6 +14,7 @@ class ShoppingHelper {
   }
 
   Future toggleCompletedItem(String uid, String itemId, bool toggle) async {
+    print("deleting from uid $uid");
     await users
         .doc(uid)
         .collection("shopping")
@@ -23,27 +24,24 @@ class ShoppingHelper {
 
   Future deleteItem(BuildContext context, String docID) async {
     try {
-      bool delete = await deleteDialog(context);
-      if (delete) {
-        String userID = await Profile().getUserID();
-        DocumentSnapshot snapshot =
-            await users.doc(userID).collection("shopping").doc(docID).get();
+      String userID = await Profile().getUserID();
+      DocumentSnapshot snapshot =
+          await users.doc(userID).collection("shopping").doc(docID).get();
 
-        if (snapshot.exists) {
-          await users.doc(userID).collection("shopping").doc(docID).delete();
-          if (context.mounted) {
-            dialog(
-              context,
-              "Delete Successful",
-            );
-          }
-        } else {
-          if (context.mounted) {
-            dialog(
-              context,
-              "You can only delete your own items",
-            );
-          }
+      if (snapshot.exists) {
+        await users.doc(userID).collection("shopping").doc(docID).delete();
+        if (context.mounted) {
+          dialog(
+            context,
+            "Delete Successful",
+          );
+        }
+      } else {
+        if (context.mounted) {
+          dialog(
+            context,
+            "You can only delete your own items",
+          );
         }
       }
     } catch (e) {

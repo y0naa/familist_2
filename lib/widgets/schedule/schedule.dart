@@ -1,4 +1,5 @@
 import 'package:familist_2/utils/scheduleHelper.dart';
+import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,10 +53,15 @@ class Schedule extends StatelessWidget {
               width: 20,
               child: IconButton(
                 onPressed: () async {
-                  loading();
-                  await ScheduleHelper().deleteSchedule(context, docID);
-                  notLoading();
-                  refresh();
+                  bool delete = await deleteDialog(context);
+                  if (delete) {
+                    loading();
+                    if (context.mounted) {
+                      await ScheduleHelper().deleteSchedule(context, docID);
+                    }
+                    notLoading();
+                    refresh();
+                  }
                 },
                 icon: const Icon(
                   Icons.delete,

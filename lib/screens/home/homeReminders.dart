@@ -1,10 +1,9 @@
-// ignore_for_file: file_names
-
-import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/home/homeCard.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
+
 import '../../utils/remindersHelper.dart';
 
 class HomeReminders extends StatefulWidget {
@@ -31,7 +30,6 @@ class _HomeRemindersState extends State<HomeReminders> {
           allReminders = allReminders
               .where((item) => item['userID'] == item['currentID'])
               .toList();
-
           allReminders.sort((a, b) {
             if (a["completed"] == b["completed"]) {
               DateTime aDateDue = DateTime.parse(
@@ -50,16 +48,12 @@ class _HomeRemindersState extends State<HomeReminders> {
                 direction: reminder['userID'] == reminder['currentID']
                     ? DismissDirection.endToStart
                     : DismissDirection.none,
-                onDismissed: (direction) async {
-                  bool delete = await deleteDialog(context);
-                  if (delete) {
-                    if (mounted) {
-                      RemindersHelpers().deleteReminder(
-                        context,
-                        reminder['reminderID'],
-                      );
-                    }
-                  }
+                onDismissed: (direction) {
+                  RemindersHelpers().deleteReminder(
+                    context,
+                    reminder['reminderID'],
+                  );
+                  GoRouter.of(context).pushReplacement("/reminders");
                 },
                 background: Container(
                   color: Colors.red,

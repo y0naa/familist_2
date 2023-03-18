@@ -1,4 +1,5 @@
 import 'package:familist_2/utils/scheduleHelper.dart';
+import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
@@ -98,9 +99,14 @@ class Event extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () async {
-                                ScheduleHelper()
-                                    .deleteEvent(context, map['eventID']);
-                                refresh();
+                                bool delete = await deleteDialog(context);
+                                if (delete) {
+                                  if (context.mounted) {
+                                    ScheduleHelper()
+                                        .deleteEvent(context, map['eventID']);
+                                    refresh();
+                                  }
+                                }
                               },
                               icon: const Icon(
                                 Icons.delete_outline_rounded,

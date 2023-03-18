@@ -129,27 +129,39 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             text: "Food",
                             tapped: _category == 0 ? true : false,
                             onTap: () {
-                              setState(() {
-                                _category == 0 ? _category = -1 : _category = 0;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _category == 0
+                                      ? _category = -1
+                                      : _category = 0;
+                                });
+                              }
                             },
                           ),
                           Category(
                             text: "Beauty",
                             tapped: _category == 1 ? true : false,
                             onTap: () {
-                              setState(() {
-                                _category == 1 ? _category = -1 : _category = 1;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _category == 1
+                                      ? _category = -1
+                                      : _category = 1;
+                                });
+                              }
                             },
                           ),
                           Category(
                             text: "Others",
                             tapped: _category == 2 ? true : false,
                             onTap: () {
-                              setState(() {
-                                _category == 2 ? _category = -1 : _category = 2;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _category == 2
+                                      ? _category = -1
+                                      : _category = 2;
+                                });
+                              }
                             },
                           ),
                         ],
@@ -166,9 +178,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             tapped: _index == 0 ? true : false,
                             text: "Incomplete",
                             onTap: () {
-                              setState(() {
-                                _index = 0;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _index = 0;
+                                });
+                              }
                             },
                           ),
                           const SizedBox(
@@ -178,9 +192,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
                             tapped: _index == 1 ? true : false,
                             text: "Completed",
                             onTap: () {
-                              setState(() {
-                                _index = 1;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  _index = 1;
+                                });
+                              }
                             },
                           )
                         ],
@@ -274,9 +290,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 total = total + item["price"];
                                 shoppingCards.add(
                                   ShoppingItem(
+                                    route: "/shopping",
                                     item: item,
                                     refresh: () {
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {
+                                          ShoppingHelper()
+                                              .getShoppingItems(context);
+                                        });
+                                      }
                                     },
                                   ),
                                 );
@@ -286,9 +308,15 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                 total = total + item["price"];
                                 shoppingCards.add(
                                   ShoppingItem(
+                                    route: "/shopping",
                                     item: item,
                                     refresh: () {
-                                      setState(() {});
+                                      if (mounted) {
+                                        setState(() {
+                                          ShoppingHelper()
+                                              .getShoppingItems(context);
+                                        });
+                                      }
                                     },
                                   ),
                                 );
@@ -297,7 +325,9 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                             // * refreshing total
                             WidgetsBinding.instance.addPostFrameCallback((_) {
-                              setState(() {});
+                              if (mounted) {
+                                setState(() {});
+                              }
                             });
 
                             return SizedBox(
@@ -451,35 +481,41 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               _category = 0;
                               _categoryChosen = "Food";
                             }
-                            setState(() {});
+                            if (mounted) {
+                              setState(() {});
+                            }
                           },
                         ),
                         Category(
                           text: "Beauty",
                           tapped: _category == 1 ? true : false,
                           onTap: () {
-                            setState(() {
-                              if (_category == 1) {
-                                _category = -1;
-                              } else {
-                                _category = 1;
-                                _categoryChosen = "Beauty";
-                              }
-                            });
+                            if (mounted) {
+                              setState(() {
+                                if (_category == 1) {
+                                  _category = -1;
+                                } else {
+                                  _category = 1;
+                                  _categoryChosen = "Beauty";
+                                }
+                              });
+                            }
                           },
                         ),
                         Category(
                           text: "Others",
                           tapped: _category == 2 ? true : false,
                           onTap: () {
-                            setState(() {
-                              if (_category == 2) {
-                                _category = -1;
-                              } else {
-                                _category = 2;
-                                _categoryChosen = "Others";
-                              }
-                            });
+                            if (mounted) {
+                              setState(() {
+                                if (_category == 2) {
+                                  _category = -1;
+                                } else {
+                                  _category = 2;
+                                  _categoryChosen = "Others";
+                                }
+                              });
+                            }
                           },
                         ),
                       ],

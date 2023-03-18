@@ -1,5 +1,7 @@
 import 'package:familist_2/constants.dart';
+import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -166,20 +168,24 @@ class _BillState extends State<Bill> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     widget.canDelete
-                        ? SizedBox(
-                            height: 20,
-                            width: 25,
-                            child: IconButton(
-                              onPressed: () async {
-                                await RemindersHelpers().deleteBill(
-                                  context,
-                                  widget.map['billID'],
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.delete_outline_rounded,
-                                color: Colors.red,
-                              ),
+                        ? IconButton(
+                            onPressed: () async {
+                              bool delete = await deleteDialog(context);
+                              if (delete) {
+                                if (context.mounted) {
+                                  await RemindersHelpers().deleteBill(
+                                    context,
+                                    widget.map['billID'],
+                                  );
+                                  // ignore: use_build_context_synchronously
+                                  GoRouter.of(context)
+                                      .pushReplacement("/bills");
+                                }
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.delete_outline_rounded,
+                              color: Colors.red,
                             ),
                           )
                         : Container(),

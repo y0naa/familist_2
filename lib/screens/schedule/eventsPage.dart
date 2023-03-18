@@ -1,4 +1,4 @@
-import 'package:familist_2/widgets/reminders/event.dart';
+import 'package:familist_2/widgets/schedule/event.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

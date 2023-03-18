@@ -28,7 +28,9 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/super',
-      builder: (context, state) => const SuperPage(),
+      builder: (context, state) => const SuperPage(
+        page: 0,
+      ),
     ),
     GoRoute(
       path: '/scanQR',

@@ -1,6 +1,5 @@
-import 'package:familist_2/utils/auth.dart';
-import 'package:familist_2/utils/profile.dart';
-import 'package:familist_2/widgets/home/homeCard.dart';
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 import '../../widgets/shopping/shoppingItem.dart';
@@ -45,6 +44,7 @@ class _HomeShoppingState extends State<HomeShopping> {
           for (var item in incompleteShopping) {
             shoppingCards.add(
               ShoppingItem(
+                route: "/super",
                 item: item,
                 refresh: () {
                   setState(() {});
@@ -56,6 +56,7 @@ class _HomeShoppingState extends State<HomeShopping> {
           for (var item in completedShopping) {
             shoppingCards.add(
               ShoppingItem(
+                route: "/super",
                 item: item,
                 refresh: () {
                   setState(() {});
