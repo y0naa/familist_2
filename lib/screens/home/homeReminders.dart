@@ -43,46 +43,13 @@ class _HomeRemindersState extends State<HomeReminders> {
 
           for (var reminder in allReminders) {
             homeCards.add(
-              Dismissible(
-                key: Key(reminder['item name']),
-                direction: reminder['userID'] == reminder['currentID']
-                    ? DismissDirection.endToStart
-                    : DismissDirection.none,
-                onDismissed: (direction) {
-                  RemindersHelpers().deleteReminder(
-                    context,
-                    reminder['reminderID'],
-                  );
-                  GoRouter.of(context).pushReplacement("/reminders");
-                },
-                background: Container(
-                  color: Colors.red,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(Icons.delete, color: Colors.white),
-                      SizedBox(width: 16),
-                    ],
-                  ),
-                ),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(Icons.delete, color: Colors.white),
-                      SizedBox(width: 16),
-                    ],
-                  ),
-                ),
-                child: HomeCard(
-                  home: false,
-                  shoppingList: false,
-                  map: reminder,
-                  title: reminder['item name'],
-                  initCompleted: reminder['completed'],
-                  extra: "",
-                ),
+              HomeCard(
+                home: true,
+                shoppingList: false,
+                map: reminder,
+                title: reminder['item name'],
+                initCompleted: reminder['completed'],
+                extra: "",
               ),
             );
           }

@@ -1,4 +1,5 @@
 import 'package:familist_2/constants.dart';
+import 'package:familist_2/screens/auth/verifyEmail.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,9 @@ class _SignInState extends State<SignIn> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      GetStorage box = GetStorage();
-      box.write("email", _emailController.text.trim());
+      if (mounted) {
+        GoRouter.of(context).pushReplacement("/verifyEmail");
+      }
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
       dialog(context, e.message.toString());
@@ -280,7 +282,6 @@ class _SignInState extends State<SignIn> {
                                     isLoading = true;
                                   });
                                 }
-
                                 await signIn();
                                 if (mounted) {
                                   setState(() {

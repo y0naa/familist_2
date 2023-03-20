@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../utils/auth.dart';
 
 class Register extends StatefulWidget {
@@ -17,6 +15,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  bool validate = false;
   bool _visible = false;
   bool isLoading = false;
 
@@ -29,24 +28,33 @@ class _RegisterState extends State<Register> {
   Future signUp() async {
     // create user
     try {
-      await Auth().createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      if (context.mounted) {
-        Auth().signInWithEmailAndPassword(
+      if (_emailController.text.trim().isEmpty ||
+          _passwordController.text.trim().isEmpty ||
+          _nameController.text.trim().isEmpty ||
+          _telephoneController.text.trim().isEmpty) {
+        setState(() {
+          validate = true;
+        });
+      } else {
+        await Auth().createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        if (context.mounted) {
+          Auth().signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
 
-        // add user details
-        addUserDetails(
-          _nameController.text.trim(),
-          _telephoneController.text.trim(),
-          _emailController.text.trim(),
-        );
+          // add user details
+          addUserDetails(
+            _nameController.text.trim(),
+            _telephoneController.text.trim(),
+            _emailController.text.trim(),
+          );
 
-        GoRouter.of(context).push("/verifyEmail");
+          GoRouter.of(context).push("/verifyEmail");
+        }
       }
     } on FirebaseAuthException catch (e) {
       dialog(context, e.message.toString());
@@ -133,7 +141,21 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 20,
+                                  height: 10,
+                                ),
+                                Center(
+                                  child: Text(
+                                    validate
+                                        ? "Please enter a valid input in all fields"
+                                        : "",
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
                                 ),
                                 Text(
                                   "Full name",

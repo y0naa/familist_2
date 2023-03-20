@@ -4,6 +4,7 @@ import 'package:familist_2/screens/superPage.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
@@ -11,7 +12,6 @@ import '../../widgets/dialog.dart';
 
 class VerifyEmail extends StatefulWidget {
   const VerifyEmail({super.key});
-
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
 }
@@ -23,7 +23,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _isEmailVerified = Auth().currentUser!.emailVerified;
 
@@ -41,29 +40,42 @@ class _VerifyEmailState extends State<VerifyEmail> {
     try {
       final user = FirebaseAuth.instance.currentUser!;
       await user.sendEmailVerification();
-      setState(() => _canResendEmail = false);
+      if (mounted) {
+        setState(() => _canResendEmail = false);
+      }
+
       await Future.delayed(
         const Duration(seconds: 5),
       );
-      setState(() => _canResendEmail = true);
+      if (mounted) {
+        setState(() => _canResendEmail = true);
+      }
     } catch (e) {
       dialog(context, e.toString());
     }
   }
 
   Future checkEmailVerified() async {
-    await Auth().currentUser!.reload();
-    setState(() {
-      _isEmailVerified = Auth().currentUser!.emailVerified;
-    });
+    if (Auth().currentUser != null) {
+      await Auth().currentUser!.reload();
+    }
+    if (mounted) {
+      setState(() {
+        if (Auth().currentUser == null) {
+          GoRouter.of(context).pushReplacement("/signIn");
+        } else {
+          _isEmailVerified = Auth().currentUser!.emailVerified;
+        }
+      });
+    }
 
     if (_isEmailVerified) timer?.cancel();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     timer?.cancel();
+
     super.dispose();
   }
 
@@ -144,7 +156,13 @@ class _VerifyEmailState extends State<VerifyEmail> {
                                   .withOpacity(0.5),
                             ),
                           ),
-                          onPressed: () => Auth().signOut(),
+                          onPressed: () {
+                            if (Auth().currentUser != null) {
+                              Auth().signOut();
+                            } else {
+                              GoRouter.of(context).pushReplacement("/signIn");
+                            }
+                          },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16, bottom: 16),
                             child: Text(

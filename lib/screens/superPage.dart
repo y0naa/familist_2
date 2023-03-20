@@ -20,23 +20,27 @@ class SuperPage extends StatefulWidget {
 
 class _SuperPageState extends State<SuperPage> {
   int _activePages = 0;
-  final List<Widget> _pages = [
-    const HomePage(),
-    const ShoppingPage(),
-    const RemindersPage(),
-    const SchedulePage(),
-    const ProfilePage()
-  ];
+  late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     widget.page == null ? null : _activePages = widget.page!;
-    widget.subPage == null
-        ? null
-        : _pages[2] = RemindersPage(
-            pageIndex: widget.subPage,
-          );
+    _pages = [
+      HomePage(
+        pageIndex: widget.subPage ?? 0,
+      ),
+      const ShoppingPage(),
+      RemindersPage(
+        pageIndex:
+            widget.subPage ?? 0, // Use 0 as default value if subPage is null
+      ),
+      const SchedulePage(),
+      const ProfilePage()
+    ];
+    _pages[2] = RemindersPage(
+      pageIndex: widget.subPage,
+    );
     print("routing ${widget.subPage}");
   }
 

@@ -81,10 +81,12 @@ class RemindersHelpers {
 
   Future getBills(BuildContext context) async {
     try {
+      String fuid = await Profile().getFamilyID();
       String currID = await Profile().getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
-      QuerySnapshot usersQuerySnapshot = await usersRef.get();
+      QuerySnapshot usersQuerySnapshot =
+          await usersRef.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> billsMap = {};
       for (QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
         String userId = userDoc.id;
@@ -114,10 +116,12 @@ class RemindersHelpers {
 
   Future getReminders(BuildContext? context) async {
     try {
+      String fuid = await Profile().getFamilyID();
       String currID = await Profile().getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
-      QuerySnapshot usersQuerySnapshot = await usersRef.get();
+      QuerySnapshot usersQuerySnapshot =
+          await usersRef.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> remindersMap = {};
       for (QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
         String userId = userDoc.id;
@@ -254,7 +258,6 @@ class RemindersHelpers {
               ),
             );
           }
-          callback(allReminders[0]);
 
           SchedulerBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {

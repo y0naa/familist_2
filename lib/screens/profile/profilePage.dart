@@ -116,9 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> signOut() async {
     try {
-      await Auth().signOut();
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/");
+        await Auth().signOut();
       }
     } catch (e) {
       dialog(context, e.toString());

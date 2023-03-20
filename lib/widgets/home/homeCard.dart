@@ -12,6 +12,7 @@ class HomeCard extends StatefulWidget {
   final bool home;
   final bool? initCompleted;
   final Map? map;
+
   const HomeCard(
       {super.key,
       required this.title,
@@ -58,7 +59,8 @@ class _HomeCardState extends State<HomeCard> {
                 });
                 await updateCompleted();
                 if (context.mounted) {
-                  GoRouter.of(context).pushReplacement("/reminders");
+                  GoRouter.of(context).pushReplacement(
+                      widget.home ? "/homeReminders" : "/reminders");
                 }
               },
               child: Row(

@@ -16,7 +16,6 @@ import '../../widgets/dialog.dart';
 class RemindersPage extends StatefulWidget {
   final int? pageIndex;
   const RemindersPage({super.key, this.pageIndex});
-
   @override
   State<RemindersPage> createState() => _RemindersPageState();
 }
@@ -111,7 +110,6 @@ class _RemindersPageState extends State<RemindersPage> {
   }
 
   // * built in methods
-
   @override
   void initState() {
     super.initState();

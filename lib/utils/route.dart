@@ -1,6 +1,7 @@
 import 'package:familist_2/screens/auth/register.dart';
 import 'package:familist_2/screens/auth/signIn.dart';
 import 'package:familist_2/screens/auth/verifyEmail.dart';
+import 'package:familist_2/screens/home/homePage.dart';
 import 'package:familist_2/screens/mainPage.dart';
 
 import 'package:familist_2/screens/superPage.dart';
@@ -10,6 +11,13 @@ import '../screens/profile/scanBarcode.dart';
 
 final router = GoRouter(
   routes: [
+    GoRoute(
+      path: '/homeReminders',
+      builder: (context, state) => const SuperPage(
+        page: 0,
+        subPage: 1,
+      ),
+    ),
     GoRoute(
       path: '/',
       builder: (context, state) => const MainPage(),

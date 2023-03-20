@@ -1,9 +1,9 @@
-import 'package:familist_2/utils/profile.dart';
+// ignore_for_file: file_names
+
 import 'package:familist_2/utils/scheduleHelper.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jiffy/jiffy.dart';
 import '../../constants.dart';
 import '../../widgets/schedule/date.dart';
 import '../../widgets/schedule/schedule.dart';

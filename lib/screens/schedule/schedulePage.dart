@@ -8,6 +8,7 @@ import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/schedule/dropdown.dart';
 import 'package:familist_2/widgets/tagButton.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -59,44 +60,57 @@ class _SchedulePageState extends State<SchedulePage> {
       DateTime end =
           DateTime.parse("2000-01-01 ${_endTimeController.text.trim()}:00");
       if (start.compareTo(end) < 0) {
-        QuerySnapshot snapshot = await ScheduleHelper().getOverlappingSchedule(
+        final snapshot = await ScheduleHelper().getOverlappingSchedule(
           uid,
           _startTimeController.text.trim(),
           _endTimeController.text.trim(),
         );
-        if (snapshot.docs.isNotEmpty) {
-          String day = daySchedule.trim() == "" ? "Monday" : daySchedule.trim();
-          List<Map> overlaps = [];
-          for (QueryDocumentSnapshot doc in snapshot.docs) {
-            overlaps.add(doc.data() as Map<String, dynamic>);
-          }
-          overlaps = overlaps.where((e) => e['day'] == day).toList();
-          overlaps = overlaps.where((e) {
-            DateTime st1 = DateTime.parse("2021-12-23 ${e['start time']}");
-            DateTime et1 = DateTime.parse("2021-12-23 ${e['end time']}");
-            DateTime st2 = DateTime.parse(
-                "2021-12-23 ${_startTimeController.text.trim()}");
-            DateTime et2 =
-                DateTime.parse("2021-12-23 ${_endTimeController.text.trim()}");
-            if (st1.compareTo(et2) < 0 && et1.compareTo(st2) > 0) {
-              return true;
+        if (snapshot != null) {
+          if (snapshot.docs.isNotEmpty) {
+            print('true');
+            String day =
+                daySchedule.trim() == "" ? "Monday" : daySchedule.trim();
+            List<Map> overlaps = [];
+            for (QueryDocumentSnapshot doc in snapshot.docs) {
+              overlaps.add(doc.data() as Map<String, dynamic>);
             }
-            return false;
-          }).toList();
-          print(overlaps);
-          if (overlaps.isEmpty) {
-            ScheduleHelper().addSchedule({
-              "item name": _itemNameController.text.trim(),
-              "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
-              "start time": _startTimeController.text.trim(),
-              "end time": _endTimeController.text.trim(),
-            }, uid);
-          } else {
-            throw Exception("Schedule overlaps");
+            overlaps = overlaps.where((e) => e['day'] == day).toList();
+            overlaps = overlaps.where((e) {
+              DateTime st1 = DateTime.parse("2021-12-23 ${e['start time']}");
+              DateTime et1 = DateTime.parse("2021-12-23 ${e['end time']}");
+              DateTime st2 = DateTime.parse(
+                  "2021-12-23 ${_startTimeController.text.trim()}");
+              DateTime et2 = DateTime.parse(
+                  "2021-12-23 ${_endTimeController.text.trim()}");
+              if (st1.compareTo(et2) < 0 && et1.compareTo(st2) > 0) {
+                return true;
+              }
+              return false;
+            }).toList();
+
+            if (overlaps.isEmpty) {
+              ScheduleHelper().addSchedule({
+                "item name": _itemNameController.text.trim(),
+                "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
+                "start time": _startTimeController.text.trim(),
+                "end time": _endTimeController.text.trim(),
+              }, uid);
+              print("hello");
+            } else {
+              throw Exception("Schedule overlaps");
+            }
           }
+        } else {
+          ScheduleHelper().addSchedule({
+            "item name": _itemNameController.text.trim(),
+            "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
+            "start time": _startTimeController.text.trim(),
+            "end time": _endTimeController.text.trim(),
+          }, uid);
         }
+
         if (mounted) {
-          dialog(context, "Data saved successfully", route: "/schedule");
+          dialog(context, "Schedule Saved Successfully", route: "/schedule");
         }
       } else {
         throw Exception("Start time must be before end time");

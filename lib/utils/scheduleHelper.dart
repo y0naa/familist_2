@@ -48,16 +48,28 @@ class ScheduleHelper {
   }
 
   Future addSchedule(Map<String, dynamic> input, String id) async {
+    print("uid: $id");
     await users.doc(id).collection("schedule").add(input);
+    print("success");
   }
 
-  Future getOverlappingSchedule(
+  Future? getOverlappingSchedule(
       String id, String startTime, String endTime) async {
     final userScheduleCollection = users.doc(id).collection("schedule");
+    final collectionSnapshot = await userScheduleCollection.get();
+    if (collectionSnapshot.docs.isEmpty) {
+      print("Collection does not exist");
+      return null;
+    }
+    // Check if collection is empty
     final overlappingSchedules = await userScheduleCollection
         .where('start time', isLessThan: endTime)
-        // .where('endtime', isGreaterThan: startTime)
         .get();
+    if (overlappingSchedules.docs.isEmpty) {
+      print("Collection is empty");
+      return null;
+    }
+    print("Overlapping schedule");
     return overlappingSchedules;
   }
 

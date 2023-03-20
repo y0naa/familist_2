@@ -52,8 +52,10 @@ class ShoppingHelper {
 
   Future getShoppingItems(BuildContext context) async {
     try {
+      String fuid = await Profile().getFamilyID();
       String currID = await Profile().getUserID();
-      QuerySnapshot usersQuerySnapshot = await users.get();
+      QuerySnapshot usersQuerySnapshot =
+          await users.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> shoppingMap = {};
       for (QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
         String userId = userDoc.id;
