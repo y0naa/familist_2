@@ -16,6 +16,9 @@ class JoinFamily extends StatefulWidget {
 }
 
 class _JoinFamilyState extends State<JoinFamily> {
+  // variables
+  bool validate = false;
+
   // text controllers
   final TextEditingController _inputIDController = TextEditingController();
 
@@ -84,9 +87,17 @@ class _JoinFamilyState extends State<JoinFamily> {
                 child: TextField(
                   controller: _inputIDController,
                   decoration: InputDecoration(
+                    errorText: validate ? "Value cannot be empty" : null,
                     suffixIcon: IconButton(
-                      onPressed: () async =>
-                          await updateData(_inputIDController.text.trim()),
+                      onPressed: () async {
+                        if (_inputIDController.text.trim().isEmpty) {
+                          setState(() {
+                            validate = true;
+                          });
+                        } else {
+                          await updateData(_inputIDController.text.trim());
+                        }
+                      },
                       icon: const Icon(
                         Icons.save_rounded,
                         color: sColor,

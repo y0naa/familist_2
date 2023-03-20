@@ -44,6 +44,13 @@ class _HomeShoppingState extends State<HomeShopping> {
           for (var item in incompleteShopping) {
             shoppingCards.add(
               ShoppingItem(
+                home: true,
+                setLoading: () {
+                  setState(() {});
+                },
+                doneLoading: () {
+                  setState(() {});
+                },
                 route: "/super",
                 item: item,
                 refresh: () {
@@ -56,6 +63,13 @@ class _HomeShoppingState extends State<HomeShopping> {
           for (var item in completedShopping) {
             shoppingCards.add(
               ShoppingItem(
+                home: true,
+                setLoading: () {
+                  setState(() {});
+                },
+                doneLoading: () {
+                  setState(() {});
+                },
                 route: "/super",
                 item: item,
                 refresh: () {

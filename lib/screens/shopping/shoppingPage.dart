@@ -27,6 +27,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
   int _index = 0; // for complete and incomplete state
   int _category = -1;
   double total = 0;
+  bool loading = false;
 
   // text controllers
   final TextEditingController _itemNameController = TextEditingController();
@@ -244,110 +245,144 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 24, right: 24),
-                      child: FutureBuilder(
-                        future: ShoppingHelper().getShoppingItems(context),
-                        builder: (BuildContext context, snapshot) {
-                          if (snapshot.hasData) {
-                            total = 0;
-                            List<Widget> shoppingCards = [];
-                            List<Map<String, dynamic>> allShopping = [];
-                            List<Map<String, dynamic>> filtered = [];
-                            List<Map<String, dynamic>> completedShopping = [];
-                            List<Map<String, dynamic>> incompleteShopping = [];
-
-                            snapshot.data.forEach((userId, reminders) {
-                              allShopping.addAll(reminders);
-                            });
-
-                            // ! category filters
-                            if (_category == 0) {
-                              filtered = allShopping
-                                  .where((item) => item['category'] == 'Food')
-                                  .toList();
-                            } else if (_category == 1) {
-                              filtered = allShopping
-                                  .where((item) => item['category'] == 'Beauty')
-                                  .toList();
-                            } else if (_category == 2) {
-                              filtered = allShopping
-                                  .where((item) => item['category'] == 'Others')
-                                  .toList();
-                            } else {
-                              filtered = allShopping;
-                            }
-
-                            // ! complete and incomplete filters
-                            for (var item in filtered) {
-                              if (item["completed"]) {
-                                completedShopping.add(item);
-                              } else {
-                                incompleteShopping.add(item);
-                              }
-                            }
-
-                            if (_index == 0) {
-                              for (var item in incompleteShopping) {
-                                total = total + item["price"];
-                                shoppingCards.add(
-                                  ShoppingItem(
-                                    route: "/shopping",
-                                    item: item,
-                                    refresh: () {
-                                      if (mounted) {
-                                        setState(() {
-                                          ShoppingHelper()
-                                              .getShoppingItems(context);
-                                        });
-                                      }
-                                    },
-                                  ),
-                                );
-                              }
-                            } else {
-                              for (var item in completedShopping) {
-                                total = total + item["price"];
-                                shoppingCards.add(
-                                  ShoppingItem(
-                                    route: "/shopping",
-                                    item: item,
-                                    refresh: () {
-                                      if (mounted) {
-                                        setState(() {
-                                          ShoppingHelper()
-                                              .getShoppingItems(context);
-                                        });
-                                      }
-                                    },
-                                  ),
-                                );
-                              }
-                            }
-
-                            // * refreshing total
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted) {
-                                setState(() {});
-                              }
-                            });
-
-                            return SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: shoppingCards,
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Center(
-                              child: Text('Error: ${snapshot.error}'),
-                            );
-                          } else {
-                            return const Center(
+                      child: loading
+                          ? const Center(
                               child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
+                            )
+                          : FutureBuilder(
+                              future:
+                                  ShoppingHelper().getShoppingItems(context),
+                              builder: (BuildContext context, snapshot) {
+                                if (snapshot.hasData) {
+                                  total = 0;
+                                  List<Widget> shoppingCards = [];
+                                  List<Map<String, dynamic>> allShopping = [];
+                                  List<Map<String, dynamic>> filtered = [];
+                                  List<Map<String, dynamic>> completedShopping =
+                                      [];
+                                  List<Map<String, dynamic>>
+                                      incompleteShopping = [];
+
+                                  snapshot.data.forEach((userId, reminders) {
+                                    allShopping.addAll(reminders);
+                                  });
+
+                                  // ! category filters
+                                  if (_category == 0) {
+                                    filtered = allShopping
+                                        .where((item) =>
+                                            item['category'] == 'Food')
+                                        .toList();
+                                  } else if (_category == 1) {
+                                    filtered = allShopping
+                                        .where((item) =>
+                                            item['category'] == 'Beauty')
+                                        .toList();
+                                  } else if (_category == 2) {
+                                    filtered = allShopping
+                                        .where((item) =>
+                                            item['category'] == 'Others')
+                                        .toList();
+                                  } else {
+                                    filtered = allShopping;
+                                  }
+
+                                  // ! complete and incomplete filters
+                                  for (var item in filtered) {
+                                    if (item["completed"]) {
+                                      completedShopping.add(item);
+                                    } else {
+                                      incompleteShopping.add(item);
+                                    }
+                                  }
+
+                                  if (_index == 0) {
+                                    for (var item in incompleteShopping) {
+                                      total = total + item["price"];
+                                      shoppingCards.add(
+                                        ShoppingItem(
+                                          home: false,
+                                          setLoading: () {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                          },
+                                          doneLoading: () {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          },
+                                          route: "/shopping",
+                                          item: item,
+                                          refresh: () {
+                                            if (mounted) {
+                                              setState(() {
+                                                ShoppingHelper()
+                                                    .getShoppingItems(context);
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    for (var item in completedShopping) {
+                                      total = total + item["price"];
+                                      shoppingCards.add(
+                                        ShoppingItem(
+                                          home: false,
+                                          setLoading: () {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                          },
+                                          doneLoading: () {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          },
+                                          route: "/shopping",
+                                          item: item,
+                                          refresh: () {
+                                            if (mounted) {
+                                              setState(() {
+                                                ShoppingHelper()
+                                                    .getShoppingItems(context);
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                  }
+
+                                  // * refreshing total
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  });
+
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: shoppingCards,
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Error: ${snapshot.error}'),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                              },
+                            ),
                     )
                   ],
                 ),

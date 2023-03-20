@@ -14,12 +14,13 @@ class ShoppingHelper {
   }
 
   Future toggleCompletedItem(String uid, String itemId, bool toggle) async {
-    print("deleting from uid $uid");
+    print("toggle compelete from uid $uid");
     await users
         .doc(uid)
         .collection("shopping")
         .doc(itemId)
         .update({"completed": toggle});
+    print("toggle compelted");
   }
 
   Future deleteItem(BuildContext context, String docID) async {
