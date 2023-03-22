@@ -41,21 +41,30 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   Future addShopping() async {
     try {
-      print("cat = $_categoryChosen");
-      ShoppingHelper().addShoppingItem({
-        "item name": _itemNameController.text.trim(),
-        "price": double.tryParse(_priceController.text.trim()),
-        "category": _categoryChosen,
-        "completed": false,
-      }, uid);
-      if (context.mounted) {
-        dialog(
-          context,
-          "Saved Successfully",
-        );
+      if (_itemNameController.text.trim().isEmpty ||
+          _priceController.text.trim().isEmpty) {
+        dialog(context, "Please input all fields");
+        return false;
+      } else {
+        print("cat = $_categoryChosen");
+        ShoppingHelper().addShoppingItem({
+          "item name": _itemNameController.text.trim(),
+          "price": double.tryParse(_priceController.text.trim()),
+          "category": _categoryChosen,
+          "completed": false,
+        }, uid);
+
+        if (context.mounted) {
+          dialog(
+            context,
+            "Saved Successfully",
+          );
+          return true;
+        }
       }
     } catch (e) {
       dialog(context, e.toString());
+      return false;
     }
   }
 
@@ -569,8 +578,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
                               ),
                             ),
                             onPressed: () async {
-                              await addShopping();
-                              if (mounted) {
+                              bool add = await addShopping();
+                              if (mounted && add) {
                                 GoRouter.of(context)
                                     .pushReplacement("/shopping");
                               }

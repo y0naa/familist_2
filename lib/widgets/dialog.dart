@@ -8,7 +8,12 @@ void dialog(BuildContext context, String m, {String? route}) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(m),
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: Colors.red,
+        ),
+        title: const Text("Attention"),
+        content: Text(m),
         actions: <Widget>[
           TextButton(
             child: const Text("OK"),

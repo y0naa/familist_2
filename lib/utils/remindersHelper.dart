@@ -261,8 +261,9 @@ class RemindersHelpers {
 
           SchedulerBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
+              callback(allReminders[0]);
               refreshParent();
-              print("hello world!");
+              print("scheduler binding");
             }
           });
 

@@ -19,6 +19,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  bool validate = false;
   bool isLoading = false;
   bool _visible = false;
 
@@ -29,16 +30,30 @@ class _SignInState extends State<SignIn> {
 
   Future signIn() async {
     try {
-      await Auth().signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      if (mounted) {
-        GoRouter.of(context).pushReplacement("/verifyEmail");
+      if (_emailController.text.trim().isEmpty ||
+          _passwordController.text.trim().isEmpty) {
+        setState(() {
+          validate = true;
+        });
+      } else {
+        await Auth().signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        setState(() {
+          validate = false;
+        });
+
+        if (mounted) {
+          GoRouter.of(context).pushReplacement("/verifyEmail");
+        }
       }
     } on FirebaseAuthException catch (e) {
       debugPrint(e.message);
       dialog(context, e.message.toString());
+      setState(() {
+        validate = false;
+      });
     }
   }
 
@@ -254,8 +269,16 @@ class _SignInState extends State<SignIn> {
                               height: 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Text(
+                                  validate ? "Please input all fields" : "",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                                 InkWell(
                                   onTap: () async {
                                     await showForgotPassword(context);

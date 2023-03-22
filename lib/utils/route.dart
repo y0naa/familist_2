@@ -70,6 +70,13 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/events',
+      builder: (context, state) => const SuperPage(
+        page: 3,
+        subPage: 1,
+      ),
+    ),
+    GoRoute(
       path: '/profile',
       builder: (context, state) => const SuperPage(
         page: 4,

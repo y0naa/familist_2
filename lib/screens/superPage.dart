@@ -35,7 +35,9 @@ class _SuperPageState extends State<SuperPage> {
         pageIndex:
             widget.subPage ?? 0, // Use 0 as default value if subPage is null
       ),
-      const SchedulePage(),
+      SchedulePage(
+        pageIndex: widget.subPage ?? 0,
+      ),
       const ProfilePage()
     ];
     _pages[2] = RemindersPage(

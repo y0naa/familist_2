@@ -31,6 +31,7 @@ class _RemindersPageState extends State<RemindersPage> {
 
   void getTopCardDetails(Map<String, dynamic> card) {
     // to break infintie loop of setState
+    print("top card here");
     if (topCard.isEmpty) {
       isCardSet = false;
     } else {
@@ -50,16 +51,27 @@ class _RemindersPageState extends State<RemindersPage> {
   // Futures
   Future addReminder() async {
     try {
-      RemindersHelpers().addReminder({
-        "item name": _itemNameController.text.trim(),
-        "date due": _dateDueController.text.trim(),
-        "completed": false,
-      }, uid);
-      if (context.mounted) {
-        dialog(
-          context,
-          "Saved Successfully",
-        );
+      if (_itemNameController.text.trim().isEmpty ||
+          _dateDueController.text.trim().isEmpty) {
+        if (_index == 0) {
+          if (_dateDueController.text.trim().isEmpty) {
+            dialog(context, "Please enter all fields");
+            return false;
+          }
+        }
+      } else {
+        RemindersHelpers().addReminder({
+          "item name": _itemNameController.text.trim(),
+          "date due": _dateDueController.text.trim(),
+          "completed": false,
+        }, uid);
+        if (context.mounted) {
+          dialog(
+            context,
+            "Saved Successfully",
+            route: "/reminders",
+          );
+        }
       }
     } catch (e) {
       dialog(context, e.toString());
@@ -68,17 +80,26 @@ class _RemindersPageState extends State<RemindersPage> {
 
   Future addBill() async {
     try {
-      RemindersHelpers().addBill({
-        "item name": _itemNameController.text.trim(),
-        "price": _priceController.text.trim(),
-        "start date": _startDateController.text.trim(),
-        "repeated in": int.tryParse(_repeatedInController.text.trim()) ?? -1,
-      }, uid);
-      if (context.mounted) {
-        dialog(
-          context,
-          "Saved Successfully",
-        );
+      if (_itemNameController.text.trim().isEmpty ||
+          _priceController.text.trim().isEmpty ||
+          _repeatedInController.text.trim().isEmpty ||
+          _startDateController.text.trim().isEmpty) {
+        dialog(context, "Please enter all fields");
+        return false;
+      } else {
+        RemindersHelpers().addBill({
+          "item name": _itemNameController.text.trim(),
+          "price": _priceController.text.trim(),
+          "start date": _startDateController.text.trim(),
+          "repeated in": int.tryParse(_repeatedInController.text.trim()) ?? -1,
+        }, uid);
+        if (context.mounted) {
+          dialog(
+            context,
+            "Saved Successfully",
+            route: "/bills",
+          );
+        }
       }
     } catch (e) {
       dialog(context, e.toString());
@@ -629,23 +650,9 @@ class _RemindersPageState extends State<RemindersPage> {
                             onPressed: _index == 0
                                 ? () async {
                                     await addReminder();
-                                    if (context.mounted) {
-                                      dialog(
-                                        context,
-                                        "Saved Successfully",
-                                        route: "/reminders",
-                                      );
-                                    }
                                   }
                                 : () async {
                                     await addBill();
-                                    if (context.mounted) {
-                                      dialog(
-                                        context,
-                                        "Saved Successfully",
-                                        route: "/bills",
-                                      );
-                                    }
                                   },
                             child: Padding(
                               padding:

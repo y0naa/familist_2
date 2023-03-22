@@ -17,7 +17,8 @@ import '../../utils/profile.dart';
 import '../../utils/scheduleHelper.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+  final int? pageIndex;
+  const SchedulePage({super.key, required this.pageIndex});
   @override
   State<SchedulePage> createState() => _SchedulePageState();
 }
@@ -31,7 +32,7 @@ class _SchedulePageState extends State<SchedulePage> {
   String userid = "xxxxxxxxxx"; // dummy data first
   CollectionReference users = FirebaseFirestore.instance.collection("users");
   String daySchedule = "";
-  DateTime date = DateTime.now();
+  DateTime dateNow = DateTime.now();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
@@ -55,88 +56,103 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Future addSchedule() async {
     try {
-      DateTime start =
-          DateTime.parse("2000-01-01 ${_startTimeController.text.trim()}:00");
-      DateTime end =
-          DateTime.parse("2000-01-01 ${_endTimeController.text.trim()}:00");
-      if (start.compareTo(end) < 0) {
-        final snapshot = await ScheduleHelper().getOverlappingSchedule(
-          uid,
-          _startTimeController.text.trim(),
-          _endTimeController.text.trim(),
-        );
-        if (snapshot != null) {
-          if (snapshot.docs.isNotEmpty) {
-            print('true');
-            String day =
-                daySchedule.trim() == "" ? "Monday" : daySchedule.trim();
-            List<Map> overlaps = [];
-            for (QueryDocumentSnapshot doc in snapshot.docs) {
-              overlaps.add(doc.data() as Map<String, dynamic>);
-            }
-            overlaps = overlaps.where((e) => e['day'] == day).toList();
-            overlaps = overlaps.where((e) {
-              DateTime st1 = DateTime.parse("2021-12-23 ${e['start time']}");
-              DateTime et1 = DateTime.parse("2021-12-23 ${e['end time']}");
-              DateTime st2 = DateTime.parse(
-                  "2021-12-23 ${_startTimeController.text.trim()}");
-              DateTime et2 = DateTime.parse(
-                  "2021-12-23 ${_endTimeController.text.trim()}");
-              if (st1.compareTo(et2) < 0 && et1.compareTo(st2) > 0) {
-                return true;
+      if (_itemNameController.text.trim().isEmpty ||
+          _startTimeController.text.trim().isEmpty ||
+          _endTimeController.text.trim().isEmpty) {
+        dialog(context, "Please enter all schedule fields");
+        return false;
+      } else {
+        DateTime start =
+            DateTime.parse("2000-01-01 ${_startTimeController.text.trim()}:00");
+        DateTime end =
+            DateTime.parse("2000-01-01 ${_endTimeController.text.trim()}:00");
+        if (start.compareTo(end) < 0) {
+          final snapshot = await ScheduleHelper().getOverlappingSchedule(
+            uid,
+            _startTimeController.text.trim(),
+            _endTimeController.text.trim(),
+          );
+          if (snapshot != null) {
+            if (snapshot.docs.isNotEmpty) {
+              print('true');
+              String day =
+                  daySchedule.trim() == "" ? "Monday" : daySchedule.trim();
+              List<Map> overlaps = [];
+              for (QueryDocumentSnapshot doc in snapshot.docs) {
+                overlaps.add(doc.data() as Map<String, dynamic>);
               }
-              return false;
-            }).toList();
+              overlaps = overlaps.where((e) => e['day'] == day).toList();
+              overlaps = overlaps.where((e) {
+                DateTime st1 = DateTime.parse("2021-12-23 ${e['start time']}");
+                DateTime et1 = DateTime.parse("2021-12-23 ${e['end time']}");
+                DateTime st2 = DateTime.parse(
+                    "2021-12-23 ${_startTimeController.text.trim()}");
+                DateTime et2 = DateTime.parse(
+                    "2021-12-23 ${_endTimeController.text.trim()}");
+                if (st1.compareTo(et2) < 0 && et1.compareTo(st2) > 0) {
+                  return true;
+                }
+                return false;
+              }).toList();
 
-            if (overlaps.isEmpty) {
-              ScheduleHelper().addSchedule({
-                "item name": _itemNameController.text.trim(),
-                "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
-                "start time": _startTimeController.text.trim(),
-                "end time": _endTimeController.text.trim(),
-              }, uid);
-              print("hello");
-            } else {
-              throw Exception("Schedule overlaps");
+              if (overlaps.isEmpty) {
+                ScheduleHelper().addSchedule({
+                  "item name": _itemNameController.text.trim(),
+                  "day":
+                      daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
+                  "start time": _startTimeController.text.trim(),
+                  "end time": _endTimeController.text.trim(),
+                }, uid);
+                print("hello");
+              } else {
+                throw Exception("Schedule overlaps");
+              }
             }
+          } else {
+            ScheduleHelper().addSchedule({
+              "item name": _itemNameController.text.trim(),
+              "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
+              "start time": _startTimeController.text.trim(),
+              "end time": _endTimeController.text.trim(),
+            }, uid);
+          }
+
+          if (mounted) {
+            dialog(context, "Schedule Saved Successfully", route: "/schedule");
           }
         } else {
-          ScheduleHelper().addSchedule({
-            "item name": _itemNameController.text.trim(),
-            "day": daySchedule.trim() == "" ? "Monday" : daySchedule.trim(),
-            "start time": _startTimeController.text.trim(),
-            "end time": _endTimeController.text.trim(),
-          }, uid);
+          throw Exception("Start time must be before end time");
         }
-
-        if (mounted) {
-          dialog(context, "Schedule Saved Successfully", route: "/schedule");
-        }
-      } else {
-        throw Exception("Start time must be before end time");
       }
     } catch (e) {
-      dialog(context, e.toString(), route: "/schedule");
+      dialog(context, e.toString());
     }
   }
 
   Future addEvent() async {
     try {
-      String dateCut = DateFormat("yyyy-MM-dd").format(date);
-      DateTime picked =
-          DateTime.parse("$dateCut ${_timeController.text.trim()}:59");
-      if (picked.compareTo(DateTime.now()) > 0) {
-        ScheduleHelper().addEvent({
-          "item name": _itemNameController.text.trim(),
-          "date": _dateController.text.trim(),
-          "time": _timeController.text.trim(),
-        }, uid);
-        dialog(context, "Data saved successfully");
+      if (_itemNameController.text.trim().isEmpty ||
+          _dateController.text.trim().isEmpty ||
+          _timeController.text.trim().isEmpty) {
+        dialog(context, "Please enter all fields");
+        return false;
       } else {
-        throw Exception("Please enter a valid time and date");
-      }
+        String dateCut = DateFormat("yyyy-MM-dd").format(dateNow);
+        DateTime picked =
+            DateTime.parse("$dateCut ${_timeController.text.trim()}:59");
+        if (picked.compareTo(DateTime.now()) > 0) {
+          ScheduleHelper().addEvent({
+            "item name": _itemNameController.text.trim(),
+            "date": _dateController.text.trim(),
+            "time": _timeController.text.trim(),
+          }, uid);
+          dialog(context, "Data saved successfully");
+        } else {
+          throw Exception("Please enter a valid time and date");
+        }
 
-      dialog(context, "Data saved successfully");
+        dialog(context, "Data saved successfully", route: "/events");
+      }
     } catch (e) {
       dialog(context, e.toString());
     }
@@ -152,6 +168,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   @override
   void initState() {
+    _index = widget.pageIndex ?? 0;
     super.initState();
     getUid();
   }
@@ -437,7 +454,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                       _dateController.text =
                                           DateFormat("dd/MM/yyyy")
                                               .format(pickedDate);
-                                      date = pickedDate;
+                                      dateNow = pickedDate;
                                     }
                                   },
                                   decoration: InputDecoration(
@@ -651,10 +668,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                         }
                                       : () async {
                                           await addEvent();
-                                          if (context.mounted) {
-                                            GoRouter.of(context)
-                                                .pushReplacement("/schedule");
-                                          }
                                         },
                                   child: Padding(
                                     padding: const EdgeInsets.only(
