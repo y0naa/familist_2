@@ -1,8 +1,10 @@
+import 'package:familist_2/utils/auth.dart';
 import 'package:familist_2/utils/modules/schedule_helper.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
+import '../../utils/profile.dart';
 import '../../widgets/schedule/date.dart';
 import '../../widgets/schedule/schedule.dart';
 
@@ -15,9 +17,19 @@ class Scheduler extends StatefulWidget {
 }
 
 class _SchedulerState extends State<Scheduler> {
+  String currentID = "";
   bool loading = false;
   int _days = 0;
   List schedules = [];
+
+  void getCurrentID() async {
+    String id = await Profile().getUserID();
+    if (mounted) {
+      setState(() {
+        currentID = id;
+      });
+    }
+  }
 
   List<Map<String, dynamic>> filterMap(List<Map<String, dynamic>> schedules) {
     List<Map<String, dynamic>> filtered = [];
@@ -50,6 +62,7 @@ class _SchedulerState extends State<Scheduler> {
   @override
   void initState() {
     super.initState();
+    getCurrentID();
   }
 
   @override
@@ -254,6 +267,11 @@ class _SchedulerState extends State<Scheduler> {
                                                 final schedule =
                                                     filtered[index];
                                                 return Schedule(
+                                                  canDelete:
+                                                      widget.userID == currentID
+                                                          ? true
+                                                          : false,
+                                                  map: schedule,
                                                   loading: () {
                                                     setState(() {
                                                       loading = true;
@@ -264,10 +282,6 @@ class _SchedulerState extends State<Scheduler> {
                                                       loading = false;
                                                     });
                                                   },
-                                                  docID: schedule["docID"],
-                                                  time:
-                                                      "${schedule["start time"]} - ${schedule["end time"]}",
-                                                  title: schedule["item name"],
                                                   refresh: () {
                                                     setState(() {});
                                                   },

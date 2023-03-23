@@ -6,6 +6,7 @@ import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/schedule/dropdown.dart';
 import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -246,36 +247,52 @@ class _SchedulePageState extends State<SchedulePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 24),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Stack(
                         children: [
-                          TagButton(
-                            tapped: _index == 0 ? true : false,
-                            text: "Schedule",
-                            onTap: () {
-                              print("user id schedule: $userid");
-                              if (mounted) {
-                                setState(() {
-                                  _index = 0;
-                                });
-                              }
-                            },
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TagButton(
+                                tapped: _index == 0 ? true : false,
+                                text: "Schedule",
+                                onTap: () {
+                                  print("user id schedule: $userid");
+                                  if (mounted) {
+                                    setState(() {
+                                      _index = 0;
+                                    });
+                                  }
+                                },
+                              ),
+                              const SizedBox(
+                                width: 15,
+                              ),
+                              TagButton(
+                                tapped: _index == 1 ? true : false,
+                                text: "Events",
+                                onTap: () {
+                                  print("user id events: $userid");
+                                  if (mounted) {
+                                    setState(() {
+                                      _index = 1;
+                                    });
+                                  }
+                                },
+                              ),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          TagButton(
-                            tapped: _index == 1 ? true : false,
-                            text: "Events",
-                            onTap: () {
-                              print("user id events: $userid");
-                              if (mounted) {
-                                setState(() {
-                                  _index = 1;
-                                });
-                              }
-                            },
-                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              onPressed: () {
+                                GoRouter.of(context).push("/info");
+                              },
+                              icon: const Icon(
+                                Icons.info,
+                                color: pColor,
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),

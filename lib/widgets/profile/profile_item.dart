@@ -59,11 +59,17 @@ class _ProfileItemState extends State<ProfileItem> {
 
   Future updateFamilyName() async {
     try {
+      if (_familyNameController.text.trim().isEmpty) {
+        dialog(context, "Please enter a valid family name");
+        return false;
+      }
       await Profile().updateFamilyName(
         _familyNameController.text.trim(),
       );
+      return true;
     } on FirebaseException catch (e) {
       dialog(context, e.message.toString());
+      return false;
     }
   }
 
@@ -251,10 +257,14 @@ class _ProfileItemState extends State<ProfileItem> {
                                                         ),
                                                         IconButton(
                                                           onPressed: () async {
-                                                            Navigator.pop(
-                                                                context);
-                                                            await updateFamilyName();
-                                                            widget.refresh();
+                                                            bool update =
+                                                                await updateFamilyName();
+                                                            if (update &&
+                                                                mounted) {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              widget.refresh();
+                                                            }
                                                           },
                                                           icon: Icon(
                                                             Icons.save_rounded,

@@ -223,24 +223,38 @@ class _ShoppingPageState extends State<ShoppingPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 32),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Total: ",
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: sColor,
-                              fontWeight: FontWeight.w700,
+                          Row(
+                            children: [
+                              Text(
+                                "Total: ",
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: sColor,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+
+                              // Price total
+                              Text(
+                                Currency.convertToIdr(total),
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: sColor,
+                                ),
+                              )
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              GoRouter.of(context).push("/info");
+                            },
+                            icon: const Icon(
+                              Icons.info,
+                              color: pColor,
                             ),
                           ),
-
-                          // Price total
-                          Text(
-                            Currency.convertToIdr(total),
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: sColor,
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -373,7 +387,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
                                   return SizedBox(
                                     height: MediaQuery.of(context).size.height *
-                                        0.5,
+                                        0.45,
                                     child: ListView(
                                       shrinkWrap: true,
                                       children: shoppingCards,

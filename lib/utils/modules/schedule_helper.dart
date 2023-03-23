@@ -114,12 +114,9 @@ class ScheduleHelper {
 
   Future getSchedules(BuildContext context, String userID) async {
     try {
-      // String userID = await Profile().getUserID();
-
       List<Map<String, dynamic>> schedules = [];
       QuerySnapshot snapshot =
           await users.doc(userID).collection("schedule").get();
-
       List<Future<DocumentSnapshot>> futures = [];
       for (QueryDocumentSnapshot document in snapshot.docs) {
         final documentPath = document.reference.path;

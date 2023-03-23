@@ -6,20 +6,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
 
 class Schedule extends StatelessWidget {
-  final String time;
-  final String title;
-  final String docID;
+  final Map map;
   final VoidCallback refresh;
   final Function loading;
   final Function notLoading;
+  final bool canDelete;
   const Schedule(
       {super.key,
-      required this.time,
-      required this.title,
-      required this.docID,
       required this.refresh,
       required this.loading,
-      required this.notLoading});
+      required this.notLoading,
+      required this.map,
+      required this.canDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,7 @@ class Schedule extends StatelessWidget {
         Row(
           children: [
             Text(
-              time,
+              "${map["start time"]} - ${map["end time"]}",
               style: GoogleFonts.inter(
                 fontSize: 14,
                 color: sColor,
@@ -37,7 +35,7 @@ class Schedule extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             Text(
-              title,
+              map["item name"],
               style: GoogleFonts.inter(
                 fontSize: 14,
                 color: sColor,
@@ -50,24 +48,29 @@ class Schedule extends StatelessWidget {
           children: [
             SizedBox(
               width: 20,
-              child: IconButton(
-                onPressed: () async {
-                  bool delete = await deleteDialog(context);
-                  if (delete) {
-                    loading();
-                    if (context.mounted) {
-                      await ScheduleHelper().deleteSchedule(context, docID);
-                    }
-                    notLoading();
-                    refresh();
-                  }
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 16,
-                ),
-              ),
+              child: canDelete
+                  ? IconButton(
+                      onPressed: () async {
+                        bool delete = await deleteDialog(context);
+                        if (delete) {
+                          loading();
+                          if (context.mounted) {
+                            await ScheduleHelper()
+                                .deleteSchedule(context, map["docID"]);
+                          }
+                          notLoading();
+                          refresh();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 16,
+                      ),
+                    )
+                  : Container(
+                      height: 16,
+                    ),
             ),
           ],
         ),

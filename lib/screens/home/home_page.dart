@@ -1,6 +1,7 @@
 import 'package:familist_2/constants.dart';
 
 import 'package:familist_2/screens/home/home_reminders_section.dart';
+import 'package:familist_2/screens/info.dart';
 import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -206,12 +207,26 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Added by you",
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: sColor,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Added by you",
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: sColor,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              GoRouter.of(context).push("/info");
+                            },
+                            icon: const Icon(
+                              Icons.info,
+                              color: pColor,
+                            ),
+                          )
+                        ],
                       ),
                       _index == 0 ? const HomeShopping() : const HomeReminders()
                     ],

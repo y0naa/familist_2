@@ -153,14 +153,37 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "Profile",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      fontSize: 28,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Profile",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: 28,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: () {
+                            GoRouter.of(context).push("/info");
+                          },
+                          icon: const Icon(
+                            Icons.info,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(
                     height: 50,

@@ -1,6 +1,7 @@
 import 'package:familist_2/screens/auth/register.dart';
 import 'package:familist_2/screens/auth/sign_in.dart';
 import 'package:familist_2/screens/auth/verify_email.dart';
+import 'package:familist_2/screens/info.dart';
 import 'package:familist_2/screens/main_page.dart';
 import 'package:familist_2/screens/super_page.dart';
 import 'package:go_router/go_router.dart';
@@ -61,6 +62,10 @@ final router = GoRouter(
         page: 2,
         subPage: 1,
       ),
+    ),
+    GoRoute(
+      path: '/info',
+      builder: (context, state) => const Info(),
     ),
     GoRoute(
       path: '/schedule',

@@ -4,6 +4,7 @@ import 'package:familist_2/screens/reminders/reminders_section.dart';
 import 'package:familist_2/utils/modules/reminders_helper.dart';
 import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -202,30 +203,49 @@ class _RemindersPageState extends State<RemindersPage> {
                                   Padding(
                                     padding:
                                         EdgeInsets.only(top: size.height * 0.1),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                    child: Stack(
                                       children: [
-                                        TagButton(
-                                          tapped: _index == 0 ? true : false,
-                                          text: "Reminders",
-                                          onTap: () {
-                                            setState(() {
-                                              _index = 0;
-                                            });
-                                          },
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            TagButton(
+                                              tapped:
+                                                  _index == 0 ? true : false,
+                                              text: "Reminders",
+                                              onTap: () {
+                                                setState(() {
+                                                  _index = 0;
+                                                });
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            TagButton(
+                                              tapped:
+                                                  _index == 1 ? true : false,
+                                              text: "Bills",
+                                              onTap: () {
+                                                setState(() {
+                                                  _index = 1;
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        TagButton(
-                                          tapped: _index == 1 ? true : false,
-                                          text: "Bills",
-                                          onTap: () {
-                                            setState(() {
-                                              _index = 1;
-                                            });
-                                          },
+                                        Container(
+                                          alignment: Alignment.centerRight,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              GoRouter.of(context)
+                                                  .push("/info");
+                                            },
+                                            icon: const Icon(
+                                              Icons.info,
+                                              color: pColor,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
