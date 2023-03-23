@@ -1,11 +1,10 @@
-// ignore_for_file: depend_on_referenced_packages
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:familist_2/utils/notif.dart';
-import 'package:familist_2/utils/remindersHelper.dart';
+import 'package:familist_2/utils/modules/reminders_helper.dart';
 import 'package:familist_2/utils/route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

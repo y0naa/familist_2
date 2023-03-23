@@ -1,9 +1,7 @@
-// ignore_for_file: file_names
-
 import 'package:flutter/material.dart';
 
-import '../../widgets/shopping/shoppingItem.dart';
-import '../shopping/shoppingHelper.dart';
+import '../../utils/modules/shopping_helper.dart';
+import '../../widgets/shopping/shopping_item.dart';
 
 class HomeShopping extends StatefulWidget {
   const HomeShopping({super.key});

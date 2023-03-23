@@ -1,11 +1,9 @@
-// ignore_for_file: file_names
-
 import 'package:familist_2/widgets/schedule/event.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
-import '../../utils/scheduleHelper.dart';
+import '../../utils/modules/schedule_helper.dart';
 
 class EventsPage extends StatefulWidget {
   final String userId;

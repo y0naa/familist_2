@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';

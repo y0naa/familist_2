@@ -7,9 +7,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:timezone/timezone.dart' as tz;
-import '../widgets/dialog.dart';
-import '../widgets/home/homeCard.dart';
-import 'notif.dart';
+import '../../widgets/dialog.dart';
+import '../../widgets/home/home_card.dart';
+import '../notif.dart';
 
 class RemindersHelpers {
   CollectionReference users = FirebaseFirestore.instance.collection("users");

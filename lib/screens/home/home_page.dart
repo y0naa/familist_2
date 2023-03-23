@@ -1,9 +1,7 @@
-// ignore_for_file: file_names
-
 import 'package:familist_2/constants.dart';
-import 'package:familist_2/screens/Home/homeShopping.dart';
-import 'package:familist_2/screens/home/homeReminders.dart';
-import 'package:familist_2/widgets/tagButton.dart';
+
+import 'package:familist_2/screens/home/home_reminders_section.dart';
+import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +10,7 @@ import 'package:jiffy/jiffy.dart';
 import '../../utils/auth.dart';
 import '../../utils/profile.dart';
 import '../../widgets/dialog.dart';
+import 'home_shopping_section.dart';
 
 class HomePage extends StatefulWidget {
   final int? pageIndex;

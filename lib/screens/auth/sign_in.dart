@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';

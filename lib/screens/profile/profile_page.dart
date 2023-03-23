@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/widgets/dialog.dart';
-import 'package:familist_2/widgets/profile/profileItem.dart';
+import 'package:familist_2/widgets/profile/profile_item.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -88,23 +86,23 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future getUserDetails() async {
-    Map<String, String> _data = <String, String>{};
+    Map<String, String> data = <String, String>{};
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
-    await Profile().getUserDetails().then((value) => _data = value);
-    _name = _data["full name"]!;
-    _bio = _data["bio"]!;
-    _telephone = _data["telephone"]!;
-    _imageURL = _data["imageUrl"]!;
+    await Profile().getUserDetails().then((value) => data = value);
+    _name = data["full name"]!;
+    _bio = data["bio"]!;
+    _telephone = data["telephone"]!;
+    _imageURL = data["imageUrl"]!;
     _nameController.text = _name;
     _bioController.text = _bio;
 
-    if (_data["fuid"] != "") {
+    if (data["fuid"] != "") {
       await Profile()
-          .getFamilyName(_data["fuid"]!)
+          .getFamilyName(data["fuid"]!)
           .then((value) => _familyName = value);
     }
     if (mounted) {
@@ -127,7 +125,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (mounted) {
       getUserDetails();

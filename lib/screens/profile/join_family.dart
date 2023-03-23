@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -1,6 +1,6 @@
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/currency.dart';
-import 'package:familist_2/utils/remindersHelper.dart';
+import 'package:familist_2/utils/modules/reminders_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';

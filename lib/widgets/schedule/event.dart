@@ -1,4 +1,4 @@
-import 'package:familist_2/utils/scheduleHelper.dart';
+import 'package:familist_2/utils/modules/schedule_helper.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

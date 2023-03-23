@@ -1,13 +1,12 @@
 import 'package:familist_2/screens/auth/register.dart';
-import 'package:familist_2/screens/auth/signIn.dart';
-import 'package:familist_2/screens/auth/verifyEmail.dart';
-import 'package:familist_2/screens/home/homePage.dart';
-import 'package:familist_2/screens/mainPage.dart';
-
-import 'package:familist_2/screens/superPage.dart';
+import 'package:familist_2/screens/auth/sign_in.dart';
+import 'package:familist_2/screens/auth/verify_email.dart';
+import 'package:familist_2/screens/main_page.dart';
+import 'package:familist_2/screens/super_page.dart';
 import 'package:go_router/go_router.dart';
-import '../screens/profile/joinFamily.dart';
-import '../screens/profile/scanBarcode.dart';
+
+import '../screens/profile/join_family.dart';
+import '../screens/profile/scan_barcode.dart';
 
 final router = GoRouter(
   routes: [

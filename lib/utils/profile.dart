@@ -141,13 +141,10 @@ class Profile {
 
   Future getUsersId() async {
     List<String> userIDs = [];
-    await FirebaseFirestore.instance.collection("users").get().then(
-          (snapshot) => snapshot.docs.forEach(
-            (document) {
-              userIDs.add(document.reference.id);
-            },
-          ),
-        );
+    var snapshot = await FirebaseFirestore.instance.collection("users").get();
+    for (var document in snapshot.docs) {
+      userIDs.add(document.reference.id);
+    }
     return userIDs;
   }
 }

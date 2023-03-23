@@ -1,7 +1,7 @@
 import 'package:familist_2/widgets/reminders/bill.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/remindersHelper.dart';
+import '../../utils/modules/reminders_helper.dart';
 
 class Bills extends StatefulWidget {
   final VoidCallback refresh;

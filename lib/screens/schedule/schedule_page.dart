@@ -1,20 +1,17 @@
-// ignore_for_file: file_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/constants.dart';
-import 'package:familist_2/screens/schedule/eventsPage.dart';
-import 'package:familist_2/screens/schedule/scheduleSection.dart';
+import 'package:familist_2/screens/schedule/events_section.dart';
+import 'package:familist_2/screens/schedule/schedule_section.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:familist_2/widgets/schedule/dropdown.dart';
-import 'package:familist_2/widgets/tagButton.dart';
+import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../../utils/modules/schedule_helper.dart';
 import '../../utils/profile.dart';
-import '../../utils/scheduleHelper.dart';
 
 class SchedulePage extends StatefulWidget {
   final int? pageIndex;

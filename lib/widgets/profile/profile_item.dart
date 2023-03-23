@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:familist_2/widgets/profile/famlilyBuilder.dart';
+import 'package:familist_2/widgets/profile/family_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+
 import '../../constants.dart';
 import '../../utils/profile.dart';
 import '../dialog.dart';
@@ -125,7 +125,6 @@ class _ProfileItemState extends State<ProfileItem> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _focus.removeListener(_onFocusChanged);
     _focus2.removeListener(_onFocusChanged2);
@@ -535,8 +534,8 @@ class _ProfileItemState extends State<ProfileItem> {
                                   editMode = true;
                                 });
                               },
-                              icon: Row(
-                                children: const [
+                              icon: const Row(
+                                children: [
                                   Icon(
                                     Icons.edit,
                                     size: 16,

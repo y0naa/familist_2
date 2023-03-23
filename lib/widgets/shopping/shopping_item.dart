@@ -1,11 +1,9 @@
-// ignore_for_file: file_names
-
-import 'package:familist_2/screens/shopping/shoppingHelper.dart';
 import 'package:familist_2/utils/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../constants.dart';
+import '../../utils/modules/shopping_helper.dart';
 import '../dialog.dart';
 
 class ShoppingItem extends StatelessWidget {

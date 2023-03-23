@@ -1,10 +1,8 @@
-// ignore_for_file: file_names
-
-import 'package:familist_2/widgets/home/homeCard.dart';
+import 'package:familist_2/widgets/home/home_card.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 
-import '../../utils/remindersHelper.dart';
+import '../../utils/modules/reminders_helper.dart';
 
 class HomeReminders extends StatefulWidget {
   const HomeReminders({super.key});

@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import '../../utils/currency.dart';
-import '../../utils/remindersHelper.dart';
+import '../../utils/modules/reminders_helper.dart';
 
 // ignore: todo
 // TODO: add deadline date

@@ -1,18 +1,16 @@
-// ignore_for_file: file_names
 import 'package:familist_2/constants.dart';
-import 'package:familist_2/screens/shopping/shoppingHelper.dart';
 import 'package:familist_2/widgets/shopping/category.dart';
-import 'package:familist_2/widgets/shopping/shoppingItem.dart';
-import 'package:familist_2/widgets/tagButton.dart';
+import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import '../../utils/currency.dart';
+import '../../utils/modules/shopping_helper.dart';
 import '../../utils/profile.dart';
 import '../../widgets/dialog.dart';
+import '../../widgets/shopping/shopping_item.dart';
 
 class ShoppingPage extends StatefulWidget {
   const ShoppingPage({super.key});

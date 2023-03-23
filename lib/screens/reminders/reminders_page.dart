@@ -1,10 +1,8 @@
-// ignore_for_file: file_names
-
 import 'package:familist_2/constants.dart';
-import 'package:familist_2/screens/reminders/bills.dart';
-import 'package:familist_2/screens/reminders/reminders.dart';
-import 'package:familist_2/utils/remindersHelper.dart';
-import 'package:familist_2/widgets/tagButton.dart';
+import 'package:familist_2/screens/reminders/bills_section.dart';
+import 'package:familist_2/screens/reminders/reminders_section.dart';
+import 'package:familist_2/utils/modules/reminders_helper.dart';
+import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
