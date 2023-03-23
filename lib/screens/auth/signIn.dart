@@ -1,10 +1,9 @@
+// ignore_for_file: file_names
+
 import 'package:familist_2/constants.dart';
-import 'package:familist_2/screens/auth/verifyEmail.dart';
 import 'package:familist_2/utils/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

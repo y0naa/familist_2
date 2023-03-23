@@ -90,7 +90,7 @@ class ShoppingItem extends StatelessWidget {
             ),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(10),
           child: Row(children: [
             Text(
               item['category'] == "Food"

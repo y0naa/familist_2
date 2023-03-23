@@ -15,14 +15,12 @@ class Profile {
 
   Future getFamiliesId() async {
     List<String> familyIDs = [];
-    await FirebaseFirestore.instance.collection("families").get().then(
-          (snapshot) => snapshot.docs.forEach(
-            (document) {
-              print(document.reference);
-              familyIDs.add(document.reference.id);
-            },
-          ),
-        );
+    var snapshot =
+        await FirebaseFirestore.instance.collection("families").get();
+    for (var document in snapshot.docs) {
+      print(document.reference);
+      familyIDs.add(document.reference.id);
+    }
     return familyIDs;
   }
 

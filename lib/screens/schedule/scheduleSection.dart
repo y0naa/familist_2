@@ -244,7 +244,9 @@ class _SchedulerState extends State<Scheduler> {
                                           '2021-02-17 ${b['start time']}');
                                       return aTime.compareTo(bTime);
                                     });
-                                    return SingleChildScrollView(
+
+                                    return SizedBox(
+                                      height: size.height * 0.35,
                                       child: filtered.isNotEmpty
                                           ? ListView.builder(
                                               shrinkWrap: true,

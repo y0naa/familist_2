@@ -1,10 +1,11 @@
+// ignore_for_file: file_names
+
 import 'package:familist_2/widgets/schedule/event.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
 import '../../utils/scheduleHelper.dart';
-import '../../widgets/dialog.dart';
 
 class EventsPage extends StatefulWidget {
   final String userId;
@@ -61,7 +62,7 @@ class _EventsPageState extends State<EventsPage> {
                   );
                 } else {
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.6,
                     child: ListView(
                       shrinkWrap: true,
                       children: eventCards,
