@@ -167,13 +167,12 @@ class RemindersHelpers {
           if (remindersDate.isAfter(tz.TZDateTime.now(tz.local))) {
             print('hello set reminder notif');
             print("due time ${tz.TZDateTime.from(remindersDate, tz.local)}");
-
             NotificationApi.showScheduledNotification(
               id: reminderDoc.id,
               date: tz.TZDateTime.from(remindersDate, tz.local),
               channelID: "tes",
-              title: "Reminder",
-              body: reminderData['item name'],
+              body: "Don't miss your task today!",
+              title: reminderData['item name'],
             );
             print("set time ${tz.TZDateTime.now(tz.local)}");
           }

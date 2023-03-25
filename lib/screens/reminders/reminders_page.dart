@@ -126,7 +126,7 @@ class _RemindersPageState extends State<RemindersPage> {
     String year = startDate.substring(6, startDate.length);
     DateTime dt = DateTime.parse("$year-$month-$day");
     DateTime now = DateTime.now();
-    return dt.difference(now).inDays;
+    return dt.difference(now).inDays + 1;
   }
 
   // * built in methods
