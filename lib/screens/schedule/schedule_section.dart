@@ -1,8 +1,8 @@
-import 'package:familist_2/utils/auth.dart';
 import 'package:familist_2/utils/modules/schedule_helper.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../constants.dart';
 import '../../utils/profile.dart';
 import '../../widgets/schedule/date.dart';

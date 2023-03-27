@@ -20,6 +20,7 @@ void main() async {
   if (Auth().currentUser != null) {
     NotificationApi.initNotif();
     RemindersHelpers().setReminderNotif();
+    RemindersHelpers().setBillsNotif();
   }
   runApp(const MyApp());
 }
@@ -54,7 +55,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     setState(() {
       _connectionStatus = result;
-      print(_connectionStatus);
+      print("Main Connection status: $_connectionStatus");
     });
   }
 

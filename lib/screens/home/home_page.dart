@@ -1,7 +1,5 @@
 import 'package:familist_2/constants.dart';
-
 import 'package:familist_2/screens/home/home_reminders_section.dart';
-import 'package:familist_2/screens/info.dart';
 import 'package:familist_2/widgets/tag_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -30,24 +30,15 @@ class Bill extends StatefulWidget {
 class _BillState extends State<Bill> {
   bool loading = false;
 
-  DateTime dateDue() {
-    if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
-      int repeated = widget.map["repeated in"];
-      DateTime startDate = DateTime.parse(
-          Jiffy(widget.map['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-      DateTime endDate = startDate.add(Duration(days: repeated));
-      return endDate;
-    } else {
-      return DateTime.parse(
-          Jiffy(widget.map['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-    }
-  }
-
   int calculateDaysLeft() {
     if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
-      DateTime dd = dateDue();
-
-      return dd.difference(DateTime.now()).inDays;
+      DateTime dd = RemindersHelpers().dateDue(widget.map);
+      int res = dd.difference(DateTime.now()).inDays;
+      if (res < 0) {
+        dd = DateTime.now().add(Duration(days: widget.map["repeated in"]));
+      }
+      res = dd.difference(DateTime.now()).inDays;
+      return res < 1 ? res : res + 1;
     }
     return -1;
   }
@@ -91,7 +82,11 @@ class _BillState extends State<Bill> {
                         size: 14,
                       ),
                       Text(
-                        DateFormat('dd/MM/yyyy').format(dateDue()).toString(),
+                        DateFormat('dd/MM/yyyy')
+                            .format(
+                              RemindersHelpers().dateDue(widget.map),
+                            )
+                            .toString(),
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           color: Colors.red,
