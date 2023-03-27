@@ -1,3 +1,3 @@
 # Reminder System For Families
 
-tbh I just want to graduate...
+Continued version of Familist
