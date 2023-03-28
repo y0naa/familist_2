@@ -211,23 +211,20 @@ class RemindersHelpers {
       List<DocumentSnapshot> billsList = billsSnapshot.docs;
       for (DocumentSnapshot billDoc in billsList) {
         Map billData = billDoc.data() as Map;
-        DateTime due = dateDue(billData);
-        if (due.isAfter(
-          tz.TZDateTime.now(tz.local),
-        )) {
-          print('Setting bills notifications... ');
-          print(
-              "${billData["item name"]} Due Time:${tz.TZDateTime.from(due, tz.local)}");
-          NotificationApi.showScheduledNotification(
+        DateTime billStartDate = DateTime.parse(
+            Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+        print('Setting bills notifications... ');
+        print(
+            "${billData["item name"]} Due Time:${tz.TZDateTime.from(billStartDate, tz.local)}");
+        NotificationApi.showRepeatingNotification(
             id: billDoc.id,
-            date: tz.TZDateTime.from(due, tz.local),
+            startDate: tz.TZDateTime.from(billStartDate, tz.local),
             channelID: "bills",
             body: "Don't forget to pay your bills!",
             title: billData['item name'],
-          );
-          print(
-              "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
-        }
+            repeated: billData['repeated in']);
+        print(
+            "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
       }
     }
   }
