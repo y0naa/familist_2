@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
+import 'package:familist_2/utils/modules/schedule_helper.dart';
 import 'package:familist_2/utils/notif.dart';
 import 'package:familist_2/utils/modules/reminders_helper.dart';
 import 'package:familist_2/utils/route.dart';
@@ -19,6 +20,7 @@ void main() async {
   await Firebase.initializeApp();
   if (Auth().currentUser != null) {
     NotificationApi.initNotif();
+    ScheduleHelper().setEventsNotif();
     RemindersHelpers().setReminderNotif();
     RemindersHelpers().setBillsNotif();
   }

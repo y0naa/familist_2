@@ -2,6 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/utils.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:timezone/timezone.dart' as tz;
+
+import '../notif.dart';
 
 class ScheduleHelper {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
@@ -143,6 +148,41 @@ class ScheduleHelper {
         context,
         e.toString(),
       );
+    }
+  }
+
+  Future setEventsNotif() async {
+    String currID = await Profile().getUserID();
+    QuerySnapshot eventsSnapshot =
+        await users.doc(currID).collection('events').where('date').get();
+    if (eventsSnapshot.docs.isNotEmpty) {
+      print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOI");
+      List<DocumentSnapshot> eventsList = eventsSnapshot.docs;
+      for (DocumentSnapshot eventDoc in eventsList) {
+        Map eventData = eventDoc.data() as Map;
+        DateTime eventDate = DateTime.parse(
+            Jiffy(eventData['date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+        final timeParts = eventData['time'].split(":");
+        final hour = int.parse(timeParts[0]);
+        final minute = int.parse(timeParts[1]);
+        final date = DateTime(
+            eventDate.year, eventDate.month, eventDate.day, hour, minute);
+        print("setEventsNotif triggered");
+        if (eventDate.isAfter(tz.TZDateTime.now(tz.local))) {
+          print('Setting Events Notifications...');
+          print(
+              "${eventData["item name"]} Due Time: ${tz.TZDateTime.from(date, tz.local)}");
+          NotificationApi.showScheduledNotification(
+            id: eventDoc.id,
+            date: tz.TZDateTime.from(eventDate, tz.local),
+            channelID: "events",
+            body: "You have an important event today!",
+            title: eventData['item name'],
+          );
+          print(
+              "${eventData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
+        }
+      }
     }
   }
 }

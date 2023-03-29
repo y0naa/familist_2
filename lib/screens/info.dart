@@ -512,9 +512,45 @@ class Info extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
+                        ExpansionTile(
+                          tilePadding: const EdgeInsets.all(0),
+                          title: const Text("Notifications"),
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  children: const [
+                                    TextSpan(
+                                      text:
+                                          "Notifications will be sent to remind user about ",
+                                    ),
+                                    TextSpan(
+                                      text: "their own ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(
+                                      text: "Events, Reminders, and Bills ",
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: sColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   )

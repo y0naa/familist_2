@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:jiffy/jiffy.dart';
+
 import '../../utils/currency.dart';
 import '../../utils/modules/reminders_helper.dart';
-
-// ignore: todo
-// TODO: add deadline date
 
 class Bill extends StatefulWidget {
   final Map map;
