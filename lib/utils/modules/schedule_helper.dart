@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:get/utils.dart';
 import 'package:jiffy/jiffy.dart';
+// ignore: depend_on_referenced_packages
 import 'package:timezone/timezone.dart' as tz;
 
 import '../notif.dart';
@@ -41,6 +41,8 @@ class ScheduleHelper {
     try {
       String userID = await Profile().getUserID();
       await users.doc(userID).collection("events").doc(docID).delete();
+      await NotificationApi().cancelAll();
+      NotificationApi.setAllReminders();
       if (context.mounted) {
         dialog(
           context,
@@ -80,6 +82,8 @@ class ScheduleHelper {
 
   Future addEvent(Map<String, dynamic> input, String id) async {
     await users.doc(id).collection("events").add(input);
+    await NotificationApi().cancelAll();
+    NotificationApi.setAllReminders();
   }
 
   Future getEvents(BuildContext context, String userId) async {
@@ -156,7 +160,6 @@ class ScheduleHelper {
     QuerySnapshot eventsSnapshot =
         await users.doc(currID).collection('events').where('date').get();
     if (eventsSnapshot.docs.isNotEmpty) {
-      print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOI");
       List<DocumentSnapshot> eventsList = eventsSnapshot.docs;
       for (DocumentSnapshot eventDoc in eventsList) {
         Map eventData = eventDoc.data() as Map;
@@ -167,14 +170,14 @@ class ScheduleHelper {
         final minute = int.parse(timeParts[1]);
         final date = DateTime(
             eventDate.year, eventDate.month, eventDate.day, hour, minute);
-        print("setEventsNotif triggered");
-        if (eventDate.isAfter(tz.TZDateTime.now(tz.local))) {
+        print("events notif date: $date");
+        if (date.isAfter(tz.TZDateTime.now(tz.local))) {
           print('Setting Events Notifications...');
           print(
               "${eventData["item name"]} Due Time: ${tz.TZDateTime.from(date, tz.local)}");
           NotificationApi.showScheduledNotification(
-            id: eventDoc.id,
-            date: tz.TZDateTime.from(eventDate, tz.local),
+            id: "events",
+            date: tz.TZDateTime.from(date, tz.local),
             channelID: "events",
             body: "You have an important event today!",
             title: eventData['item name'],

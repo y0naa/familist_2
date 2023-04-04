@@ -1,18 +1,16 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
-import 'package:familist_2/utils/modules/schedule_helper.dart';
 import 'package:familist_2/utils/notif.dart';
-import 'package:familist_2/utils/modules/reminders_helper.dart';
 import 'package:familist_2/utils/route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:developer' as developer;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +18,7 @@ void main() async {
   await Firebase.initializeApp();
   if (Auth().currentUser != null) {
     NotificationApi.initNotif();
-    ScheduleHelper().setEventsNotif();
-    RemindersHelpers().setReminderNotif();
-    RemindersHelpers().setBillsNotif();
+    NotificationApi.setAllReminders();
   }
   runApp(const MyApp());
 }

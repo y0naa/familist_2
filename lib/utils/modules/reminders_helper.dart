@@ -21,6 +21,8 @@ class RemindersHelpers {
           await users.doc(userID).collection("reminders").doc(docID).get();
       if (snapshot.exists) {
         await users.doc(userID).collection("reminders").doc(docID).delete();
+        await NotificationApi().cancelAll();
+        NotificationApi.setAllReminders();
         if (context.mounted) {
           dialog(
             context,
@@ -44,11 +46,11 @@ class RemindersHelpers {
     try {
       String userID = await Profile().getUserID();
       await users.doc(userID).collection("bills").doc(docID).delete();
-
+      await NotificationApi().cancelAll();
+      NotificationApi.setAllReminders();
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/bills");
         dialog(context, "Delete Successful", route: "/bills");
-        // print("test result  ");
       }
     } catch (e) {
       dialog(context, e.toString());
@@ -57,10 +59,14 @@ class RemindersHelpers {
 
   Future addReminder(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("reminders").add(input);
+    await NotificationApi().cancelAll();
+    NotificationApi.setAllReminders();
   }
 
   Future addBill(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("bills").add(input);
+    await NotificationApi().cancelAll();
+    NotificationApi.setAllReminders();
   }
 
   Future updateReminder(String uid, String reminderId, bool toggle) async {
@@ -157,14 +163,21 @@ class RemindersHelpers {
       int repeated = bill["repeated in"];
       DateTime startDate = DateTime.parse(
           Jiffy(bill['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-      DateTime endDate = startDate.add(
-        Duration(days: repeated),
-      );
-      if (endDate.isBefore(DateTime.now())) {
-        print("time to reset, end date: $endDate");
-        endDate = DateTime.now().add(Duration(days: repeated));
+      if (startDate.isBefore(DateTime.now())) {
+        DateTime endDate = startDate.add(
+          Duration(days: repeated),
+        );
+        print("end date: $endDate");
+        if (endDate.isBefore(DateTime.now()) && endDate.isBefore(startDate)) {
+          print("time to reset, end date: $endDate");
+          endDate = DateTime.now().add(
+            Duration(days: repeated),
+          );
+        }
+        return endDate;
+      } else {
+        return startDate;
       }
-      return endDate;
     } else {
       return DateTime.parse(
         Jiffy(bill['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"),

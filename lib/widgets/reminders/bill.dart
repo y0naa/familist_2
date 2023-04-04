@@ -29,13 +29,15 @@ class _BillState extends State<Bill> {
 
   int calculateDaysLeft() {
     if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
       DateTime dd = RemindersHelpers().dateDue(widget.map);
-      int res = dd.difference(DateTime.now()).inDays;
+
+      int res = dd.difference(today).inDays;
       if (res < 0) {
         dd = DateTime.now().add(Duration(days: widget.map["repeated in"]));
       }
-      res = dd.difference(DateTime.now()).inDays;
-      return res < 1 ? res : res + 1;
+      return dd.difference(today).inDays;
     }
     return -1;
   }
@@ -60,7 +62,7 @@ class _BillState extends State<Bill> {
                     calculateDaysLeft().toString(),
                     style: GoogleFonts.inter(
                       fontSize: 42,
-                      color: tColor,
+                      color: calculateDaysLeft() < 0 ? Colors.red : tColor,
                       fontWeight: FontWeight.w800,
                     ),
                   ),

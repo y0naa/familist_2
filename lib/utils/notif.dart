@@ -1,13 +1,25 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:familist_2/widgets/schedule/date.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'modules/reminders_helper.dart';
+import 'modules/schedule_helper.dart';
 
 class NotificationApi {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
+
+  Future cancelAll() async {
+    print("cancelling all notifications...");
+    await _notifications.cancelAll();
+  }
+
+  static void setAllReminders() async {
+    await ScheduleHelper().setEventsNotif();
+    await RemindersHelpers().setReminderNotif();
+    await RemindersHelpers().setBillsNotif();
+  }
 
   static void initNotif() async {
     tz.initializeTimeZones();
@@ -39,16 +51,19 @@ class NotificationApi {
     required tz.TZDateTime date,
     required String channelID,
   }) async {
-    return _notifications.zonedSchedule(
-      id.hashCode,
-      title,
-      body,
-      date,
-      await _notificationDetails(channelID),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    if (date.isAfter(tz.TZDateTime.now(tz.local))) {
+      return _notifications.zonedSchedule(
+        id.hashCode,
+        title,
+        body,
+        date,
+        await _notificationDetails(channelID),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
+      );
+    }
   }
 
   static Future showRepeatingNotification({
@@ -91,6 +106,6 @@ class NotificationApi {
     String? payload,
   }) async =>
       _notifications.show(
-          id, title, body, await _notificationDetails("norm notif"),
+          id, title, body, await _notificationDetails("normal notif"),
           payload: payload);
 }
