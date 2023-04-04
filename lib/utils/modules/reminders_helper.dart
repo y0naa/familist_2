@@ -21,7 +21,7 @@ class RemindersHelpers {
           await users.doc(userID).collection("reminders").doc(docID).get();
       if (snapshot.exists) {
         await users.doc(userID).collection("reminders").doc(docID).delete();
-        await NotificationApi().cancelAll();
+        await NotificationApi.cancelAll();
         NotificationApi.setAllReminders();
         if (context.mounted) {
           dialog(
@@ -46,7 +46,7 @@ class RemindersHelpers {
     try {
       String userID = await Profile().getUserID();
       await users.doc(userID).collection("bills").doc(docID).delete();
-      await NotificationApi().cancelAll();
+      await NotificationApi.cancelAll();
       NotificationApi.setAllReminders();
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/bills");
@@ -59,13 +59,13 @@ class RemindersHelpers {
 
   Future addReminder(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("reminders").add(input);
-    await NotificationApi().cancelAll();
+    await NotificationApi.cancelAll();
     NotificationApi.setAllReminders();
   }
 
   Future addBill(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("bills").add(input);
-    await NotificationApi().cancelAll();
+    await NotificationApi.cancelAll();
     NotificationApi.setAllReminders();
   }
 

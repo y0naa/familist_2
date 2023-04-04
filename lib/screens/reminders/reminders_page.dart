@@ -503,8 +503,12 @@ class _RemindersPageState extends State<RemindersPage> {
                             onTap: () async {
                               DateTime? pickedDate = await showDatePicker(
                                 context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
+                                initialDate: DateTime.now().add(
+                                  const Duration(days: 1),
+                                ),
+                                firstDate: DateTime.now().add(
+                                  const Duration(days: 1),
+                                ),
                                 lastDate: DateTime(99999999),
                               );
                               if (pickedDate != null) {
@@ -579,8 +583,12 @@ class _RemindersPageState extends State<RemindersPage> {
                                 onTap: () async {
                                   DateTime? pickedDate = await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.now(),
+                                    initialDate: DateTime.now().add(
+                                      const Duration(days: 1),
+                                    ),
+                                    firstDate: DateTime.now().add(
+                                      const Duration(days: 1),
+                                    ),
                                     lastDate: DateTime(99999999),
                                   );
                                   if (pickedDate != null) {

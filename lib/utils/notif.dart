@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'modules/reminders_helper.dart';
@@ -10,21 +10,30 @@ class NotificationApi {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
 
-  Future cancelAll() async {
+  static Future cancelAll() async {
     print("cancelling all notifications...");
     await _notifications.cancelAll();
   }
 
   static void setAllReminders() async {
+    initNotif();
+    cancelAll();
     await ScheduleHelper().setEventsNotif();
     await RemindersHelpers().setReminderNotif();
     await RemindersHelpers().setBillsNotif();
   }
 
-  static void initNotif() async {
+  static Future<void> _configureLocalTimeZone() async {
     tz.initializeTimeZones();
+    final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(
+      tz.getLocation(timeZoneName),
+    );
+  }
+
+  static void initNotif() async {
+    _configureLocalTimeZone();
     tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
-    print("tz: ${tz.TZDateTime.now(tz.local)}");
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
@@ -38,9 +47,14 @@ class NotificationApi {
 
   static Future _notificationDetails(String channelID) async {
     return NotificationDetails(
-        android: AndroidNotificationDetails(
-            channelID, 'channelName', 'channelDescription',
-            importance: Importance.high));
+      android: AndroidNotificationDetails(
+        channelID,
+        'channelName',
+        'channelDescription',
+        importance: Importance.max,
+        priority: Priority.max,
+      ),
+    );
   }
 
   static Future showScheduledNotification({
@@ -52,6 +66,8 @@ class NotificationApi {
     required String channelID,
   }) async {
     if (date.isAfter(tz.TZDateTime.now(tz.local))) {
+      print('Setting Events Notifications...');
+      print("$title Due Time: $date");
       return _notifications.zonedSchedule(
         id.hashCode,
         title,
@@ -79,9 +95,9 @@ class NotificationApi {
       id.hashCode,
       title,
       body,
-      _nextInstanceOfTenAM(repeated, startDate),
+      _nextInstance(repeated, startDate),
       await _notificationDetails(channelID),
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -89,7 +105,7 @@ class NotificationApi {
     );
   }
 
-  static tz.TZDateTime _nextInstanceOfTenAM(int days, DateTime startDate) {
+  static tz.TZDateTime _nextInstance(int days, DateTime startDate) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
         tz.TZDateTime(tz.local, now.year, now.month, startDate.day);

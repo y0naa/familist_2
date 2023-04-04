@@ -41,7 +41,7 @@ class ScheduleHelper {
     try {
       String userID = await Profile().getUserID();
       await users.doc(userID).collection("events").doc(docID).delete();
-      await NotificationApi().cancelAll();
+      await NotificationApi.cancelAll();
       NotificationApi.setAllReminders();
       if (context.mounted) {
         dialog(
@@ -82,7 +82,7 @@ class ScheduleHelper {
 
   Future addEvent(Map<String, dynamic> input, String id) async {
     await users.doc(id).collection("events").add(input);
-    await NotificationApi().cancelAll();
+    await NotificationApi.cancelAll();
     NotificationApi.setAllReminders();
   }
 
@@ -168,15 +168,11 @@ class ScheduleHelper {
         final timeParts = eventData['time'].split(":");
         final hour = int.parse(timeParts[0]);
         final minute = int.parse(timeParts[1]);
-        final date = DateTime(
-            eventDate.year, eventDate.month, eventDate.day, hour, minute);
-        print("events notif date: $date");
+        final date = DateTime(eventDate.year, eventDate.month, eventDate.day,
+            hour, minute, 0, 0, 0);
         if (date.isAfter(tz.TZDateTime.now(tz.local))) {
-          print('Setting Events Notifications...');
-          print(
-              "${eventData["item name"]} Due Time: ${tz.TZDateTime.from(date, tz.local)}");
           NotificationApi.showScheduledNotification(
-            id: "events",
+            id: eventDoc.id,
             date: tz.TZDateTime.from(date, tz.local),
             channelID: "events",
             body: "You have an important event today!",

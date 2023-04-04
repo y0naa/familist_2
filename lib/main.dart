@@ -9,15 +9,12 @@ import 'package:familist_2/utils/route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
   await Firebase.initializeApp();
   if (Auth().currentUser != null) {
-    NotificationApi.initNotif();
     NotificationApi.setAllReminders();
   }
   runApp(const MyApp());
