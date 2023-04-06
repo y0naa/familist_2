@@ -77,6 +77,7 @@ class NotificationApi {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dateAndTime,
         payload: payload,
       );
     }
@@ -95,9 +96,11 @@ class NotificationApi {
       id.hashCode,
       title,
       body,
-      _nextInstance(repeated, startDate),
+      nextInstance(repeated, startDate),
       await _notificationDetails(channelID),
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+      matchDateTimeComponents: repeated > 7
+          ? DateTimeComponents.dayOfWeekAndTime
+          : DateTimeComponents.time,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -105,23 +108,29 @@ class NotificationApi {
     );
   }
 
-  static tz.TZDateTime _nextInstance(int days, DateTime startDate) {
+  static tz.TZDateTime nextInstance(int days, DateTime startDate) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, startDate.day);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, startDate.year,
+        startDate.month, startDate.day, startDate.hour, startDate.minute, 0);
+
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: days));
     }
+    print("scheduled date: $scheduledDate");
     return scheduledDate;
   }
 
   static Future showNotification({
-    int id = 0,
+    required String id,
     String? title,
     String? body,
     String? payload,
   }) async =>
       _notifications.show(
-          id, title, body, await _notificationDetails("normal notif"),
-          payload: payload);
+        id.hashCode,
+        title,
+        body,
+        await _notificationDetails("normal notif"),
+        payload: payload,
+      );
 }

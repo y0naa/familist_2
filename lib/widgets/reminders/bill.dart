@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/widgets/dialog.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +28,11 @@ class Bill extends StatefulWidget {
 
 class _BillState extends State<Bill> {
   bool loading = false;
-
   int calculateDaysLeft() {
     if (widget.map["repeated in"] != "" || widget.map["start date"] != "") {
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
       DateTime dd = RemindersHelpers().dateDue(widget.map);
-
       int res = dd.difference(today).inDays;
       if (res < 0) {
         dd = DateTime.now().add(Duration(days: widget.map["repeated in"]));
@@ -40,6 +40,12 @@ class _BillState extends State<Bill> {
       return dd.difference(today).inDays;
     }
     return -1;
+  }
+
+  void togglePaid(bool toggle) async {
+    await RemindersHelpers()
+        .togglePaidBills(widget.map['userID'], widget.map['billID'], toggle);
+    GoRouter.of(context).pushReplacement("/bills");
   }
 
   @override
@@ -52,6 +58,15 @@ class _BillState extends State<Bill> {
     return Material(
       color: bgColor,
       child: InkWell(
+        onTap: () {
+          setState(() {
+            if (widget.map['paid']) {
+              togglePaid(false);
+            } else {
+              togglePaid(true);
+            }
+          });
+        },
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(15),
@@ -163,6 +178,7 @@ class _BillState extends State<Bill> {
                   children: [
                     widget.canDelete
                         ? IconButton(
+                            padding: const EdgeInsets.only(left: 25),
                             onPressed: () async {
                               bool delete = await deleteDialog(context);
                               if (delete) {
@@ -184,7 +200,17 @@ class _BillState extends State<Bill> {
                           )
                         : Container(),
                     const SizedBox(
-                      height: 30,
+                      height: 10,
+                    ),
+                    Text(
+                      widget.map['paid'] ? "Paid" : "Unpaid",
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: widget.map['paid'] ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     Text(
                       Currency.convertToIdr(

@@ -318,8 +318,35 @@ class Info extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  children: const [
+                                    TextSpan(
+                                      text:
+                                          "Press the card of a bill to toggle",
+                                    ),
+                                    TextSpan(
+                                      text: " paid and unpaid",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(
+                                      text: " status.",
+                                    ),
+                                  ],
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: sColor,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
+                        const Divider(),
                         ExpansionTile(
                           tilePadding: const EdgeInsets.all(0),
                           title: const Text("Schedule"),

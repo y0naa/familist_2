@@ -91,6 +91,7 @@ class _RemindersPageState extends State<RemindersPage> {
           "price": _priceController.text.trim(),
           "start date": _startDateController.text.trim(),
           "repeated in": int.tryParse(_repeatedInController.text.trim()) ?? -1,
+          "paid": false,
         }, uid);
         if (context.mounted) {
           dialog(

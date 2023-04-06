@@ -77,12 +77,12 @@ class RemindersHelpers {
         .update({"completed": toggle});
   }
 
-  Future updateBills(String uid, String billId, bool toggle) async {
+  Future togglePaidBills(String uid, String billId, bool toggle) async {
     await users
         .doc(uid)
         .collection("bills")
         .doc(billId)
-        .update({"completed": toggle});
+        .update({"paid": toggle});
   }
 
   Future getBills(BuildContext context) async {
@@ -163,17 +163,15 @@ class RemindersHelpers {
       int repeated = bill["repeated in"];
       DateTime startDate = DateTime.parse(
           Jiffy(bill['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+      // start date has passed
       if (startDate.isBefore(DateTime.now())) {
         DateTime endDate = startDate.add(
           Duration(days: repeated),
         );
-        print("end date: $endDate");
-        if (endDate.isBefore(DateTime.now()) && endDate.isBefore(startDate)) {
-          print("time to reset, end date: $endDate");
-          endDate = DateTime.now().add(
-            Duration(days: repeated),
-          );
+        while (endDate.isBefore(DateTime.now())) {
+          endDate = endDate.add(Duration(days: repeated));
         }
+        print("end date: $endDate");
         return endDate;
       } else {
         return startDate;
@@ -204,7 +202,7 @@ class RemindersHelpers {
             NotificationApi.showScheduledNotification(
               id: reminderDoc.id,
               date: tz.TZDateTime.from(remindersDate, tz.local),
-              channelID: "reminders",
+              channelID: reminderDoc.id,
               body: "Don't miss your task today!",
               title: reminderData['item name'],
             );
@@ -218,26 +216,29 @@ class RemindersHelpers {
 
   Future setBillsNotif() async {
     String currID = await Profile().getUserID();
-    QuerySnapshot billsSnapshot =
-        await users.doc(currID).collection('bills').where('repeated in').get();
+    QuerySnapshot billsSnapshot = await users
+        .doc(currID)
+        .collection('bills')
+        .where('repeated in', isNotEqualTo: null)
+        .get();
     if (billsSnapshot.docs.isNotEmpty) {
       List<DocumentSnapshot> billsList = billsSnapshot.docs;
       for (DocumentSnapshot billDoc in billsList) {
         Map billData = billDoc.data() as Map;
-        DateTime billStartDate = DateTime.parse(
-            Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-        print('Setting bills notifications... ');
-        print(
-            "${billData["item name"]} Due Time:${tz.TZDateTime.from(billStartDate, tz.local)}");
-        NotificationApi.showRepeatingNotification(
-            id: billDoc.id,
-            startDate: tz.TZDateTime.from(billStartDate, tz.local),
-            channelID: "bills",
-            body: "Don't forget to pay your bills!",
-            title: billData['item name'],
-            repeated: billData['repeated in']);
-        print(
-            "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
+        if (!billData['paid']) {
+          DateTime billStartDate = DateTime.parse(
+              Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+          print('Setting bills notifications... ');
+          NotificationApi.showRepeatingNotification(
+              id: billDoc.id,
+              startDate: tz.TZDateTime.from(billStartDate, tz.local),
+              channelID: "bills",
+              body: "Don't forget to pay your bills!",
+              title: billData['item name'],
+              repeated: billData['repeated in']);
+          print(
+              "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
+        }
       }
     }
   }
