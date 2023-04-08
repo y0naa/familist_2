@@ -187,7 +187,6 @@ class _BillState extends State<Bill> {
                                     context,
                                     widget.map['billID'],
                                   );
-                                  // ignore: use_build_context_synchronously
                                   GoRouter.of(context)
                                       .pushReplacement("/bills");
                                 }

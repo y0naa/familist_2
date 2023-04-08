@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'bg_service.dart';
 import 'modules/reminders_helper.dart';
 import 'modules/schedule_helper.dart';
 
@@ -20,7 +21,7 @@ class NotificationApi {
     cancelAll();
     await ScheduleHelper().setEventsNotif();
     await RemindersHelpers().setReminderNotif();
-    await RemindersHelpers().setBillsNotif();
+    await RemindersHelpers.setBillsNotif();
   }
 
   static Future<void> _configureLocalTimeZone() async {
@@ -31,6 +32,7 @@ class NotificationApi {
     );
   }
 
+  @pragma('vm:entry-point')
   static void initNotif() async {
     _configureLocalTimeZone();
     tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
@@ -83,8 +85,10 @@ class NotificationApi {
     }
   }
 
+  @pragma('vm:entry-point')
   static Future showRepeatingNotification({
     required String id,
+    required Map<String, dynamic> bill,
     String? title,
     String? body,
     String? payload,
@@ -92,15 +96,24 @@ class NotificationApi {
     required int repeated,
     required String channelID,
   }) async {
+    BackgroundService.setAlarmManager(
+      id,
+      nextInstance(repeated, startDate).add(
+        Duration(days: repeated),
+      ),
+      bill,
+    );
+    print("setting zoned schedule for ${nextInstance(repeated, startDate)}");
+    print("setting alarm manager for ${nextInstance(repeated, startDate).add(
+      Duration(days: repeated),
+    )}");
+
     return _notifications.zonedSchedule(
       id.hashCode,
       title,
       body,
       nextInstance(repeated, startDate),
       await _notificationDetails(channelID),
-      matchDateTimeComponents: repeated > 7
-          ? DateTimeComponents.dayOfWeekAndTime
-          : DateTimeComponents.time,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -108,6 +121,7 @@ class NotificationApi {
     );
   }
 
+  @pragma('vm:entry-point')
   static tz.TZDateTime nextInstance(int days, DateTime startDate) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, startDate.year,
@@ -120,6 +134,7 @@ class NotificationApi {
     return scheduledDate;
   }
 
+  @pragma('vm:entry-point')
   static Future showNotification({
     required String id,
     String? title,

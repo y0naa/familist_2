@@ -65,6 +65,8 @@ dependencies:
   flutter_local_notifications: ^8.2.0
   connectivity_plus: ^3.0.3
   flutter_native_timezone: ^2.0.0
+  android_alarm_manager_plus: ^2.1.1
+  uuid: ^3.0.7
  
 
 dev_dependencies:

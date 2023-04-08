@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';
@@ -13,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   if (Auth().currentUser != null) {
     NotificationApi.setAllReminders();
   }

@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, depend_on_referenced_packages
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:familist_2/utils/bg_service.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -12,7 +13,8 @@ import '../../widgets/home/home_card.dart';
 import '../notif.dart';
 
 class RemindersHelpers {
-  CollectionReference users = FirebaseFirestore.instance.collection("users");
+  static CollectionReference users =
+      FirebaseFirestore.instance.collection("users");
 
   Future deleteReminder(BuildContext context, String docID) async {
     try {
@@ -214,7 +216,7 @@ class RemindersHelpers {
     }
   }
 
-  Future setBillsNotif() async {
+  static Future setBillsNotif() async {
     String currID = await Profile().getUserID();
     QuerySnapshot billsSnapshot = await users
         .doc(currID)
@@ -230,7 +232,9 @@ class RemindersHelpers {
               Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
           print('Setting bills notifications... ');
           NotificationApi.showRepeatingNotification(
+              // using this cuz it has next instance
               id: billDoc.id,
+              bill: billData as Map<String, dynamic>,
               startDate: tz.TZDateTime.from(billStartDate, tz.local),
               channelID: "bills",
               body: "Don't forget to pay your bills!",
