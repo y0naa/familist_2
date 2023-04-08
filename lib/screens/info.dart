@@ -318,6 +318,7 @@ class Info extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            const Divider(),
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: RichText(
@@ -335,6 +336,25 @@ class Info extends StatelessWidget {
                                     ),
                                     TextSpan(
                                       text: " status.",
+                                    ),
+                                  ],
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: sColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Divider(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  children: const [
+                                    TextSpan(
+                                      text:
+                                          "Bills will be triggered at 00:00 on the given day and will reset to 'unpaid' if it has go through a cycle of given days.",
                                     ),
                                   ],
                                   style: GoogleFonts.inter(

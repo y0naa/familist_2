@@ -34,7 +34,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   // Methods
   void getUid() async {
-    uid = await Profile().getUserID();
+    uid = await Profile.getUserID();
   }
 
   Future addShopping() async {

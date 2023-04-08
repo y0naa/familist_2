@@ -25,7 +25,7 @@ class _JoinFamilyState extends State<JoinFamily> {
   Future updateData(String res) async {
     bool checked = await Profile().doesFamilyExist(res);
     if (checked) {
-      String id = await Profile().getUserID();
+      String id = await Profile.getUserID();
       await Profile().updateData(id, {"fuid": res});
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/profile");

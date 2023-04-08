@@ -35,16 +35,18 @@ class _BillState extends State<Bill> {
       DateTime dd = RemindersHelpers().dateDue(widget.map);
       int res = dd.difference(today).inDays;
       if (res < 0) {
-        dd = DateTime.now().add(Duration(days: widget.map["repeated in"]));
+        dd = DateTime.now().add(
+          Duration(days: widget.map["repeated in"]),
+        );
       }
       return dd.difference(today).inDays;
     }
     return -1;
   }
 
-  void togglePaid(bool toggle) async {
+  void togglePaid(bool paid) async {
     await RemindersHelpers()
-        .togglePaidBills(widget.map['userID'], widget.map['billID'], toggle);
+        .togglePaidBills(widget.map['userID'], widget.map, paid);
     GoRouter.of(context).pushReplacement("/bills");
   }
 

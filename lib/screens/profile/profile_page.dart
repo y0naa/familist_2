@@ -61,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (photo != null) {
         await uploadProfile(photo!);
       }
-      await Profile().getUserID().then((value) => id = value);
+      await Profile.getUserID().then((value) => id = value);
       await Profile().updateData(
         id,
         {

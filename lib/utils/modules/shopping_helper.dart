@@ -23,7 +23,7 @@ class ShoppingHelper {
 
   Future deleteItem(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
+      String userID = await Profile.getUserID();
       DocumentSnapshot snapshot =
           await users.doc(userID).collection("shopping").doc(docID).get();
 
@@ -51,7 +51,7 @@ class ShoppingHelper {
   Future getShoppingItems(BuildContext context) async {
     try {
       String fuid = await Profile().getFamilyID();
-      String currID = await Profile().getUserID();
+      String currID = await Profile.getUserID();
       QuerySnapshot usersQuerySnapshot =
           await users.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> shoppingMap = {};

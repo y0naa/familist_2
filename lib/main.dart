@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:familist_2/constants.dart';
 import 'package:familist_2/utils/auth.dart';

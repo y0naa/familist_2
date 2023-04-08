@@ -52,7 +52,7 @@ class _ProfileItemState extends State<ProfileItem> {
 
   Future getData() async {
     // familiesIDs = await Profile().getFamiliesId();
-    userID = await Profile().getUserID();
+    userID = await Profile.getUserID();
     userIDs = await Profile().getUsersId();
     fuid = await Profile().getFamilyID();
   }
@@ -87,7 +87,7 @@ class _ProfileItemState extends State<ProfileItem> {
   Future updatePhoneNumber() async {
     try {
       String id = "";
-      await Profile().getUserID().then((value) => id = value);
+      await Profile.getUserID().then((value) => id = value);
       await Profile().updateData(
         id,
         {"telephone": _controller.text.trim()},

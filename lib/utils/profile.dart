@@ -57,7 +57,8 @@ class Profile {
     return name;
   }
 
-  Future getUserID() async {
+  @pragma('vm:entry-point')
+  static Future getUserID() async {
     String id = "";
     await FirebaseFirestore.instance
         .collection("users")

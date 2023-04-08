@@ -12,7 +12,7 @@ class ScheduleHelper {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
   Future<int> checkUser(List<String> items) async {
     int index = 0;
-    String uid = await Profile().getUserID();
+    String uid = await Profile.getUserID();
     DocumentSnapshot documentSnapshot = await users.doc(uid).get();
     if (documentSnapshot.exists) {
       String fullName = documentSnapshot.get("full name");
@@ -24,7 +24,7 @@ class ScheduleHelper {
 
   Future deleteSchedule(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
+      String userID = await Profile.getUserID();
       await users.doc(userID).collection("schedule").doc(docID).delete();
       if (context.mounted) {
         dialog(
@@ -39,7 +39,7 @@ class ScheduleHelper {
 
   Future deleteEvent(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
+      String userID = await Profile.getUserID();
       await users.doc(userID).collection("events").doc(docID).delete();
       await NotificationApi.cancelAll();
       NotificationApi.setAllReminders();
@@ -88,7 +88,7 @@ class ScheduleHelper {
 
   Future getEvents(BuildContext context, String userId) async {
     try {
-      String currID = await Profile().getUserID();
+      String currID = await Profile.getUserID();
       CollectionReference eventsRef = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -156,7 +156,7 @@ class ScheduleHelper {
   }
 
   Future setEventsNotif() async {
-    String currID = await Profile().getUserID();
+    String currID = await Profile.getUserID();
     QuerySnapshot eventsSnapshot =
         await users.doc(currID).collection('events').where('date').get();
     if (eventsSnapshot.docs.isNotEmpty) {

@@ -118,7 +118,7 @@ class _RemindersPageState extends State<RemindersPage> {
   }
 
   void getUid() async {
-    uid = await Profile().getUserID();
+    uid = await Profile.getUserID();
   }
 
   int dayDifference(String startDate) {

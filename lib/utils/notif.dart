@@ -89,35 +89,14 @@ class NotificationApi {
   static Future showRepeatingNotification({
     required String id,
     required Map<String, dynamic> bill,
-    String? title,
-    String? body,
-    String? payload,
     required DateTime startDate,
     required int repeated,
-    required String channelID,
   }) async {
+    print("setting alarm manager for ${nextInstance(repeated, startDate)}");
     BackgroundService.setAlarmManager(
       id,
-      nextInstance(repeated, startDate).add(
-        Duration(days: repeated),
-      ),
-      bill,
-    );
-    print("setting zoned schedule for ${nextInstance(repeated, startDate)}");
-    print("setting alarm manager for ${nextInstance(repeated, startDate).add(
-      Duration(days: repeated),
-    )}");
-
-    return _notifications.zonedSchedule(
-      id.hashCode,
-      title,
-      body,
       nextInstance(repeated, startDate),
-      await _notificationDetails(channelID),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: payload,
+      bill,
     );
   }
 

@@ -1,15 +1,17 @@
 // ignore_for_file: file_names, depend_on_referenced_packages
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:familist_2/utils/bg_service.dart';
 import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:timezone/timezone.dart' as tz;
+
 import '../../widgets/dialog.dart';
 import '../../widgets/home/home_card.dart';
+import '../bg_service.dart';
 import '../notif.dart';
 
 class RemindersHelpers {
@@ -18,7 +20,7 @@ class RemindersHelpers {
 
   Future deleteReminder(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
+      String userID = await Profile.getUserID();
       DocumentSnapshot snapshot =
           await users.doc(userID).collection("reminders").doc(docID).get();
       if (snapshot.exists) {
@@ -46,7 +48,7 @@ class RemindersHelpers {
 
   Future deleteBill(BuildContext context, String docID) async {
     try {
-      String userID = await Profile().getUserID();
+      String userID = await Profile.getUserID();
       await users.doc(userID).collection("bills").doc(docID).delete();
       await NotificationApi.cancelAll();
       NotificationApi.setAllReminders();
@@ -79,18 +81,40 @@ class RemindersHelpers {
         .update({"completed": toggle});
   }
 
-  Future togglePaidBills(String uid, String billId, bool toggle) async {
-    await users
-        .doc(uid)
-        .collection("bills")
-        .doc(billId)
-        .update({"paid": toggle});
+  Future togglePaidBills(String uid, Map bill, bool paid) async {
+    String currID = await Profile.getUserID();
+    await users.doc(uid).collection("bills").doc(bill['billID']).update(
+      {"paid": paid},
+    );
+    bill['paid'] = paid;
+    bill['currentUserID'] = currID;
+    if (paid) {
+      print("this bill has been paid");
+      await AndroidAlarmManager.cancel(bill['billID'].hashCode);
+      // DateTime nextDateTriggered = dateDue(bill).add(
+      //   Duration(
+      //     days: bill['repeated in'],
+      //   ),
+      // );
+      BackgroundService.setAlarmManager(
+        bill['billID'],
+        dateDue(bill),
+        bill as Map<String, dynamic>,
+      );
+    } else {
+      print("this bill is unpaid");
+      BackgroundService.setAlarmManager(
+        bill['billID'],
+        dateDue(bill),
+        bill as Map<String, dynamic>,
+      );
+    }
   }
 
   Future getBills(BuildContext context) async {
     try {
       String fuid = await Profile().getFamilyID();
-      String currID = await Profile().getUserID();
+      String currID = await Profile.getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
       QuerySnapshot usersQuerySnapshot =
@@ -125,7 +149,7 @@ class RemindersHelpers {
   Future getReminders(BuildContext? context) async {
     try {
       String fuid = await Profile().getFamilyID();
-      String currID = await Profile().getUserID();
+      String currID = await Profile.getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
       QuerySnapshot usersQuerySnapshot =
@@ -186,7 +210,7 @@ class RemindersHelpers {
   }
 
   Future setReminderNotif() async {
-    String currID = await Profile().getUserID();
+    String currID = await Profile.getUserID();
     QuerySnapshot remindersSnapshot =
         await users.doc(currID).collection('reminders').where('date due').get();
     if (remindersSnapshot.docs.isNotEmpty) {
@@ -216,8 +240,24 @@ class RemindersHelpers {
     }
   }
 
+  @pragma('vm:entry-point')
+  static void bgNotificationTogglePaid(String billId, String userId) async {
+    print('Running bgNotificationTogglePaid');
+    CollectionReference billsRef = users.doc(userId).collection("bills");
+    DocumentReference billDocRef = billsRef.doc(billId);
+    DocumentSnapshot billSnapshot = await billDocRef.get();
+    if (billSnapshot.exists) {
+      Map<String, dynamic> billData =
+          billSnapshot.data() as Map<String, dynamic>;
+      if (billData['paid']) {
+        await billDocRef.update({"paid": false});
+        print("bill updated");
+      }
+    }
+  }
+
   static Future setBillsNotif() async {
-    String currID = await Profile().getUserID();
+    String currID = await Profile.getUserID();
     QuerySnapshot billsSnapshot = await users
         .doc(currID)
         .collection('bills')
@@ -227,18 +267,17 @@ class RemindersHelpers {
       List<DocumentSnapshot> billsList = billsSnapshot.docs;
       for (DocumentSnapshot billDoc in billsList) {
         Map billData = billDoc.data() as Map;
+        billData['billID'] = billDoc.id;
+        billData['currentUserID'] = currID;
         if (!billData['paid']) {
           DateTime billStartDate = DateTime.parse(
               Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
           print('Setting bills notifications... ');
+          // using RepeatingNotification because it has next instance instead of ScheduledNotification
           NotificationApi.showRepeatingNotification(
-              // using this cuz it has next instance
               id: billDoc.id,
               bill: billData as Map<String, dynamic>,
               startDate: tz.TZDateTime.from(billStartDate, tz.local),
-              channelID: "bills",
-              body: "Don't forget to pay your bills!",
-              title: billData['item name'],
               repeated: billData['repeated in']);
           print(
               "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");

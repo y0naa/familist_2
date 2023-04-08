@@ -157,8 +157,8 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   void getUid() async {
-    userid = await Profile().getUserID();
-    uid = await Profile().getUserID();
+    userid = await Profile.getUserID();
+    uid = await Profile.getUserID();
     if (mounted) {
       setState(() {}); // refresh to insert value
     }

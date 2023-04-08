@@ -23,7 +23,7 @@ class _SchedulerState extends State<Scheduler> {
   List schedules = [];
 
   void getCurrentID() async {
-    String id = await Profile().getUserID();
+    String id = await Profile.getUserID();
     if (mounted) {
       setState(() {
         currentID = id;
