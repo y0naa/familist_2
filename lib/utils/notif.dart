@@ -15,14 +15,9 @@ class NotificationApi {
       FlutterLocalNotificationsPlugin();
 
   static Future cancelAll() async {
+    String currID = await Profile.getUserID();
     print("cancelling all notifications...");
     await _notifications.cancelAll();
-  }
-
-  static void setAllReminders() async {
-    initNotif();
-    cancelAll();
-    String currID = await Profile.getUserID();
     QuerySnapshot billsSnapshot = await RemindersHelpers.users
         .doc(currID)
         .collection('bills')
@@ -34,6 +29,11 @@ class NotificationApi {
         await AndroidAlarmManager.cancel(billDoc.id.hashCode);
       }
     }
+  }
+
+  static void setAllReminders() async {
+    initNotif();
+    cancelAll();
     await ScheduleHelper().setEventsNotif();
     await RemindersHelpers().setReminderNotif();
     await RemindersHelpers.setBillsNotif();

@@ -7,6 +7,8 @@ import 'package:familist_2/screens/schedule/schedule_page.dart';
 import 'package:familist_2/screens/shopping/shopping_page.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/notif.dart';
+
 class SuperPage extends StatefulWidget {
   final int? page;
   final int? subPage;
@@ -23,6 +25,8 @@ class _SuperPageState extends State<SuperPage> {
   @override
   void initState() {
     super.initState();
+    NotificationApi.setAllReminders();
+
     widget.page == null ? null : _activePages = widget.page!;
     _pages = [
       HomePage(
@@ -56,9 +60,11 @@ class _SuperPageState extends State<SuperPage> {
         backgroundColor: bgColor,
         color: pColor,
         onTap: (index) {
-          setState(() {
-            _activePages = index;
-          });
+          if (context.mounted) {
+            setState(() {
+              _activePages = index;
+            });
+          }
         },
         items: const [
           Icon(

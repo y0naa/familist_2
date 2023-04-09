@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../widgets/dialog.dart';
 
 class SignIn extends StatefulWidget {
@@ -29,19 +28,20 @@ class _SignInState extends State<SignIn> {
     try {
       if (_emailController.text.trim().isEmpty ||
           _passwordController.text.trim().isEmpty) {
-        setState(() {
-          validate = true;
-        });
+        if (mounted) {
+          setState(() {
+            validate = true;
+          });
+        }
       } else {
         await Auth().signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        setState(() {
-          validate = false;
-        });
-
         if (mounted) {
+          setState(() {
+            validate = false;
+          });
           GoRouter.of(context).pushReplacement("/verifyEmail");
         }
       }

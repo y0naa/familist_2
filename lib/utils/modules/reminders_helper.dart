@@ -268,19 +268,17 @@ class RemindersHelpers {
         Map billData = billDoc.data() as Map;
         billData['billID'] = billDoc.id;
         billData['currentUserID'] = currID;
-        if (!billData['paid']) {
-          DateTime billStartDate = DateTime.parse(
-              Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-          print('Setting bills notifications... ');
-          // using RepeatingNotification because it has next instance instead of ScheduledNotification
-          NotificationApi.showRepeatingNotification(
-              id: billDoc.id,
-              bill: billData as Map<String, dynamic>,
-              startDate: tz.TZDateTime.from(billStartDate, tz.local),
-              repeated: billData['repeated in']);
-          print(
-              "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
-        }
+        DateTime billStartDate = DateTime.parse(
+            Jiffy(billData['start date'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+        print('Setting bills notifications... ');
+        // using RepeatingNotification because it has next instance instead of ScheduledNotification
+        NotificationApi.showRepeatingNotification(
+            id: billDoc.id,
+            bill: billData as Map<String, dynamic>,
+            startDate: tz.TZDateTime.from(billStartDate, tz.local),
+            repeated: billData['repeated in']);
+        print(
+            "${billData["item name"]} Set Time: ${tz.TZDateTime.now(tz.local)}");
       }
     }
   }

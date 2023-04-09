@@ -11,6 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 import '../../utils/auth.dart';
+import '../../utils/notif.dart';
 import '../../utils/profile.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -114,6 +115,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> signOut() async {
     try {
+      await NotificationApi
+          .cancelAll(); // cancel first because it requires auth
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/");
         await Auth().signOut();
