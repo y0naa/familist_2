@@ -1,4 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:familist_2/utils/profile.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -19,6 +22,18 @@ class NotificationApi {
   static void setAllReminders() async {
     initNotif();
     cancelAll();
+    String currID = await Profile.getUserID();
+    QuerySnapshot billsSnapshot = await RemindersHelpers.users
+        .doc(currID)
+        .collection('bills')
+        .where('repeated in', isNotEqualTo: null)
+        .get();
+    if (billsSnapshot.docs.isNotEmpty) {
+      List<DocumentSnapshot> billsList = billsSnapshot.docs;
+      for (DocumentSnapshot billDoc in billsList) {
+        await AndroidAlarmManager.cancel(billDoc.id.hashCode);
+      }
+    }
     await ScheduleHelper().setEventsNotif();
     await RemindersHelpers().setReminderNotif();
     await RemindersHelpers.setBillsNotif();

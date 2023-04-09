@@ -6,10 +6,17 @@ import 'notif.dart';
 class BackgroundService {
   @pragma('vm:entry-point')
   static void runBgTask(int alarmId, Map<String, dynamic> bill) async {
-    await Firebase.initializeApp();
-    print(
-      "[${DateTime.now}] Hello, world! function='$runBgTask' bill=$bill",
+    DateTime today = DateTime.now();
+    DateTime dateAtMidnight = DateTime(
+      today.year,
+      today.month,
+      today.day,
+      0,
+      0,
     );
+
+    await Firebase.initializeApp();
+
     NotificationApi.initNotif();
     if (!bill['paid']) {
       print("running !bill[paid]");
@@ -27,12 +34,19 @@ class BackgroundService {
     }
     setAlarmManager(
       bill['billID'],
-      DateTime.now().add(
+      dateAtMidnight.add(
         Duration(
           days: bill['repeated in'],
         ),
       ),
       bill,
+    );
+    print(
+      "[${DateTime.now}] Hello, world! function='$runBgTask' bill=$bill setAlarm=$setAlarmManager date at midnight=${dateAtMidnight.add(
+        Duration(
+          days: bill['repeated in'],
+        ),
+      )}",
     );
   }
 

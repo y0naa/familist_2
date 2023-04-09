@@ -50,8 +50,8 @@ class RemindersHelpers {
     try {
       String userID = await Profile.getUserID();
       await users.doc(userID).collection("bills").doc(docID).delete();
-      await NotificationApi.cancelAll();
-      NotificationApi.setAllReminders();
+      AndroidAlarmManager.cancel(docID.hashCode);
+      //NotificationApi.setAllReminders();
       if (context.mounted) {
         GoRouter.of(context).pushReplacement("/bills");
         dialog(context, "Delete Successful", route: "/bills");
@@ -69,7 +69,6 @@ class RemindersHelpers {
 
   Future addBill(Map<String, dynamic> input, String uid) async {
     await users.doc(uid).collection("bills").add(input);
-    await NotificationApi.cancelAll();
     NotificationApi.setAllReminders();
   }
 
