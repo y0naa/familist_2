@@ -24,31 +24,34 @@ class _VerifyEmailState extends State<VerifyEmail> {
   @override
   void initState() {
     super.initState();
-    _isEmailVerified = Auth().currentUser!.emailVerified;
+    if (Auth().currentUser != null) {
+      _isEmailVerified = Auth().currentUser!.emailVerified;
 
-    if (!_isEmailVerified) {
-      sendVerificationEmail();
-
-      timer = Timer.periodic(
-        const Duration(seconds: 3),
-        (_) => checkEmailVerified(),
-      );
+      if (!_isEmailVerified) {
+        sendVerificationEmail();
+        timer = Timer.periodic(
+          const Duration(seconds: 3),
+          (_) => checkEmailVerified(),
+        );
+      }
     }
   }
 
   Future sendVerificationEmail() async {
     try {
-      final user = FirebaseAuth.instance.currentUser!;
-      await user.sendEmailVerification();
-      if (mounted) {
-        setState(() => _canResendEmail = false);
-      }
+      if (Auth().currentUser != null) {
+        final user = Auth().currentUser!;
+        await user.sendEmailVerification();
+        if (mounted) {
+          setState(() => _canResendEmail = false);
+        }
 
-      await Future.delayed(
-        const Duration(seconds: 5),
-      );
-      if (mounted) {
-        setState(() => _canResendEmail = true);
+        await Future.delayed(
+          const Duration(seconds: 10),
+        );
+        if (mounted) {
+          setState(() => _canResendEmail = true);
+        }
       }
     } catch (e) {
       dialog(context, e.toString());
@@ -64,7 +67,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
         if (Auth().currentUser == null) {
           GoRouter.of(context).pushReplacement("/signIn");
         } else {
-          _isEmailVerified = Auth().currentUser!.emailVerified;
+          if (Auth().currentUser != null) {
+            _isEmailVerified = Auth().currentUser!.emailVerified;
+          }
         }
       });
     }

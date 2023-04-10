@@ -115,6 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> signOut() async {
     try {
+      Profile().cancelProfileFutureStream();
       await NotificationApi
           .cancelAll(); // cancel first because it requires auth
       if (context.mounted) {
@@ -128,6 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    Profile().initProfileFutureStream();
     super.initState();
     if (mounted) {
       getUserDetails();

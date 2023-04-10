@@ -1,5 +1,6 @@
 import 'package:familist_2/widgets/reminders/bill.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/modules/reminders_helper.dart';
 
@@ -26,9 +27,22 @@ class _BillsState extends State<Bills> {
               snapshot.data.forEach((userId, bills) {
                 allBills.addAll(bills);
               });
-              allBills.sort((a, b) => a['repeated in']
-                  .toString()
-                  .compareTo(b['repeated in'].toString()));
+              if (allBills.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No items found",
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }
+              allBills.sort(
+                (a, b) => a['repeated in'].toString().compareTo(
+                      b['repeated in'].toString(),
+                    ),
+              );
 
               for (var bill in allBills) {
                 billCards.add(

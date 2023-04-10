@@ -16,7 +16,6 @@ class BackgroundService {
     );
 
     await Firebase.initializeApp();
-
     NotificationApi.initNotif();
     if (!bill['paid']) {
       print("running !bill[paid]");
@@ -25,6 +24,7 @@ class BackgroundService {
         body: "Don't forget to pay your bills!",
         title: bill['item name'],
       );
+      cancelAlarmManager(bill['billID']);
     } else {
       RemindersHelpers.bgNotificationTogglePaid(
         bill['billID'],

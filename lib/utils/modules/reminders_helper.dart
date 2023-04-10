@@ -6,6 +6,7 @@ import 'package:familist_2/utils/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -299,82 +300,101 @@ class RemindersHelpers {
             allReminders.addAll(reminders);
           });
 
-          allReminders.sort((a, b) {
-            if (a["completed"] == b["completed"]) {
-              DateTime aDateDue = DateTime.parse(
-                  Jiffy(a['date due'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-              DateTime bDateDue = DateTime.parse(
-                  Jiffy(b['date due'], "dd/MM/yyyy").format("yyyy-MM-dd"));
-              return aDateDue.compareTo(bDateDue);
-            }
-            return a["completed"] ? 1 : -1;
-          });
-
-          for (var reminder in allReminders) {
-            homeCards.add(
-              Dismissible(
-                key: Key(reminder['item name']),
-                direction: reminder['userID'] == reminder['currentID']
-                    ? DismissDirection.endToStart
-                    : DismissDirection.none,
-                confirmDismiss: (DismissDirection direction) {
-                  return confirmDismissDialog(context, () {
-                    if (context.mounted) {
-                      RemindersHelpers().deleteReminder(
-                        context,
-                        reminder['reminderID'],
-                      );
-                      GoRouter.of(context).pushReplacement("/reminders");
-                    }
-                  });
-                },
-                background: Container(
-                  color: Colors.red,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(Icons.delete, color: Colors.white),
-                      SizedBox(width: 16),
-                    ],
-                  ),
-                ),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(Icons.delete, color: Colors.white),
-                      SizedBox(width: 16),
-                    ],
-                  ),
-                ),
-                child: HomeCard(
-                  home: false,
-                  shoppingList: false,
-                  map: reminder,
-                  title: reminder['item name'],
-                  initCompleted: reminder['completed'],
-                  extra: "",
+          if (allReminders.isEmpty) {
+            print("all reminders is empty");
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              if (context.mounted) {
+                refreshParent();
+                print("scheduler binding");
+              }
+            });
+            return Center(
+              child: Text(
+                "No items found",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             );
-          }
+          } else {
+            allReminders.sort((a, b) {
+              if (a["completed"] == b["completed"]) {
+                DateTime aDateDue = DateTime.parse(
+                    Jiffy(a['date due'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+                DateTime bDateDue = DateTime.parse(
+                    Jiffy(b['date due'], "dd/MM/yyyy").format("yyyy-MM-dd"));
+                return aDateDue.compareTo(bDateDue);
+              }
+              return a["completed"] ? 1 : -1;
+            });
 
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) {
-              callback(allReminders[0]);
-              refreshParent();
-              print("scheduler binding");
+            for (var reminder in allReminders) {
+              homeCards.add(
+                Dismissible(
+                  key: Key(reminder['item name']),
+                  direction: reminder['userID'] == reminder['currentID']
+                      ? DismissDirection.endToStart
+                      : DismissDirection.none,
+                  confirmDismiss: (DismissDirection direction) {
+                    return confirmDismissDialog(context, () {
+                      if (context.mounted) {
+                        RemindersHelpers().deleteReminder(
+                          context,
+                          reminder['reminderID'],
+                        );
+                        GoRouter.of(context).pushReplacement("/reminders");
+                      }
+                    });
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(width: 16),
+                      ],
+                    ),
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(width: 16),
+                      ],
+                    ),
+                  ),
+                  child: HomeCard(
+                    home: false,
+                    shoppingList: false,
+                    map: reminder,
+                    title: reminder['item name'],
+                    initCompleted: reminder['completed'],
+                    extra: "",
+                  ),
+                ),
+              );
             }
-          });
 
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: ListView(
-              shrinkWrap: true,
-              children: homeCards,
-            ),
-          );
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              if (context.mounted) {
+                callback(allReminders[0]);
+                refreshParent();
+                print("scheduler binding");
+              }
+            });
+
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: ListView(
+                shrinkWrap: true,
+                children: homeCards,
+              ),
+            );
+          }
         } else if (snapshot.hasError) {
           return Center(
             child: Text('Error: ${snapshot.error}'),

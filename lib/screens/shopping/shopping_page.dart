@@ -288,6 +288,18 @@ class _ShoppingPageState extends State<ShoppingPage> {
                                     allShopping.addAll(reminders);
                                   });
 
+                                  if (allShopping.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        "No items found",
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
                                   // ! category filters
                                   if (_category == 0) {
                                     filtered = allShopping

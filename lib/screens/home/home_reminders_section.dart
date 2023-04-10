@@ -1,5 +1,6 @@
 import 'package:familist_2/widgets/home/home_card.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jiffy/jiffy.dart';
 
 import '../../utils/modules/reminders_helper.dart';
@@ -24,6 +25,18 @@ class _HomeRemindersState extends State<HomeReminders> {
           snapshot.data.forEach((userId, reminders) {
             allReminders.addAll(reminders);
           });
+
+          if (allReminders.isEmpty) {
+            return Center(
+              child: Text(
+                "No items found",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }
 
           allReminders = allReminders
               .where((item) => item['userID'] == item['currentID'])

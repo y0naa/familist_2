@@ -1,10 +1,31 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'auth.dart';
 
 class Profile {
+  final profileFutureStream = StreamController();
   CollectionReference families =
       FirebaseFirestore.instance.collection("families");
+
+  void initProfileFutureStream() {
+    profileFutureStream.add(doesFamilyExist);
+    profileFutureStream.add(getFamiliesId);
+    profileFutureStream.add(getFamilyName);
+    profileFutureStream.add(getCurrentName);
+    profileFutureStream.add(getFamilyID);
+    profileFutureStream.add(getUserID);
+    profileFutureStream.add(getUserDetails);
+    profileFutureStream.add(getFamilyID);
+    profileFutureStream.add(updateData);
+    profileFutureStream.add(updateFamilyName);
+    profileFutureStream.add(getUsersId);
+  }
+
+  void cancelProfileFutureStream() {
+    profileFutureStream.close();
+  }
 
   Future doesFamilyExist(String docID) async {
     final doc = await families.doc(docID).get();
@@ -98,19 +119,21 @@ class Profile {
   }
 
   Future getFamilyID() async {
-    String fuid = "";
-    var snapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .where(
-          "email",
-          isEqualTo: Auth().currentUser!.email!.trim(),
-        )
-        .get();
-    if (snapshot.docs.isNotEmpty) {
-      final document = snapshot.docs.first;
-      fuid = document.get("fuid");
+    if (Auth().currentUser != null) {
+      String fuid = "";
+      var snapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where(
+            "email",
+            isEqualTo: Auth().currentUser!.email!.trim(),
+          )
+          .get();
+      if (snapshot.docs.isNotEmpty) {
+        final document = snapshot.docs.first;
+        fuid = document.get("fuid");
+      }
+      return fuid;
     }
-    return fuid;
   }
 
   Future updateData(String docID, Map<Object, Object?> map) async {

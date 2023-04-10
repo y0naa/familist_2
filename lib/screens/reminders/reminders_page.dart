@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../utils/profile.dart';
 import '../../widgets/dialog.dart';
 
@@ -368,10 +367,12 @@ class _RemindersPageState extends State<RemindersPage> {
                                                 : "",
                                             style: GoogleFonts.inter(
                                               fontSize: 42,
-                                              color: dayDifference(
-                                                          topCard["date due"]) <
-                                                      0
-                                                  ? Colors.red
+                                              color: topCard["date due"] != null
+                                                  ? dayDifference(topCard[
+                                                              "date due"]) <
+                                                          0
+                                                      ? Colors.red
+                                                      : tColor
                                                   : tColor,
                                               fontWeight: FontWeight.w800,
                                             ),

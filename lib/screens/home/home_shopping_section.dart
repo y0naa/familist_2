@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/modules/shopping_helper.dart';
 import '../../widgets/shopping/shopping_item.dart';
@@ -25,6 +26,18 @@ class _HomeShoppingState extends State<HomeShopping> {
           snapshot.data.forEach((userId, shopping) {
             allShopping.addAll(shopping);
           });
+
+          if (allShopping.isEmpty) {
+            return Center(
+              child: Text(
+                "No items found",
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }
 
           allShopping = allShopping
               .where((item) => item['userID'] == item['currentID'])

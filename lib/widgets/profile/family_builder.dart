@@ -19,7 +19,8 @@ class _FamilyBuilderState extends State<FamilyBuilder> {
     final size = MediaQuery.of(context).size;
     CollectionReference users = FirebaseFirestore.instance.collection("users");
     Future familyBuilder() async {
-      String fuid = await Profile().getFamilyID();
+      String fuid = await Profile().getFamilyID() ?? "";
+
       return users.where("fuid", isEqualTo: fuid).get();
     }
 
