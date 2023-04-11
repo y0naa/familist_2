@@ -41,15 +41,22 @@ class _SchedulePageState extends State<SchedulePage> {
   Future getMembers() async {
     print("get members");
     String fuid = await Profile().getFamilyID();
-    QuerySnapshot snapshot = await users.where("fuid", isEqualTo: fuid).get();
     List<String> memberNames = [];
 
-    for (QueryDocumentSnapshot doc in snapshot.docs) {
-      String name = doc.get("full name");
-      members[name] = doc.id;
-      memberNames.add(name);
+    if (fuid.isEmpty) {
+      String currName = await Profile().getCurrentName();
+      memberNames.add(currName);
+      return memberNames;
+    } else {
+      QuerySnapshot snapshot = await users.where("fuid", isEqualTo: fuid).get();
+
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        String name = doc.get("full name");
+        members[name] = doc.id;
+        memberNames.add(name);
+      }
+      return memberNames;
     }
-    return memberNames;
   }
 
   Future addSchedule() async {

@@ -69,7 +69,7 @@ class Schedule extends StatelessWidget {
                       ),
                     )
                   : Container(
-                      height: 16,
+                      height: 24,
                     ),
             ),
           ],

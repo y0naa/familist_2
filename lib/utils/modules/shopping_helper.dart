@@ -52,28 +52,48 @@ class ShoppingHelper {
     try {
       String fuid = await Profile().getFamilyID();
       String currID = await Profile.getUserID();
-      QuerySnapshot usersQuerySnapshot =
-          await users.where('fuid', isEqualTo: fuid).get();
-      Map<String, List<Map<String, dynamic>>> shoppingMap = {};
-      for (QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
-        String userId = userDoc.id;
-        String fullName = userDoc.get("full name");
+      if (fuid.isEmpty) {
+        // If fuid is empty, return shopping items for current user only
         CollectionReference shoppingRef =
-            users.doc(userId).collection('shopping');
+            users.doc(currID).collection('shopping');
         QuerySnapshot shoppingQuerySnapshot = await shoppingRef.get();
         List<Map<String, dynamic>> shoppingList = [];
         for (QueryDocumentSnapshot shoppingDoc in shoppingQuerySnapshot.docs) {
           Map<String, dynamic> shoppingData =
               shoppingDoc.data() as Map<String, dynamic>;
-          shoppingData['fullName'] = fullName;
-          shoppingData['userID'] = userId;
+          shoppingData['fullName'] = await Profile().getCurrentName();
+          shoppingData['userID'] = currID;
           shoppingData['itemID'] = shoppingDoc.id;
           shoppingData['currentID'] = currID;
           shoppingList.add(shoppingData);
         }
-        shoppingMap[userId] = shoppingList;
+        return {currID: shoppingList};
+      } else {
+        // If fuid is not empty, retrieve shopping items for all family members
+        QuerySnapshot usersQuerySnapshot =
+            await users.where('fuid', isEqualTo: fuid).get();
+        Map<String, List<Map<String, dynamic>>> shoppingMap = {};
+        for (QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
+          String userId = userDoc.id;
+          String fullName = userDoc.get("full name");
+          CollectionReference shoppingRef =
+              users.doc(userId).collection('shopping');
+          QuerySnapshot shoppingQuerySnapshot = await shoppingRef.get();
+          List<Map<String, dynamic>> shoppingList = [];
+          for (QueryDocumentSnapshot shoppingDoc
+              in shoppingQuerySnapshot.docs) {
+            Map<String, dynamic> shoppingData =
+                shoppingDoc.data() as Map<String, dynamic>;
+            shoppingData['fullName'] = fullName;
+            shoppingData['userID'] = userId;
+            shoppingData['itemID'] = shoppingDoc.id;
+            shoppingData['currentID'] = currID;
+            shoppingList.add(shoppingData);
+          }
+          shoppingMap[userId] = shoppingList;
+        }
+        return shoppingMap;
       }
-      return shoppingMap;
     } catch (e) {
       dialog(
         context,

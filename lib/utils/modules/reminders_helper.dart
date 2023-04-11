@@ -111,12 +111,31 @@ class RemindersHelpers {
     }
   }
 
-  Future getBills(BuildContext context) async {
+  Future getBills(BuildContext? context) async {
     try {
       String fuid = await Profile().getFamilyID();
       String currID = await Profile.getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
+
+      if (fuid.isEmpty) {
+        String userId = currID;
+        String fullName = await Profile().getCurrentName();
+        CollectionReference billsRef = usersRef.doc(userId).collection('bills');
+        QuerySnapshot billsQuerySnapshot = await billsRef.get();
+        List<Map<String, dynamic>> billsList = [];
+        for (QueryDocumentSnapshot billDoc in billsQuerySnapshot.docs) {
+          Map<String, dynamic> billData =
+              billDoc.data() as Map<String, dynamic>;
+          billData['fullName'] = fullName;
+          billData['userID'] = userId;
+          billData['billID'] = billDoc.id;
+          billData['currentID'] = currID;
+          billsList.add(billData);
+        }
+        return {userId: billsList};
+      }
+
       QuerySnapshot usersQuerySnapshot =
           await usersRef.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> billsMap = {};
@@ -139,10 +158,12 @@ class RemindersHelpers {
       }
       return billsMap;
     } catch (e) {
-      dialog(
-        context,
-        e.toString(),
-      );
+      if (context != null) {
+        dialog(
+          context,
+          e.toString(),
+        );
+      }
     }
   }
 
@@ -152,6 +173,26 @@ class RemindersHelpers {
       String currID = await Profile.getUserID();
       CollectionReference usersRef =
           FirebaseFirestore.instance.collection('users');
+
+      if (fuid.isEmpty) {
+        String userId = currID;
+        String fullName = await Profile().getCurrentName();
+        CollectionReference remindersRef =
+            usersRef.doc(userId).collection('reminders');
+        QuerySnapshot remindersQuerySnapshot = await remindersRef.get();
+        List<Map<String, dynamic>> remindersList = [];
+        for (QueryDocumentSnapshot reminderDoc in remindersQuerySnapshot.docs) {
+          Map<String, dynamic> reminderData =
+              reminderDoc.data() as Map<String, dynamic>;
+          reminderData['fullName'] = fullName;
+          reminderData['userID'] = userId;
+          reminderData['reminderID'] = reminderDoc.id;
+          reminderData['currentID'] = currID;
+          remindersList.add(reminderData);
+        }
+        return {userId: remindersList};
+      }
+
       QuerySnapshot usersQuerySnapshot =
           await usersRef.where('fuid', isEqualTo: fuid).get();
       Map<String, List<Map<String, dynamic>>> remindersMap = {};

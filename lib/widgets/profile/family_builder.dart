@@ -20,48 +20,70 @@ class _FamilyBuilderState extends State<FamilyBuilder> {
     CollectionReference users = FirebaseFirestore.instance.collection("users");
     Future familyBuilder() async {
       String fuid = await Profile().getFamilyID() ?? "";
-
-      return users.where("fuid", isEqualTo: fuid).get();
+      String currID = await Profile.getUserID();
+      if (fuid.isEmpty) {
+        return users.doc(currID).get();
+      } else {
+        return users.where("fuid", isEqualTo: fuid).get();
+      }
     }
 
     return FutureBuilder(
       future: familyBuilder(),
       builder: ((context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data!.docs.isEmpty) {
-            return const Text("No members found");
+          if (snapshot.hasData) {
+            final data = snapshot.data;
+            if (data is QuerySnapshot) {
+              if (data.docs.isEmpty) {
+                return const Text("No members found");
+              }
+
+              return SizedBox(
+                height: size.height * 0.3,
+                child: ListView.builder(
+                  itemCount: data.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final doc = data.docs[index];
+                    final name = doc.get("full name");
+
+                    if (Auth().currentUser!.email == doc.get("email")) {
+                      return Member(
+                        name: name,
+                        isUser: true,
+                        docID: doc.id,
+                        refresh: () {
+                          setState(() {});
+                        },
+                      );
+                    } else {
+                      return Member(
+                        name: name,
+                        isUser: false,
+                        docID: doc.id,
+                        refresh: () {
+                          setState(() {});
+                        },
+                      );
+                    }
+                  },
+                ),
+              );
+            } else if (data is DocumentSnapshot) {
+              final name = data.get("full name");
+
+              return Member(
+                name: name,
+                isUser: true,
+                docID: data.id,
+                refresh: () {
+                  setState(() {});
+                },
+              );
+            }
           }
 
-          return SizedBox(
-            height: size.height * 0.3,
-            child: ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                final doc = snapshot.data!.docs[index];
-                final name = doc.get("full name");
-
-                if (Auth().currentUser!.email == doc.get("email")) {
-                  return Member(
-                    name: name,
-                    isUser: true,
-                    docID: doc.id,
-                    refresh: () {
-                      setState(() {});
-                    },
-                  );
-                } else {
-                  return Member(
-                    name: name,
-                    isUser: false,
-                    docID: doc.id,
-                    refresh: () {
-                      setState(() {});
-                    },
-                  );
-                }
-              },
-            ),
-          );
+          return const Text("No members found");
         }
 
         return Center(

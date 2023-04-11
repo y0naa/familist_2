@@ -60,15 +60,17 @@ class _BillState extends State<Bill> {
     return Material(
       color: bgColor,
       child: InkWell(
-        onTap: () {
-          setState(() {
-            if (widget.map['paid']) {
-              togglePaid(false);
-            } else {
-              togglePaid(true);
-            }
-          });
-        },
+        onTap: widget.canDelete
+            ? () {
+                setState(() {
+                  if (widget.map['paid']) {
+                    togglePaid(false);
+                  } else {
+                    togglePaid(true);
+                  }
+                });
+              }
+            : null,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(15),
@@ -203,13 +205,17 @@ class _BillState extends State<Bill> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text(
-                      widget.map['paid'] ? "Paid" : "Unpaid",
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: widget.map['paid'] ? Colors.green : Colors.red,
-                          fontWeight: FontWeight.w600),
-                    ),
+                    widget.canDelete
+                        ? Text(
+                            widget.map['paid'] ? "Paid" : "Unpaid",
+                            style: GoogleFonts.inter(
+                                fontSize: 14,
+                                color: widget.map['paid']
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontWeight: FontWeight.w600),
+                          )
+                        : Container(),
                     const SizedBox(
                       height: 10,
                     ),

@@ -17,7 +17,6 @@ class Profile {
     profileFutureStream.add(getFamilyID);
     profileFutureStream.add(getUserID);
     profileFutureStream.add(getUserDetails);
-    profileFutureStream.add(getFamilyID);
     profileFutureStream.add(updateData);
     profileFutureStream.add(updateFamilyName);
     profileFutureStream.add(getUsersId);
@@ -109,7 +108,7 @@ class Profile {
     if (snapshot.docs.isNotEmpty) {
       final document = snapshot.docs.first;
       data["doc_id"] = document.reference.id;
-      data["fuid"] = document.get("fuid");
+      data["fuid"] = document.get("fuid").toString();
       data["full name"] = document.get("full name");
       data["bio"] = document.get("bio");
       data["telephone"] = document.get("telephone");
