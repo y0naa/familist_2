@@ -364,9 +364,27 @@ class Info extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            const Divider(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  children: const [
+                                    TextSpan(
+                                      text:
+                                          "For now, you can only update your own items.",
+                                    ),
+                                  ],
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                        const Divider(),
                         ExpansionTile(
                           tilePadding: const EdgeInsets.all(0),
                           title: const Text("Schedule"),

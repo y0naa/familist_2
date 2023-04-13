@@ -54,13 +54,17 @@ class _HomeCardState extends State<HomeCard> {
             )
           : InkWell(
               onTap: () async {
-                setState(() {
-                  _flag = !_flag;
-                });
-                await updateCompleted();
-                if (context.mounted) {
-                  GoRouter.of(context).pushReplacement(
-                      widget.home ? "/homeReminders" : "/reminders");
+                if (widget.map != null) {
+                  if (widget.map!['userID'] == widget.map!['currentID']) {
+                    setState(() {
+                      _flag = !_flag;
+                    });
+                    await updateCompleted();
+                    if (context.mounted) {
+                      GoRouter.of(context).pushReplacement(
+                          widget.home ? "/homeReminders" : "/reminders");
+                    }
+                  }
                 }
               },
               child: Row(

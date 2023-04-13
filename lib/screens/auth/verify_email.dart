@@ -118,6 +118,17 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15, left: 32, right: 32),
+                  child: Text(
+                    "If you don't see the email, please check your spam folder",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(

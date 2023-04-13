@@ -38,12 +38,7 @@ class _BillsState extends State<Bills> {
                   ),
                 );
               }
-              allBills.sort(
-                (a, b) => a['repeated in'].toString().compareTo(
-                      b['repeated in'].toString(),
-                    ),
-              );
-
+              allBills.sort((a, b) => a['repeated in'] - b['repeated in']);
               for (var bill in allBills) {
                 billCards.add(
                   Bill(
