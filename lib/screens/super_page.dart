@@ -25,7 +25,6 @@ class _SuperPageState extends State<SuperPage> {
   @override
   void initState() {
     super.initState();
-    NotificationApi.setAllReminders();
 
     widget.page == null ? null : _activePages = widget.page!;
     _pages = [

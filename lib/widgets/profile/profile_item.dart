@@ -38,6 +38,7 @@ class _ProfileItemState extends State<ProfileItem> {
   bool editMode = false;
   bool familyEditMode = false;
   bool showQr = false;
+  bool qrButton = false;
 
   // variables
   List<dynamic> userIDs = [];
@@ -121,9 +122,19 @@ class _ProfileItemState extends State<ProfileItem> {
     }
   }
 
+  void checkFamily() async {
+    String fuid = await Profile().getFamilyID();
+    if (fuid.isEmpty) {
+      qrButton = false;
+    } else {
+      qrButton = true;
+    }
+  }
+
   @override
   void initState() {
     getData();
+    checkFamily();
     _focus.addListener(_onFocusChanged);
     _focus2.addListener(_onFocusChanged2);
     super.initState();
@@ -316,9 +327,11 @@ class _ProfileItemState extends State<ProfileItem> {
                                       children: [
                                         TextButton(
                                           onPressed: () {
-                                            setState(() {
-                                              showQr = true;
-                                            });
+                                            if (qrButton) {
+                                              setState(() {
+                                                showQr = true;
+                                              });
+                                            }
                                           },
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -337,7 +350,9 @@ class _ProfileItemState extends State<ProfileItem> {
                                             "Show QR & ID",
                                             style: GoogleFonts.inter(
                                               fontWeight: FontWeight.w600,
-                                              color: sColor,
+                                              color: qrButton
+                                                  ? sColor
+                                                  : Colors.grey,
                                             ),
                                           ),
                                         ),

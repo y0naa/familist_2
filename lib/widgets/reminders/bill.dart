@@ -46,7 +46,7 @@ class _BillState extends State<Bill> {
 
   void togglePaid(bool paid) async {
     await RemindersHelpers()
-        .togglePaidBills(widget.map['userID'], widget.map, paid);
+        .togglePaidBills(widget.map['currentID'], widget.map, paid);
     GoRouter.of(context).pushReplacement("/bills");
   }
 
