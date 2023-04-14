@@ -213,6 +213,7 @@ class _RegisterState extends State<Register> {
                                       right: 8,
                                     ),
                                     child: TextField(
+                                      keyboardType: TextInputType.phone,
                                       controller: _telephoneController,
                                       decoration: const InputDecoration(
                                         border: InputBorder.none,

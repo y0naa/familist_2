@@ -6,6 +6,9 @@ import 'notif.dart';
 class BackgroundService {
   @pragma('vm:entry-point')
   static void runBgTask(int alarmId, Map<String, dynamic> bill) async {
+    print(
+      "BG SERVICE STARTED",
+    );
     DateTime today = DateTime.now();
     DateTime dateAtMidnight = DateTime(
       today.year,
@@ -13,6 +16,7 @@ class BackgroundService {
       today.day,
       0,
       0,
+      1,
     );
 
     await Firebase.initializeApp();

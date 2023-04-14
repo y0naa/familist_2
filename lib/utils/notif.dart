@@ -107,7 +107,6 @@ class NotificationApi {
     required DateTime startDate,
     required int repeated,
   }) async {
-    print("setting alarm manager for ${nextInstance(repeated, startDate)}");
     BackgroundService.setAlarmManager(
       id,
       nextInstance(repeated, startDate),
@@ -123,6 +122,10 @@ class NotificationApi {
 
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: days));
+
+      scheduledDate = tz.TZDateTime(tz.local, scheduledDate.year,
+          scheduledDate.month, scheduledDate.day, 0, 0, 0);
+      print("setting alarm manager for $scheduledDate");
     }
     print("scheduled date: $scheduledDate");
     return scheduledDate;
